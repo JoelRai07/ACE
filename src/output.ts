@@ -7,12 +7,14 @@ import * as path from "path";
 import { config } from "./config.js";
 import type { LlmResult } from "./ollama.js";
 import type { BuiltPrompt } from "./prompt.js";
+import type { PipelineMetrics } from "./types.js";
 
 export interface FormatterInput {
   llmResult: LlmResult;
   builtPrompt: BuiltPrompt;
   targetUrl: string;
   totalFindings: { axe: number; playwright: number; grep: number };
+  metrics: PipelineMetrics;
 }
 
 export interface SavedReport {
@@ -34,7 +36,7 @@ interface TodoItem {
 }
 
 interface AnalysisReport {
-  version: "1.0";
+  version: "1.1";
   timestamp: string;
   targetUrl: string;
   model: string;
@@ -47,6 +49,7 @@ interface AnalysisReport {
     durationMs: number;
     tokensBudgetTruncated: boolean;
   };
+  metrics: PipelineMetrics;
   parsed: {
     success: boolean;
     mustHaveCount: number;
@@ -89,7 +92,7 @@ export function formatAndSave(input: FormatterInput): SavedReport {
 }
 
 function buildMarkdownReport(input: FormatterInput, parsed: ParsedTodoList): string {
-  const { llmResult, builtPrompt, targetUrl, totalFindings } = input;
+  const { llmResult, builtPrompt, targetUrl, totalFindings, metrics } = input;
   const ts = new Date().toISOString();
   const durationSec = (llmResult.durationMs / 1000).toFixed(1);
 
@@ -104,15 +107,46 @@ function buildMarkdownReport(input: FormatterInput, parsed: ParsedTodoList): str
     `| **Dauer** | ${durationSec}s |`,
     `| **Findings** | axe-core: ${totalFindings.axe}, Playwright: ${totalFindings.playwright}, grep: ${totalFindings.grep} |`,
     `| **Im Prompt** | axe: ${builtPrompt.includedFindings.axe}, Playwright: ${builtPrompt.includedFindings.playwright}, grep: ${builtPrompt.includedFindings.grep} |`,
-    `| **Tokens (Input/Output)** | ~${builtPrompt.estimatedTokens} / ${llmResult.outputTokens} |`,
+    `| **Tokens (geschätzt/tatsächlich)** | ~${builtPrompt.estimatedTokens} / ${llmResult.promptTokens} (Prompt) + ${llmResult.outputTokens} (Output) |`,
   ].join("\n");
 
+  const t = metrics.phaseTimings;
+  const metricsBlock = [
+    ``,
+    `## Pipeline-Metriken`,
+    ``,
+    `| Phase | Dauer |`,
+    `|-------|-------|`,
+    `| axe-core | ${(t.axeMs / 1000).toFixed(1)}s |`,
+    `| Playwright | ${(t.playwrightMs / 1000).toFixed(1)}s |`,
+    t.codeEnrichMs > 0 ? `| Code-Anreicherung | ${(t.codeEnrichMs / 1000).toFixed(1)}s |` : null,
+    t.codePatternMs > 0 ? `| Code-Pattern | ${(t.codePatternMs / 1000).toFixed(1)}s |` : null,
+    `| Prompt-Build | ${(t.promptBuildMs / 1000).toFixed(1)}s |`,
+    `| LLM | ${(t.llmMs / 1000).toFixed(1)}s |`,
+    `| **Gesamt** | **${(t.totalMs / 1000).toFixed(1)}s** |`,
+    ``,
+    `| Metrik | Wert |`,
+    `|--------|------|`,
+    `| Token-Schätzung (Input) | ~${metrics.tokens.estimated} |`,
+    `| Tatsächliche Tokens (Prompt) | ${metrics.tokens.actualPrompt} |`,
+    `| Tatsächliche Tokens (Output) | ${metrics.tokens.actualOutput} |`,
+    `| Schätzungsabweichung | ${metrics.tokens.actualPrompt > 0 ? ((metrics.tokens.estimated / metrics.tokens.actualPrompt - 1) * 100).toFixed(1) + "%" : "n/a"} |`,
+    metrics.enrichment.totalEnrichable > 0
+      ? `| Anreicherungsquote | ${metrics.enrichment.enrichedCount}/${metrics.enrichment.totalEnrichable} (${(metrics.enrichment.quote * 100).toFixed(0)}%) |`
+      : null,
+    metrics.deduplication.removed > 0
+      ? `| Deduplizierung | ${metrics.deduplication.beforeDedup} → ${metrics.deduplication.afterDedup} (${metrics.deduplication.removed} entfernt) |`
+      : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
   const truncationWarning = builtPrompt.truncated
-    ? `\n> ⚠️ **Token-Budget:** Einige Findings (moderate/minor) wurden weggelassen.\n`
+    ? `\n> **Token-Budget:** Einige Findings (moderate/minor) wurden weggelassen.\n`
     : "";
 
   const parseWarning = !parsed.parseSuccess
-    ? `\n> ⚠️ **Parsing:** Struktur der LLM-Antwort weicht vom erwarteten Format ab.\n`
+    ? `\n> **Parsing:** Struktur der LLM-Antwort weicht vom erwarteten Format ab.\n`
     : "";
 
   return [
@@ -125,6 +159,9 @@ function buildMarkdownReport(input: FormatterInput, parsed: ParsedTodoList): str
     input.llmResult.rawResponse,
     ``,
     `---`,
+    metricsBlock,
+    ``,
+    `---`,
     ``,
     `*Generiert mit ACE-assistant PoC · ${ts}*`,
   ]
@@ -133,9 +170,9 @@ function buildMarkdownReport(input: FormatterInput, parsed: ParsedTodoList): str
 }
 
 function buildJsonReport(input: FormatterInput, parsed: ParsedTodoList, timestamp: string): AnalysisReport {
-  const { llmResult, builtPrompt, targetUrl, totalFindings } = input;
+  const { llmResult, builtPrompt, targetUrl, totalFindings, metrics } = input;
   return {
-    version: "1.0",
+    version: "1.1",
     timestamp,
     targetUrl,
     model: llmResult.model,
@@ -148,6 +185,7 @@ function buildJsonReport(input: FormatterInput, parsed: ParsedTodoList, timestam
       durationMs: llmResult.durationMs,
       tokensBudgetTruncated: builtPrompt.truncated,
     },
+    metrics,
     parsed: {
       success: parsed.parseSuccess,
       mustHaveCount: parsed.mustHave.length,

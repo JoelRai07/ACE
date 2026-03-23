@@ -64,7 +64,37 @@ PRIORISIERUNGSREGELN:
 3. Wenn mehrere Findings dasselbe Element betreffen, fasse sie zusammen
 4. Nutze den Codekontext für konkrete React/TypeScript-Fixes
 5. Antworte ausschließlich auf Deutsch
-6. Erfinde keine Findings, die nicht in den Daten vorhanden sind`.trim();
+6. Erfinde keine Findings, die nicht in den Daten vorhanden sind
+
+BEISPIEL (Few-Shot):
+
+Eingabe-Finding:
+[axe-007] CRITICAL | color-contrast | WCAG 1.4.3 (AA)
+Beschreibung: Element hat unzureichenden Farbkontrast (2.8:1 statt 4.5:1)
+Element: .sidebar > .nav-link
+Datei: components/Sidebar.tsx:42-52
+Code:
+42: <a className="nav-link" href="/dashboard">
+43:   Dashboard
+44: </a>
+
+Erwartete Ausgabe:
+
+## Must-have
+
+### [axe-007] Farbkontrast der Sidebar-Navigation unzureichend
+- **WCAG:** 1.4.3 (Level AA)
+- **Schweregrad:** critical
+- **Element/Datei:** components/Sidebar.tsx:42
+- **Problem:** Der Link ".nav-link" hat ein Kontrastverhältnis von 2.8:1, gefordert sind mindestens 4.5:1 (WCAG 1.4.3 AA).
+- **Fix:**
+\`\`\`tsx
+// Sidebar.tsx — Farbe des Links anpassen
+<a className="nav-link" style={{ color: "#1a1a2e" }} href="/dashboard">
+  Dashboard
+</a>
+// Alternativ: CSS-Klasse mit ausreichendem Kontrast definieren
+\`\`\``.trim();
 
 export function buildPrompt(input: PromptInput): BuiltPrompt {
   const { targetUrl } = input;

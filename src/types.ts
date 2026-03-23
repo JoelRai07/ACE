@@ -40,6 +40,38 @@ export interface PipelineFindings {
   targetUrl: string;
 }
 
+export interface PipelineMetrics {
+  /** Laufzeit pro Phase in Millisekunden */
+  phaseTimings: {
+    axeMs: number;
+    playwrightMs: number;
+    codeEnrichMs: number;
+    codePatternMs: number;
+    promptBuildMs: number;
+    llmMs: number;
+    outputMs: number;
+    totalMs: number;
+  };
+  /** Token-Schätzung vs. tatsächliche Tokens aus Ollama */
+  tokens: {
+    estimated: number;
+    actualPrompt: number;
+    actualOutput: number;
+  };
+  /** Anreicherungsquote: wie viele Findings mit Code angereichert werden konnten */
+  enrichment: {
+    enrichedCount: number;
+    totalEnrichable: number;
+    quote: number; // 0–1
+  };
+  /** Findings vor und nach Deduplizierung */
+  deduplication: {
+    beforeDedup: number;
+    afterDedup: number;
+    removed: number;
+  };
+}
+
 export interface AceCheckDefinition {
   ruleId: string;
   description: string;

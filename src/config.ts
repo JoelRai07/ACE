@@ -1,6 +1,10 @@
 /**
  * Zentraler Konfigurationsblock, überschreibbar via Umgebungsvariablen.
+ * Lädt .env-Datei aus dem Projektroot (falls vorhanden).
  */
+
+import * as dotenv from "dotenv";
+dotenv.config();
 
 export const config = {
   targetUrl: process.env.TARGET_URL ?? "http://localhost:3000",
