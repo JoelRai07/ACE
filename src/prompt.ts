@@ -94,6 +94,34 @@ Erwartete Ausgabe:
   Dashboard
 </a>
 // Alternativ: CSS-Klasse mit ausreichendem Kontrast definieren
+\`\`\`
+
+---
+
+Eingabe-Finding:
+[grep-002] MODERATE | tabindex-removes-element | WCAG 2.1.1 (A)
+Beschreibung: tabIndex=-1 entfernt Elemente aus der Tab-Reihenfolge.
+Datei: components/Modal.tsx:18-28
+Code:
+18: <div className="modal-overlay" tabIndex={-1}>
+19:   <div className="modal-content" role="dialog">
+20:     <button className="close-btn">Schließen</button>
+
+Erwartete Ausgabe:
+
+## Nice-to-have
+
+### [grep-002] tabIndex=-1 auf Modal-Overlay
+- **WCAG:** 2.1.1 (Level A)
+- **Schweregrad:** moderate
+- **Element/Datei:** components/Modal.tsx:18
+- **Problem:** Das Modal-Overlay hat tabIndex={-1}. Wenn das Overlay selbst fokussierbar sein soll (z.B. für Escape-Handling), ist das korrekt. Andernfalls entfernt es das Element unnötig aus der Tab-Reihenfolge.
+- **Fix:**
+\`\`\`tsx
+// Falls Overlay nicht fokussierbar sein muss — tabIndex entfernen:
+<div className="modal-overlay">
+  <div className="modal-content" role="dialog" aria-modal="true">
+    <button className="close-btn" autoFocus>Schließen</button>
 \`\`\``.trim();
 
 export function buildPrompt(input: PromptInput): BuiltPrompt {
