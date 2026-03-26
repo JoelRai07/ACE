@@ -16,8 +16,8 @@ Danach: alle Findings → Prompt → Ollama → priorisierte Empfehlungsliste (M
 
 ## Was "kontextsensitiv" bedeutet
 
-Traditionelle Scanner sagen: *"Element X hat Problem Y."*
-Dein PoC sagt: *"Element X hat Problem Y — hier ist der Code wo es definiert ist, und hier ist der Fix."*
+Traditionelle Scanner sagen: _"Element X hat Problem Y."_
+Dein PoC sagt: _"Element X hat Problem Y — hier ist der Code wo es definiert ist, und hier ist der Fix."_
 
 Der "Kontext" = DOM-Problem + Interaktionsverhalten + Quellcode gleichzeitig im LLM-Prompt.
 
@@ -25,11 +25,11 @@ Der "Kontext" = DOM-Problem + Interaktionsverhalten + Quellcode gleichzeitig im 
 
 ## Was den PoC einzigartig macht (für die Thesis!)
 
-| Tool | axe/DOM | Playwright | Code-Kontext | Lokales LLM |
-|------|---------|-----------|--------------|-------------|
-| pa11y / axe-playwright | ✅ | ✅ | ❌ | ❌ |
-| AccessGuru (Fathallah 2025) | ✅ | ❌ | ❌ | ❌ (Cloud) |
-| **Dein PoC** | ✅ | ✅ | ✅ | ✅ |
+| Tool                        | axe/DOM | Playwright | Code-Kontext | Lokales LLM |
+| --------------------------- | ------- | ---------- | ------------ | ----------- |
+| pa11y / axe-playwright      | ✅      | ✅         | ❌           | ❌          |
+| AccessGuru (Fathallah 2025) | ✅      | ❌         | ❌           | ❌ (Cloud)  |
+| **Dein PoC**                | ✅      | ✅         | ✅           | ✅          |
 
 **Alleinstellungsmerkmal:** grep-Anreicherung (Code-Kontext) + lokales LLM. Nicht Playwright allein — das machen andere auch.
 
@@ -39,11 +39,11 @@ Der "Kontext" = DOM-Problem + Interaktionsverhalten + Quellcode gleichzeitig im 
 
 ## Was der PoC am Rich-Client-Problem löst
 
-| Problem | Was es bedeutet | Status |
-|---------|----------------|--------|
-| Dynamisches DOM | React rendert per JS — HTML-Scanner sehen nichts | ✅ Gelöst (Browser-Launch) |
-| Komponenten-Mapping | "Button X hat Fehler" — aber wo im Code? | ✅ Gelöst (grep-Anreicherung) |
-| Zustandsabhängige Violations | Fehler die erst nach Klick entstehen | ⚠️ Teilweise (7 Playwright-Checks) |
+| Problem                      | Was es bedeutet                                  | Status                             |
+| ---------------------------- | ------------------------------------------------ | ---------------------------------- |
+| Dynamisches DOM              | React rendert per JS — HTML-Scanner sehen nichts | ✅ Gelöst (Browser-Launch)         |
+| Komponenten-Mapping          | "Button X hat Fehler" — aber wo im Code?         | ✅ Gelöst (grep-Anreicherung)      |
+| Zustandsabhängige Violations | Fehler die erst nach Klick entstehen             | ⚠️ Teilweise (7 Playwright-Checks) |
 
 ---
 
@@ -63,14 +63,16 @@ Der "Kontext" = DOM-Problem + Interaktionsverhalten + Quellcode gleichzeitig im 
 **Lösung: Synthetische Testkomponente bauen**
 
 Eine kleine React-Seite mit ~10 bewusst eingebauten Fehlern (fehlende alt-Attribute, schlechter Kontrast, onClick ohne Keyboard-Handler, etc.). Vorteile:
+
 - Du weißt exakt welche Findings erwartet werden → Precision/Recall messbar
 - Reproduzierbar für den Modellvergleich
-- Akademisch sauber: *"kontrollierte Evaluationsumgebung"*
+- Akademisch sauber: _"kontrollierte Evaluationsumgebung"_
 
 BWEC-Testing läuft zusätzlich als **Real-World-Validierung** — zeigt dass das System in Produktion stabil läuft und keine False-Positive-Flut erzeugt.
 
 **Formulierung für Kap. 7:**
-> *"Um eine reproduzierbare Evaluation zu ermöglichen, wurde ein synthetisches Testobjekt entwickelt, das WCAG-Verletzungen aller drei Kategorien (syntaktisch, semantisch, layout) gezielt abbildet."*
+
+> _"Um eine reproduzierbare Evaluation zu ermöglichen, wurde ein synthetisches Testobjekt entwickelt, das WCAG-Verletzungen aller drei Kategorien (syntaktisch, semantisch, layout) gezielt abbildet."_
 
 ---
 
@@ -78,15 +80,16 @@ BWEC-Testing läuft zusätzlich als **Real-World-Validierung** — zeigt dass da
 
 **Hardware:** 96 GB RAM, kein dedizierter VRAM → CPU-only Inference
 
-| Modell | RAM (Q4) | Besonderheit |
-|--------|----------|--------------|
-| `qwen2.5-coder:7b` | ~5 GB | Aktuell im Einsatz, Baseline |
-| `qwen2.5-coder:14b` | ~9 GB | Direkter Vergleich, selbe Familie |
-| `qwen3:32b` | ~20 GB | **Top-Empfehlung** — Reasoning + Code |
-| `deepseek-r1:32b` | ~20 GB | Stark für Analyse, erklärt Denkschritte |
-| `deepseek-r1:70b` | ~45 GB | Maximale Qualität wenn Zeit keine Rolle |
+| Modell              | RAM (Q4) | Besonderheit                            |
+| ------------------- | -------- | --------------------------------------- |
+| `qwen2.5-coder:7b`  | ~5 GB    | Aktuell im Einsatz, Baseline            |
+| `qwen2.5-coder:14b` | ~9 GB    | Direkter Vergleich, selbe Familie       |
+| `qwen3:32b`         | ~20 GB   | **Top-Empfehlung** — Reasoning + Code   |
+| `deepseek-r1:32b`   | ~20 GB   | Stark für Analyse, erklärt Denkschritte |
+| `deepseek-r1:70b`   | ~45 GB   | Maximale Qualität wenn Zeit keine Rolle |
 
 **Empfohlener Vergleich für Thesis:** `qwen2.5-coder:7b` vs. `qwen3:32b`
+
 - Vergleicht nicht nur Größe sondern auch Architektur-Generation
 - qwen3 hat Thinking-Modus → konkretere Empfehlungen erwartet
 - NFA-02 auf 20 min erhöht → 32b auf CPU realistisch
@@ -104,6 +107,7 @@ OLLAMA_MODEL=qwen3:32b npm run analyze -- --url http://localhost:3000
 ## Thesis-Checkliste
 
 ### Kapitel 6 (Implementierung) — ausbauen
+
 - [ ] Projektstruktur + Tech Stack
 - [ ] UFS erklären inkl. `category`-Feld (Taxonomie nach Fathallah)
 - [ ] axe-Modul: Browser-Launch, AxeBuilder, category-Heuristik
@@ -113,6 +117,7 @@ OLLAMA_MODEL=qwen3:32b npm run analyze -- --url http://localhost:3000
 - [ ] Ollama-Client: temperature=0.1 begründen (NFA-04)
 
 ### Kapitel 7 (Evaluation) — Kern der Arbeit
+
 - [ ] Synthetische Testkomponente bauen (10+ bewusste Violations)
 - [ ] Precision/Recall messen
 - [ ] Laufzeitmessungen pro Phase dokumentieren (axe, Playwright, grep, LLM)
@@ -121,15 +126,18 @@ OLLAMA_MODEL=qwen3:32b npm run analyze -- --url http://localhost:3000
 - [ ] BWEC Real-World-Test als ergänzende Validierung
 
 ### Kapitel 8 (Diskussion) — ausbauen
+
 - [ ] Forschungsfragen beantworten
 - [ ] Vergleich mit AccessGuru (Gemeinsamkeiten/Unterschiede)
 - [ ] Übertragbarkeit auf andere SPAs
 
 ### Kapitel 9 (Fazit) — ausbauen
+
 - [ ] Zusammenfassung der Ergebnisse
 - [ ] Ausblick: axe pro Zustand, AST statt grep, Fine-Tuning
 
 ### Vor Abgabe
+
 - [ ] Sperrvermerk: Bold-Text-Inline-Frage entfernen
 - [ ] Abstract schreiben (nach Evaluation)
 - [ ] KI-Erklärungstabelle ausfüllen
@@ -146,4 +154,5 @@ OLLAMA_MODEL=qwen3:32b npm run analyze -- --url http://localhost:3000
 **Akademischer Wert:** Die Entscheidung selbst ist wichtiger als die Implementierung. Zeigen dass du das Problem erkannt, analysiert und begründet abgewogen hast = genau was eine BA leisten soll.
 
 **Formulierung für Kap. 7:**
-> *"FA-02 wurde im PoC dahingehend vereinfacht, dass axe-core einmalig beim initialen Seitenaufruf ausgeführt wird. Eine Analyse nach jeder Playwright-Interaktion wäre technisch realisierbar, würde jedoch NFA-02 verletzen, da jeder axe-Durchlauf 3–8 Sekunden benötigt. Diese Einschränkung ist als Limitierung dokumentiert und stellt einen konkreten Ansatzpunkt für zukünftige Iterationen dar."*
+
+> _"FA-02 wurde im PoC dahingehend vereinfacht, dass axe-core einmalig beim initialen Seitenaufruf ausgeführt wird. Eine Analyse nach jeder Playwright-Interaktion wäre technisch realisierbar, würde jedoch NFA-02 verletzen, da jeder axe-Durchlauf 3–8 Sekunden benötigt. Diese Einschränkung ist als Limitierung dokumentiert und stellt einen konkreten Ansatzpunkt für zukünftige Iterationen dar."_
