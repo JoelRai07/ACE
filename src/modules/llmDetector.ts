@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { callOllama } from "../ollama.js";
 import type { BuiltPrompt } from "../prompt.js";
+import type { LlmResult } from "../ollama.js";
 import type { UnifiedFinding, ViolationCategory, WcagLevel, Severity } from "../types.js";
 
 interface LlmCodeFinding {
@@ -25,13 +26,19 @@ interface SourceChunk {
 }
 
 const INCLUDE_EXTENSIONS = new Set([".tsx", ".ts", ".jsx", ".js", ".css"]);
-const MAX_CHUNK_CHARS = 9_000;
+const MAX_CHUNK_CHARS = parseInt(process.env.LLM_DETECT_CHUNK_CHARS ?? "4500", 10);
 const MAX_FILES_DEFAULT = 60;
+const DETECTOR_NUM_PREDICT = parseInt(process.env.LLM_DETECT_NUM_PREDICT ?? "640", 10);
 
-export async function runLlmCodeAnalysis(srcDir: string): Promise<UnifiedFinding[]> {
+export interface LlmCodeAnalysisResult {
+  findings: UnifiedFinding[];
+  chunksProcessed: number;
+}
+
+export async function runLlmCodeAnalysis(srcDir: string): Promise<LlmCodeAnalysisResult> {
   if (!fs.existsSync(srcDir)) {
     console.warn(`[llm-detector] srcDir nicht gefunden: ${srcDir}`);
-    return [];
+    return { findings: [], chunksProcessed: 0 };
   }
 
   const maxFiles = parseInt(process.env.LLM_DETECT_MAX_FILES ?? String(MAX_FILES_DEFAULT), 10);
@@ -39,7 +46,7 @@ export async function runLlmCodeAnalysis(srcDir: string): Promise<UnifiedFinding
 
   if (files.length === 0) {
     console.warn("[llm-detector] Keine passenden Quellcode-Dateien gefunden");
-    return [];
+    return { findings: [], chunksProcessed: 0 };
   }
 
   const chunks = buildChunks(files, srcDir);
@@ -48,6 +55,7 @@ export async function runLlmCodeAnalysis(srcDir: string): Promise<UnifiedFinding
   const all: LlmCodeFinding[] = [];
 
   for (const chunk of chunks) {
+    console.log(`[llm-detector] Chunk ${chunk.index}/${chunks.length} gestartet (Dateien: ${chunk.files.join(", ")})`);
     const prompt = buildDetectorPrompt(chunk);
     const builtPrompt: BuiltPrompt = {
       systemPrompt: prompt.systemPrompt,
@@ -57,7 +65,7 @@ export async function runLlmCodeAnalysis(srcDir: string): Promise<UnifiedFinding
       includedFindings: { axe: 0, playwright: 0, grep: 0, llm: 0 },
     };
 
-    const result = await callOllama(builtPrompt);
+    const result = await callOllamaDetector(builtPrompt);
     const parsed = parseJsonFindings(result.rawResponse);
 
     if (parsed.length > 0) {
@@ -70,7 +78,7 @@ export async function runLlmCodeAnalysis(srcDir: string): Promise<UnifiedFinding
     }
   }
 
-  return normalizeLlmFindings(all, srcDir);
+  return { findings: normalizeLlmFindings(all, srcDir), chunksProcessed: chunks.length };
 }
 
 function buildDetectorPrompt(chunk: SourceChunk): { systemPrompt: string; userPrompt: string } {
@@ -352,4 +360,18 @@ function normalizePath(filePath: string, srcDir: string): string {
 
 function estimateTokens(text: string): number {
   return Math.ceil(text.length / 3.5);
+}
+
+async function callOllamaDetector(builtPrompt: BuiltPrompt): Promise<LlmResult> {
+  const originalEnv = process.env.OLLAMA_NUM_PREDICT;
+  process.env.OLLAMA_NUM_PREDICT = String(DETECTOR_NUM_PREDICT);
+  try {
+    return await callOllama(builtPrompt);
+  } finally {
+    if (originalEnv === undefined) {
+      delete process.env.OLLAMA_NUM_PREDICT;
+    } else {
+      process.env.OLLAMA_NUM_PREDICT = originalEnv;
+    }
+  }
 }

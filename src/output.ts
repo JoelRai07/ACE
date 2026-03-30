@@ -119,6 +119,7 @@ function buildMarkdownReport(input: FormatterInput, parsed: ParsedTodoList): str
     `| Playwright | ${(t.playwrightMs / 1000).toFixed(1)}s |`,
     t.codeEnrichMs > 0 ? `| Code-Anreicherung | ${(t.codeEnrichMs / 1000).toFixed(1)}s |` : null,
     t.codePatternMs > 0 ? `| Code-Pattern | ${(t.codePatternMs / 1000).toFixed(1)}s |` : null,
+    t.llmDetectMs > 0 ? `| LLM-Detektor (${t.llmDetectChunks} Chunk(s)) | ${(t.llmDetectMs / 1000).toFixed(1)}s |` : null,
     `| Prompt-Build | ${(t.promptBuildMs / 1000).toFixed(1)}s |`,
     `| LLM | ${(t.llmMs / 1000).toFixed(1)}s |`,
     `| **Gesamt** | **${(t.totalMs / 1000).toFixed(1)}s** |`,

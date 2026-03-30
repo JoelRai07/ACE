@@ -39,6 +39,8 @@ export interface PipelineMetrics {
     playwrightMs: number;
     codeEnrichMs: number;
     codePatternMs: number;
+    llmDetectMs: number;
+    llmDetectChunks: number;
     promptBuildMs: number;
     llmMs: number;
     outputMs: number;

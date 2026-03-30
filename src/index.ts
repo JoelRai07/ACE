@@ -125,13 +125,14 @@ function printSummary(
     console.log(`    Playwright:     ${(t.playwrightMs / 1000).toFixed(1)}s`);
     if (t.codeEnrichMs > 0) console.log(`    Code-Enrich:    ${(t.codeEnrichMs / 1000).toFixed(1)}s`);
     if (t.codePatternMs > 0) console.log(`    Code-Pattern:   ${(t.codePatternMs / 1000).toFixed(1)}s`);
+    if (t.llmDetectMs > 0) console.log(`    LLM-Detektor:   ${(t.llmDetectMs / 1000).toFixed(1)}s (${t.llmDetectChunks} Chunk(s))`);
     console.log(`    Prompt-Build:   ${(t.promptBuildMs / 1000).toFixed(1)}s`);
     if (t.llmMs > 0) console.log(`    LLM:            ${(t.llmMs / 1000).toFixed(1)}s`);
     if (t.outputMs > 0) console.log(`    Output:         ${(t.outputMs / 1000).toFixed(1)}s`);
     console.log(`    Gesamt:         ${(t.totalMs / 1000).toFixed(1)}s`);
   }
 
-  if (metrics.enrichment && metrics.enrichment.totalEnrichable > 0) {
+    if (metrics.enrichment && metrics.enrichment.totalEnrichable > 0) {
     const e = metrics.enrichment;
     console.log(`\n  Code-Anreicherung: ${e.enrichedCount}/${e.totalEnrichable} (${(e.quote * 100).toFixed(0)}%)`);
   }
@@ -215,6 +216,8 @@ async function run(): Promise<void> {
     playwrightMs: 0,
     codeEnrichMs: 0,
     codePatternMs: 0,
+    llmDetectMs: 0,
+    llmDetectChunks: 0,
     promptBuildMs: 0,
     llmMs: 0,
     outputMs: 0,
@@ -257,7 +260,11 @@ async function run(): Promise<void> {
 
     if (args.llmDetect && !args.skipLlm) {
       printSectionHeader("LLM Codeanalyse");
-      llmFindings = await runLlmCodeAnalysis(srcDir);
+      const t0Detect = timeMs();
+      const detectResult = await runLlmCodeAnalysis(srcDir);
+      timings.llmDetectMs = timeMs() - t0Detect;
+      timings.llmDetectChunks = detectResult.chunksProcessed;
+      llmFindings = detectResult.findings;
     }
   } else {
     console.log("[pipeline] Kein --src-dir angegeben — Code-Phase übersprungen.");
@@ -288,6 +295,7 @@ async function run(): Promise<void> {
   // ── Schritt 6: Formatter ──────────────────────────────────────────────
   printSectionHeader("Output Formatter");
   const t0 = timeMs();
+  timings.totalMs = timeMs() - pipelineStart;
   const metrics = buildMetrics(timings, enrichmentStats, dedupStats, {
     estimated: builtPrompt.estimatedTokens,
     actualPrompt: llmResult.promptTokens,
@@ -307,7 +315,6 @@ async function run(): Promise<void> {
     metrics,
   });
   timings.outputMs = timeMs() - t0;
-  timings.totalMs = timeMs() - pipelineStart;
 
   printSummary({ axe: axeFindings, playwright: pwFindings, grep: grepFindings, llm: llmFindings }, saved, metrics);
 }
