@@ -65,6 +65,8 @@ export async function runLlmCodeAnalysis(srcDir: string): Promise<UnifiedFinding
       all.push(...parsed);
     } else {
       console.log(`[llm-detector] Chunk ${chunk.index}: keine validen Findings`);
+      const preview = result.rawResponse.replace(/\s+/g, " ").slice(0, 220);
+      console.log(`[llm-detector] Chunk ${chunk.index}: Response-Vorschau: ${preview}`);
     }
   }
 
@@ -151,44 +153,126 @@ function normalizeLlmFindings(raw: LlmCodeFinding[], srcDir: string): UnifiedFin
 }
 
 function parseJsonFindings(rawResponse: string): LlmCodeFinding[] {
-  const jsonPayload = extractJsonObject(rawResponse);
-  if (!jsonPayload) return [];
-
-  try {
-    const parsed = JSON.parse(jsonPayload) as { findings?: unknown };
-    if (!Array.isArray(parsed.findings)) return [];
-    return parsed.findings.filter(isLlmFindingLike) as LlmCodeFinding[];
-  } catch {
-    return [];
+  const payloads = extractJsonPayloadCandidates(rawResponse);
+  for (const payload of payloads) {
+    try {
+      const parsed = JSON.parse(payload) as unknown;
+      const normalized = normalizeParsedFindings(parsed);
+      if (normalized.length > 0) return normalized;
+    } catch {
+      continue;
+    }
   }
+
+  return [];
 }
 
-function isLlmFindingLike(value: unknown): boolean {
-  if (!value || typeof value !== "object") return false;
+function normalizeParsedFindings(parsed: unknown): LlmCodeFinding[] {
+  const findingsUnknown =
+    Array.isArray(parsed) ? parsed
+    : parsed && typeof parsed === "object" && Array.isArray((parsed as { findings?: unknown }).findings) ?
+      (parsed as { findings: unknown[] }).findings
+    : [];
+
+  return findingsUnknown
+    .map((item) => coerceLlmFinding(item))
+    .filter((item): item is LlmCodeFinding => item !== null);
+}
+
+function coerceLlmFinding(value: unknown): LlmCodeFinding | null {
+  if (!value || typeof value !== "object") return null;
   const item = value as Record<string, unknown>;
-  return (
-    typeof item.title === "string" &&
-    typeof item.ruleId === "string" &&
-    Array.isArray(item.wcagCriteria) &&
-    typeof item.wcagLevel === "string" &&
-    typeof item.severity === "string" &&
-    typeof item.category === "string" &&
-    typeof item.filePath === "string" &&
-    typeof item.startLine === "number" &&
-    typeof item.endLine === "number" &&
-    typeof item.evidence === "string" &&
-    typeof item.fixSuggestion === "string"
-  );
+
+  const title = asNonEmptyString(item.title);
+  const ruleId = asNonEmptyString(item.ruleId);
+  const filePath = asNonEmptyString(item.filePath);
+  const evidence = asNonEmptyString(item.evidence);
+  if (!title || !ruleId || !filePath || !evidence) return null;
+
+  const wcagCriteria = Array.isArray(item.wcagCriteria) ? item.wcagCriteria.filter((x): x is string => typeof x === "string") : [];
+
+  const wcagLevel = coerceWcagLevel(item.wcagLevel);
+  const severity = coerceSeverity(item.severity);
+  const category = coerceCategory(item.category);
+  const startLine = coerceLineNumber(item.startLine, 1);
+  const endLine = coerceLineNumber(item.endLine, startLine);
+  const fixSuggestion = asString(item.fixSuggestion);
+
+  return {
+    title,
+    ruleId,
+    wcagCriteria,
+    wcagLevel,
+    severity,
+    category,
+    filePath,
+    startLine,
+    endLine,
+    evidence,
+    fixSuggestion,
+  };
 }
 
-function extractJsonObject(text: string): string | null {
+function extractJsonPayloadCandidates(text: string): string[] {
+  const candidates: string[] = [];
+
   const fenced = /```json\s*([\s\S]*?)```/i.exec(text);
-  if (fenced?.[1]) return fenced[1].trim();
+  if (fenced?.[1]) candidates.push(fenced[1].trim());
 
   const firstBrace = text.indexOf("{");
   const lastBrace = text.lastIndexOf("}");
-  if (firstBrace < 0 || lastBrace <= firstBrace) return null;
-  return text.slice(firstBrace, lastBrace + 1);
+  if (firstBrace >= 0 && lastBrace > firstBrace) {
+    candidates.push(text.slice(firstBrace, lastBrace + 1));
+  }
+
+  const firstBracket = text.indexOf("[");
+  const lastBracket = text.lastIndexOf("]");
+  if (firstBracket >= 0 && lastBracket > firstBracket) {
+    candidates.push(text.slice(firstBracket, lastBracket + 1));
+  }
+
+  candidates.push(text.trim());
+
+  return [...new Set(candidates.filter((c) => c.length > 1))];
+}
+
+function asString(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  return "";
+}
+
+function asNonEmptyString(value: unknown): string | null {
+  const str = asString(value).trim();
+  return str.length > 0 ? str : null;
+}
+
+function coerceLineNumber(value: unknown, fallback: number): number {
+  const n = typeof value === "number" ? value : Number.parseInt(asString(value), 10);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.max(1, Math.floor(n));
+}
+
+function coerceWcagLevel(value: unknown): WcagLevel {
+  const raw = asString(value).trim().toUpperCase();
+  if (raw === "A" || raw === "AA" || raw === "AAA") return raw;
+  return "AA";
+}
+
+function coerceSeverity(value: unknown): Severity {
+  const raw = asString(value).trim().toLowerCase();
+  if (raw === "critical" || raw === "serious" || raw === "moderate" || raw === "minor") return raw;
+  if (raw === "high" || raw === "hoch") return "serious";
+  if (raw === "low" || raw === "niedrig") return "minor";
+  return "moderate";
+}
+
+function coerceCategory(value: unknown): ViolationCategory {
+  const raw = asString(value).trim().toLowerCase();
+  if (raw === "syntaktisch" || raw === "semantisch" || raw === "layout") return raw;
+  if (raw === "syntactic") return "syntaktisch";
+  if (raw === "semantic") return "semantisch";
+  return "layout";
 }
 
 function collectSourceFiles(srcDir: string): string[] {

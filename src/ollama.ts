@@ -54,7 +54,7 @@ export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
     stream: false,
     think: false,
     options: {
-      temperature: 0.1,
+      temperature: 0.05,
       num_predict: 3_072,
     },
   };

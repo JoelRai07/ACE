@@ -7,6 +7,8 @@ APP_DIR="${APP_DIR:-test}"
 APP_SRC_DIR="${APP_SRC_DIR:-test/src}"
 BASE_URL="${BASE_URL:-http://127.0.0.1:4173}"
 OUT_ROOT="${OUT_ROOT:-results-campaign/12er-first40}"
+MODEL_DIR="$(echo "$MODEL" | tr '/: ' '___')"
+RESULTS_ROOT="$OUT_ROOT/$MODEL_DIR"
 
 wait_for_url() {
   local url="$1"
@@ -34,7 +36,7 @@ run_one() {
   local script_name="$3"
 
   local run_dir
-  run_dir="$OUT_ROOT/$condition/run-$(printf '%02d' "$run_number")"
+  run_dir="$RESULTS_ROOT/$condition/run-$(printf '%02d' "$run_number")"
   mkdir -p "$run_dir"
 
   echo "[$condition][$run_number] npm run $script_name -- --url $BASE_URL --src-dir $APP_SRC_DIR"
@@ -43,7 +45,7 @@ run_one() {
     npm run "$script_name" -- --url "$BASE_URL" --src-dir "$APP_SRC_DIR"
 }
 
-mkdir -p "$OUT_ROOT"
+mkdir -p "$RESULTS_ROOT"
 
 echo "[setup] Starte 12er Test-App..."
 pushd "$APP_DIR" >/dev/null
@@ -83,4 +85,4 @@ for item in "${conditions[@]}"; do
   done
 done
 
-echo "[done] Kampagne abgeschlossen. Ergebnisse unter: $OUT_ROOT"
+echo "[done] Kampagne abgeschlossen. Ergebnisse unter: $RESULTS_ROOT"
