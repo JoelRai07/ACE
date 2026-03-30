@@ -1,0 +1,539 @@
+\startAnhang
+
+\listofanhang
+\clearpage
+\anhang{Komplexität von Home Pages}\label{anhang:complexity}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{graphics/Complexität.png}
+  \caption[Komplexität von Home Pages (6 Jahre)]{Entwicklung der Komplexität von Home Pages in den letzten sechs Jahren. Die X-Achse zeigt die Jahre, die Y-Achse gibt die Anzahl der Elemente an.\footcite[Entnommen aus][]{WebAIM}}
+  \label{fig:complexity}
+\end{figure}
+
+\clearpage
+
+\anhang{Erweiterte Konzeptmatrix}\label{app:konzeptmatrix}
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.25}
+
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|A|S||*{14}{C|}}
+\hline
+\multicolumn{2}{|c||}{\textbf{Studie}} &
+\multicolumn{14}{c|}{\textbf{Konzepte}} \\
+\hline
+
+\multirow{2}{*}{\lhdr{4.3cm}{Autor(en)\\\& Jahr}} &
+\multirow{2}{*}{\lhdr{2.8cm}{System}} &
+\multicolumn{3}{c|}{\textbf{Ziel}} &
+\multicolumn{3}{c|}{\textbf{Datenquellen}} &
+\multicolumn{3}{c|}{\textbf{KI-/LLM-Ansatz}} &
+\multicolumn{3}{c|}{\textbf{Evaluation}} &
+\multicolumn{2}{c|}{\textbf{Kontext}} \\
+\cline{3-16}
+
+& &
+\hdr{WCAG-Konf.\ prüfen} &
+\hdr{Barrieren korrigieren} &
+\hdr{Entwickler unterstützen} &
+\hdr{Tool-Reports (axe etc.)} &
+\hdr{Interaktionsdaten (Playwright)} &
+\hdr{Quellcode-Analyse} &
+\hdr{LLM-basiert} &
+\hdr{Kontextsensitiv / RAG} &
+\hdr{Lokal ausführbar} &
+\hdr{Automatisierte Eval.} &
+\hdr{Qualitative Eval.} &
+\hdr{Nutzerstudie} &
+\hdr{Rich-Client / SPA} &
+\hdr{Rechtl.\ Rahmen (BFSG etc.)} \\
+\hline
+
+% ── HOCH ─────────────────────────────────────────────
+\multicolumn{16}{|l|}{\textbf{Hoch priorisierte Studien}} \\
+\hline
+
+He et al.\ (2025) & GenA11y
+& \yes &   &   & \yes &   &   & \yes &   &   & \yes &   &   &   &   \\ \hline
+
+Fathallah et al.\ (2025) & AccessGuru
+& \yes & \yes & \yes & \yes & \yes &   & \yes &   &   & \yes &   &   &   &   \\ \hline
+
+Bassi et al.\ (2025) & LLM Auditing
+& \yes & \yes & \yes &   &   &   & \yes &   &   &   & \yes &   &   & \yes \\ \hline
+
+Paternò et al.\ (2025) & TeVal
+& \yes &   & \yes & \yes &   &   & \yes & \yes &   &   & \yes &   &   &   \\ \hline
+
+Tafreshipour et al.\ (2024) & Ma11y
+& \yes &   &   & \yes & \yes &   &   &   &   & \yes &   &   &   &   \\ \hline
+
+Fernández-Navarro \& Chicano (2025) & LLM Remediation
+& \yes & \yes & \yes & \yes &   & \yes & \yes &   &   & \yes &   &   & \yes &   \\ \hline
+
+
+% ── MITTEL ───────────────────────────────────────────
+\multicolumn{16}{|l|}{\textbf{Mittel priorisierte Studien}} \\
+\hline
+
+Yu et al.\ (2025) & GenAI Screen Reader
+& \yes & \yes &   & \yes &   & \yes & \yes & \yes &   & \yes & \yes & \yes &   &   \\ \hline
+
+Huang et al.\ (2024) & ACCESS
+& \yes & \yes & \yes & \yes & \yes &   & \yes &   &   & \yes &   &   &   &   \\ \hline
+
+Pool (2023) & Testaro
+& \yes &   &   & \yes & \yes &   &   &   &   & \yes &   &   &   &   \\ \hline
+
+Mowar et al.\ (2024) & Copilot Study
+& \yes &   & \yes &   &   &   & \yes &   &   &   &   & \yes &   &   \\ \hline
+
+Abu Doush \& Kassem (2024) & AI Code Study
+& \yes & \yes & \yes &   &   &   & \yes &   &   & \yes &   &   &   &   \\ \hline
+
+Guriță \& Vatavu (2025) & AI UI Study
+& \yes &   &   &   &   &   & \yes &   &   & \yes &   &   &   &   \\ \hline
+
+Kodithuwakku \& Wick.\ (2025) & Tool Eval.
+& \yes &   &   & \yes &   &   &   &   &   & \yes &   &   &   &   \\ \hline
+
+Manca et al.\ (2023) & Transparency
+& \yes &   & \yes & \yes &   &   &   &   &   &   & \yes & \yes &   &   \\ \hline
+
+Jiang \& Nam (2025) & Cursor Rules
+&   &   & \yes &   &   & \yes & \yes &   &   &   & \yes &   &   &   \\ \hline
+
+Gubbi Mohanbabu \& Pavel (2024) & Context-Aware Img.
+& \yes & \yes &   &   &   &   & \yes & \yes &   & \yes & \yes & \yes &   &   \\ \hline
+
+Campoverde-Molina \& Luján-Mora (2025) & AI A11y SMS
+& \yes & \yes & \yes & \yes &   &   & \yes &   &   &   & \yes &   &   &   \\ \hline
+
+Leedy et al.\ (2025) & GenAI Builder Eval.
+& \yes &   &   & \yes &   &   & \yes &   &   & \yes & \yes &   &   &   \\ \hline
+
+Patel \& Melcer (2025) & AIDA Study
+& \yes &   & \yes &   &   &   & \yes &   &   &   & \yes & \yes &   &   \\ \hline
+
+Aljedaani et al.\ (2024) & ChatGPT A11y Code
+& \yes & \yes & \yes &   &   & \yes & \yes &   &   & \yes &   &   &   &   \\ \hline
+
+% ── NIEDRIG ──────────────────────────────────────────
+\multicolumn{16}{|l|}{\textbf{Niedrig priorisierte Studien}} \\
+\hline
+
+Abou-Zahra et al.\ (2018) & AI for A11y
+& \yes &   &   &   &   &   & \yes &   &   &   & \yes &   &   & \yes \\ \hline
+
+Delnevo et al.\ (2024) & LLM Interaction
+& \yes & \yes &   &   &   &   & \yes &   &   &   & \yes &   & \yes &   \\ \hline
+
+Draffan et al.\ (2020) & Web2Access+AI
+& \yes &   &   & \yes &   &   & \yes &   &   &   & \yes &   &   &   \\ \hline
+
+
+% ── Eigener PoC ──────────────────────────────────────
+\multicolumn{16}{|l|}{\textbf{Eigener Proof of Concept}} \\
+\hline
+
+\textbf{Martinez Campo (2026)} &
+\textbf{ACE (angestrebt)}
+& \yes & \yes & \yes
+& \yes & \yes & \yes
+& \yes & \yes & \yes
+&   & \yes &
+& \yes & \yes \\ \hline
+
+\end{tabular}%
+}% Ende resizebox
+
+\caption[Konzeptmatrix (vollständige Übersicht)]{%
+Konzeptmatrix nach Webster Watson\footnotemark: Vollständige Übersicht aller analysierten Studien im Vergleich zum eigenen \acf{PoC}.
+\yes~=~Konzept vorhanden/adressiert; leer~=~nicht adressiert.
+}
+\label{tab:konzeptmatrix_voll}
+\end{table}
+\footnotetext{Vgl. \cite{WebsterWatson2002}.}
+
+\clearpage
+
+\anhang{Schematische Übersicht der ACE-Pipeline}\label{app:ace-pipeline-schema}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  >=Latex,
+  node distance=9mm and 10mm,
+  box/.style={
+    draw,
+    rounded corners=1.5pt,
+    align=center,
+    minimum height=9mm,
+    text width=33mm,
+    inner sep=3pt
+  },
+  smallbox/.style={
+    draw,
+    rounded corners=1.5pt,
+    align=center,
+    minimum height=9mm,
+    text width=26mm,
+    inner sep=3pt
+  },
+  norm/.style={
+    align=center,
+    text width=26mm
+  }
+]
+
+% Top node
+\node[box, text width=44mm] (client) {BWEC Client (React/TS)};
+
+% Tool nodes
+\node[smallbox, below left=17mm and 28mm of client] (axe) {axe-core\\(DOM)};
+\node[smallbox, below=17mm of client] (pw) {Playwright\\(E2E)};
+\node[smallbox, below right=17mm and 28mm of client] (grep) {Code\\(grep + LLM)};
+
+% Normalizer row
+\node[norm, below=12mm of axe] (n1) {Normalizer};
+\node[norm, below=12mm of pw] (n2) {Normalizer};
+\node[norm, below=12mm of grep] (n3) {Normalizer};
+
+% Unified schema
+\node[box, text width=42mm, below=16mm of n2] (ufs) {Unified Finding\\Schema (UFS)};
+
+% Prompt / Ollama
+\node[box, text width=44mm, below=11mm of ufs] (ollama) {Kombinierter Prompt\\$\rightarrow$ Ollama (lokal)\\qwen2.5-coder:7b};
+
+% Todo list
+\node[box, text width=42mm, below=11mm of ollama] (todo) {Priorisierte\\To-Do-Liste};
+
+% Arrows top -> tools
+\draw[->] (client) -- (axe);
+\draw[->] (client) -- (pw);
+\draw[->] (client) -- (grep);
+
+% Arrows tools -> normalizer
+\draw[->] (axe) -- (n1);
+\draw[->] (pw) -- (n2);
+\draw[->] (grep) -- (n3);
+
+% Arrows normalizer -> UFS (separate entry points on top edge)
+\draw[->] (n1) -- ([xshift=-10mm]ufs.north);
+\draw[->] (n2) -- (ufs.north);
+\draw[->] (n3) -- ([xshift=10mm]ufs.north);
+
+% Downstream
+\draw[->] (ufs) -- (ollama);
+\draw[->] (ollama) -- (todo);
+
+\end{tikzpicture}
+\caption[Schematische Übersicht der \ac{ACE}-Pipeline]{Schematische Übersicht der im \ac{PoC} implementierten \ac{ACE}-Pipeline von der Datenerhebung bis zur priorisierten Ausgabe. Die Code-Schiene umfasst regex-basierte Pattern (grep) sowie optional die LLM-basierte Codeanalyse.\protect\footnote{Eigene Abbildung}}
+\label{fig:ace-pipeline-schema}
+\end{figure}
+
+\clearpage
+
+\anhang{Detailliertes Sequenzdiagramm}\label{app:sequenz}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth, keepaspectratio]{graphics/Sequenzdiagramm.png}
+  \caption[Sequenzdiagramm der ACE-Pipeline]{Detailliertes Sequenzdiagramm eines vollständigen \ac{ACE}-Pipeline-Durchlaufs. Dargestellt sind die Interaktionen zwischen \ac{CLI}, axe-core, Playwright, Code-Modul (grep), optionalem LLM-Detektor, Prompt-Builder, Ollama und Output-Formatter (vgl. Abschnitt~\ref{sec:impl-pipeline}).\protect\footnote{Eigene Abbildung}}
+  \label{fig:sequenz}
+\end{figure}
+
+\clearpage
+
+\anhang{System-Prompt des ACE-Assistenzsystems}\label{app:systemprompt}
+
+Der folgende System-Prompt wird dem Sprachmodell bei jedem Pipeline-Durchlauf übergeben. Er implementiert die in Abschnitt~\ref{sec:kontextualisierung} beschriebenen Prompt-Engineering-Strategien Role-Play Prompting und Few-Shot Prompting (vgl. Abschnitt~\ref{sec:impl-prompt}).
+
+\begin{lstlisting}[language={}, caption={Vollständiger System-Prompt des ACE-Assistenzsystems (aus \texttt{src/prompt.ts})}, label={lst:systemprompt}, basicstyle=\ttfamily\scriptsize, breaklines=true]
+Du bist ein erfahrener Barrierefreiheitsexperte für
+React/TypeScript-Webanwendungen.
+Deine Aufgabe ist es, Findings aus vier Analysequellen
+(axe-core, Playwright, grep und LLM-Codeanalyse) zu einer
+priorisierten, entwicklernahen To-Do-Liste zusammenzufassen.
+
+AUSGABEFORMAT (strikt einhalten):
+
+## Must-have
+*WCAG 2.x Level A und AA, Severity "critical" oder
+"serious" -- gesetzlich relevant*
+
+### [ID] Kurztitel des Problems
+- **WCAG:** X.X.X (Level X)
+- **Schweregrad:** critical | serious
+- **Element/Datei:** CSS-Selektor oder Dateipfad:Zeile
+- **Problem:** Ein Satz -- was ist konkret falsch?
+- **Fix:** Konkreter Code-Vorschlag in JSX/TypeScript
+
+## Nice-to-have
+*Severity "moderate" oder "minor", Level AAA --
+empfohlen aber nicht gesetzespflichtig*
+
+### [ID] Kurztitel des Problems
+[gleiche Struktur]
+
+PRIORISIERUNGSREGELN:
+1. Must-have: Severity "critical"/"serious" UND WCAG Level A/AA
+2. Nice-to-have: Severity "moderate"/"minor" ODER Level AAA
+3. Wenn mehrere Findings dasselbe Element betreffen,
+   fasse sie zusammen
+4. Nutze den Codekontext für konkrete React/TypeScript-Fixes
+5. Antworte ausschliesslich auf Deutsch
+6. Erfinde keine Findings, die nicht in den Daten
+   vorhanden sind
+
+BEISPIEL (Few-Shot):
+
+Eingabe-Finding:
+[axe-007] CRITICAL | color-contrast | WCAG 1.4.3 (AA)
+Beschreibung: Element hat unzureichenden Farbkontrast
+  (2.8:1 statt 4.5:1)
+Element: .sidebar > .nav-link
+Datei: components/Sidebar.tsx:42-52
+Code:
+42: <a className="nav-link" href="/dashboard">
+43:   Dashboard
+44: </a>
+
+Erwartete Ausgabe:
+
+## Must-have
+
+### [axe-007] Farbkontrast der Sidebar-Navigation
+- **WCAG:** 1.4.3 (Level AA)
+- **Schweregrad:** critical
+- **Element/Datei:** components/Sidebar.tsx:42
+- **Problem:** Der Link ".nav-link" hat ein
+  Kontrastverhältnis von 2.8:1, gefordert sind
+  mindestens 4.5:1 (WCAG 1.4.3 AA).
+- **Fix:**
+  // Sidebar.tsx -- Farbe des Links anpassen
+  <a className="nav-link"
+     style={{ color: "#1a1a2e" }}
+     href="/dashboard">
+    Dashboard
+  </a>
+
+---
+
+Eingabe-Finding:
+[grep-002] MODERATE | tabindex-removes-element
+  | WCAG 2.1.1 (A)
+Beschreibung: tabIndex=-1 entfernt Elemente aus der
+  Tab-Reihenfolge.
+Datei: components/Modal.tsx:18-28
+Code:
+18: <div className="modal-overlay" tabIndex={-1}>
+19:   <div className="modal-content" role="dialog">
+20:     <button className="close-btn">Schliessen</button>
+
+Erwartete Ausgabe:
+
+## Nice-to-have
+
+### [grep-002] tabIndex=-1 auf Modal-Overlay
+- **WCAG:** 2.1.1 (Level A)
+- **Schweregrad:** moderate
+- **Element/Datei:** components/Modal.tsx:18
+- **Problem:** Das Modal-Overlay hat tabIndex={-1}. Wenn
+  das Overlay selbst fokussierbar sein soll (z.B. für
+  Escape-Handling), ist das korrekt. Andernfalls entfernt
+  es das Element unnötig aus der Tab-Reihenfolge.
+- **Fix:**
+  // Falls Overlay nicht fokussierbar sein muss:
+  <div className="modal-overlay">
+    <div className="modal-content"
+         role="dialog" aria-modal="true">
+      <button className="close-btn"
+              autoFocus>Schliessen</button>
+\end{lstlisting}
+
+
+\clearpage
+\anhang{Aufteilung des Token-Budgets}\label{app:tokenbudget}
+
+\begin{figure}[htbp]
+\centering
+\small
+\setlength{\fboxsep}{0pt}
+\setlength{\fboxrule}{0.4pt}
+
+\begin{tikzpicture}
+  % Gesamtrahmen
+  \draw[thick] (0,0) rectangle (12,7);
+  \node[anchor=north west, font=\bfseries] at (0.2,6.75) {Kontextfenster: 32.768 Tokens};
+
+  % System-Prompt (oben, klein)
+  \fill[gray!25] (0.3,5.35) rectangle (11.7,6.05);
+  \draw (0.3,5.35) rectangle (11.7,6.05);
+  \node[anchor=west, font=\small] at (0.5,5.7) {\textbf{System-Prompt} (\texttildelow{}400 Tokens) -- Role-Play + Few-Shot + Regeln};
+  \node[anchor=east, font=\scriptsize\itshape] at (11.5,5.7) {fest};
+
+  % Findings (Mitte, groß)
+  \fill[blue!12] (0.3,1.95) rectangle (11.7,5.15);
+  \draw (0.3,1.95) rectangle (11.7,5.15);
+  \node[anchor=center, font=\small] at (6,4.05) {\textbf{User-Prompt: Serialisierte Findings} (\texttildelow{}24.000 Tokens)};
+  \node[anchor=center, font=\scriptsize] at (6,3.45) {axe-core-Findings + Playwright-Findings + grep-Findings + LLM-Code-Findings};
+  \node[anchor=center, font=\scriptsize\itshape] at (6,2.85) {variabel -- wird bei Platzmangel nach Schweregrad priorisiert};
+  \node[anchor=center, font=\scriptsize] at (6,2.3) {critical $\rightarrow$ serious $\rightarrow$ moderate $\rightarrow$ minor};
+
+  % Output-Reserve (unten)
+  \fill[orange!15] (0.3,0.3) rectangle (11.7,1.75);
+  \draw (0.3,0.3) rectangle (11.7,1.75);
+  \node[anchor=center, font=\small] at (6,1.15) {\textbf{Output-Reserve} (\texttildelow{}8.192 Tokens)};
+  \node[anchor=center, font=\scriptsize\itshape] at (6,0.65) {Platz f\"ur die LLM-Antwort (To-Do-Liste) -- muss frei bleiben};
+\end{tikzpicture}
+
+\caption[Aufteilung des Token-Budgets]{Aufteilung des Kontextfensters (32.768 Tokens) in drei Bereiche: System-Prompt (fest), serialisierte Findings (variabel, nach Schweregrad priorisiert) und Output-Reserve (fest). Vgl. Abschnitt~\ref{sec:kontextualisierung}.\protect\footnote{Eigene Abbildung}}
+\label{fig:tokenbudget}
+\end{figure}
+
+
+\clearpage
+
+\anhang{Accessibility-Verstöße der Testanwendung und zugehörige Prüfquellen}
+
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.2}
+\caption{Accessibility-Verstöße der Testanwendung und zugehörige Prüfquellen}
+\begin{tabular}{|c|p{5.4cm}|c|p{2.8cm}|c|}
+\hline
+\textbf{\#} & \textbf{Violation} & \textbf{Kategorie} & \textbf{Erwartende Quelle} & \textbf{WCAG} \\
+\hline
+1 & \texttt{<img>} ohne alt-Attribut & syntaktisch & axe-core & 1.1.1 \\
+\hline
+2 & \texttt{<button>} ohne sichtbaren Text und ohne aria-label & syntaktisch & axe-core & 4.1.2 \\
+\hline
+3 & Formularfeld ohne \texttt{<label>} & syntaktisch & axe-core & 1.3.1 \\
+\hline
+4 & Kontrastverhältnis $< 4.5:1$ (Text auf Hintergrund) & layout & axe-core & 1.4.3 \\
+\hline
+5 & Fokus-Outline via CSS entfernt (\texttt{outline: none}) & layout & axe-core + Playwright & 2.4.7 \\
+\hline
+6 & onClick-Handler ohne onKeyDown-Pendant & semantisch & grep + LLM-Codeanalyse & 2.1.1 \\
+\hline
+7 & \texttt{role="button"} auf \texttt{<div>} ohne tabIndex & semantisch & axe-core + grep + LLM-Codeanalyse & 4.1.2 \\
+\hline
+8 & Modaler Dialog ohne Fokus-Trap & semantisch & Playwright & 2.1.2 \\
+\hline
+9 & Skip-Link fehlt & semantisch & Playwright & 2.4.1 \\
+\hline
+10 & \texttt{aria-hidden="true"} auf fokussierbarem Element & syntaktisch & axe-core & 4.1.2 \\
+\hline
+11 & Reihenfolge im DOM weicht von visueller Reihenfolge ab & semantisch & axe-core & 1.3.2 \\
+\hline
+12 & Interaktives Element zu klein ($<24\times24$px) & layout & grep (CSS-Pattern) + LLM-Codeanalyse & 2.5.8 \\
+\hline
+\end{tabular}
+\label{tab:accessibility_verstoesse}
+\end{table}
+
+\clearpage
+
+\anhang{Erkennungsrate der Violations im Proof of Concept}
+
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.2}
+\caption{Erkennungsrate der Violations im Proof of Concept}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|p{5cm}|c|c|c|p{3cm}|}
+\hline
+\textbf{\#} & \textbf{Violation} & \textbf{Erkannt (\checkmark/$\times$)} & \textbf{Quelle korrekt} & \textbf{False Positive} & \textbf{Anmerkung} \\
+\hline
+1 & \texttt{<img>} ohne alt-Attribut & \checkmark & axe-core \checkmark & -- & \\
+\hline
+2 & \texttt{<button>} ohne Label & \checkmark & axe-core \checkmark & -- & \\
+\hline
+3 & Formularfeld ohne \texttt{<label>} &  &  &  &  \\
+\hline
+4 & Kontrastverhältnis $< 4.5:1$ &  &  &  &  \\
+\hline
+5 & Fokus-Outline entfernt (\texttt{outline: none}) &  &  &  &  \\
+\hline
+6 & onClick ohne onKeyDown &  &  &  &  \\
+\hline
+7 & \texttt{role="button"} auf \texttt{<div>} ohne tabIndex &  &  &  &  \\
+\hline
+8 & Modal ohne Fokus-Trap &  &  &  &  \\
+\hline
+9 & Skip-Link fehlt &  &  &  &  \\
+\hline
+10 & \texttt{aria-hidden="true"} auf fokussierbarem Element &  &  &  &  \\
+\hline
+11 & DOM-Reihenfolge vs. visuelle Reihenfolge &  &  &  &  \\
+\hline
+12 & Interaktives Element zu klein ($<24\times24$px) &  &  &  &  \\
+\hline
+\end{tabular}
+}%
+\label{tab:erkennungsrate_poc}
+\end{table}
+
+\anhang{Bewertungsskala für die Empfehlungsqualität der LLM-Ausgaben}
+
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.2}
+\caption{Bewertungsskala für die Empfehlungsqualität der LLM-Ausgaben}
+\begin{tabular}{|c|p{2.8cm}|p{7.2cm}|}
+\hline
+\textbf{Stufe} & \textbf{Bezeichnung} & \textbf{Kriterium} \\
+\hline
+2 & Konkret & Enthält Dateiname, Zeilennummer und einen konkreten Fix-Vorschlag (z.\,B. \texttt{aria-label="..."}). \\
+\hline
+1 & Teilweise & Enthält den richtigen Fix-Typ, jedoch ohne konkreten Codekontext (z.\,B. \glqq{}Füge ein aria-label hinzu\grqq). \\
+\hline
+0 & Generisch & Beschreibt lediglich das Problem, ohne einen umsetzbaren Lösungsvorschlag. \\
+\hline
+\end{tabular}
+\label{tab:bewertungsskala_empfehlungen}
+\end{table}
+
+\clearpage
+\anhang{Bewertung der Empfehlungsqualität pro Violation}
+
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.2}
+\caption{Bewertung der Empfehlungsqualität pro Violation}
+\begin{tabular}{|c|p{4.8cm}|c|p{5.2cm}|}
+\hline
+\textbf{\#} & \textbf{Violation} & \textbf{Stufe (0--2)} & \textbf{Anmerkung} \\
+\hline
+1 & \texttt{<img>} ohne alt-Attribut &  &  \\
+\hline
+2 & \texttt{<button>} ohne Label &  &  \\
+\hline
+3 & Formularfeld ohne \texttt{<label>} &  &  \\
+\hline
+4 & Kontrastverhältnis $< 4.5:1$ &  &  \\
+\hline
+5 & Fokus-Outline entfernt (\texttt{outline: none}) &  &  \\
+\hline
+6 & onClick ohne onKeyDown &  &  \\
+\hline
+7 & \texttt{role="button"} auf \texttt{<div>} ohne tabIndex &  &  \\
+\hline
+8 & Modal ohne Fokus-Trap &  &  \\
+\hline
+9 & Skip-Link fehlt &  &  \\
+\hline
+10 & \texttt{aria-hidden="true"} auf fokussierbarem Element &  &  \\
+\hline
+11 & DOM-Reihenfolge vs. visuelle Reihenfolge &  &  \\
+\hline
+12 & Interaktives Element zu klein ($<24\times24$px) &  &  \\
+\hline
+\end{tabular}
+\label{tab:empfehlungsqualitaet}
+\end{table}

@@ -45,6 +45,7 @@ const REQUEST_TIMEOUT_MS = config.ollamaTimeoutMs;
 export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
   const endpoint = `${config.ollamaUrl}/api/generate`;
   const startMs = Date.now();
+  const progress = createOllamaProgressTimer(startMs);
 
   const requestBody = {
     model: config.ollamaModel,
@@ -59,16 +60,22 @@ export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
   };
 
   console.log(`[ollama] Sende Prompt an ${config.ollamaModel} …`);
+  progress.start();
 
-  const response = await requestWithTimeout(
-    endpoint,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    },
-    REQUEST_TIMEOUT_MS,
-  );
+  let response: SimpleResponse;
+  try {
+    response = await requestWithTimeout(
+      endpoint,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      },
+      REQUEST_TIMEOUT_MS,
+    );
+  } finally {
+    progress.stop();
+  }
 
   if (!response.ok) {
     const body = await response.text().catch(() => "(kein Body)");
@@ -96,6 +103,56 @@ export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
     promptTokens,
     outputTokens,
   };
+}
+
+function createOllamaProgressTimer(startMs: number): { start: () => void; stop: () => void } {
+  let intervalId: NodeJS.Timeout | null = null;
+  let lastLineLength = 0;
+
+  const render = () => {
+    const elapsed = formatElapsed(Date.now() - startMs);
+    const line = `[ollama] Laufzeit aktueller Try: ${elapsed}`;
+
+    if (process.stdout.isTTY) {
+      const paddedLine = line.padEnd(lastLineLength, " ");
+      process.stdout.write(`\r${paddedLine}`);
+      lastLineLength = paddedLine.length;
+    } else {
+      console.log(line);
+    }
+  };
+
+  return {
+    start: () => {
+      render();
+      intervalId = setInterval(render, 1000);
+    },
+    stop: () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+
+      if (process.stdout.isTTY && lastLineLength > 0) {
+        process.stdout.write(`\r${" ".repeat(lastLineLength)}\r`);
+      }
+    },
+  };
+}
+
+function formatElapsed(ms: number): string {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const hours = Math.floor(totalSeconds / 3600)
+    .toString()
+    .padStart(2, "0");
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+    .toString()
+    .padStart(2, "0");
+  const seconds = Math.floor(totalSeconds % 60)
+    .toString()
+    .padStart(2, "0");
+
+  return `${hours}:${minutes}:${seconds}`;
 }
 
 export async function testConnection(): Promise<void> {
