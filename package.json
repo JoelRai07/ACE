@@ -9,6 +9,7 @@
     "prompt": "tsx src/index.ts --skip-llm",
     "axe": "tsx src/index.ts --axe-only --skip-llm",
     "campaign:12x40": "powershell -ExecutionPolicy Bypass -File ./scripts/run-12suite-first40.ps1",
+    "campaign:12x40:linux": "bash ./scripts/run-12suite-first40.sh",
     "test:ollama": "tsx src/ollama.ts",
     "clean": "rm -rf results",
     "postinstall": "playwright install chromium"
