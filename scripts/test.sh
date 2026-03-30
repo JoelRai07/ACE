@@ -7,7 +7,7 @@ APP_DIR="${APP_DIR:-test}"
 APP_SRC_DIR="${APP_SRC_DIR:-test/src}"
 BASE_URL="${BASE_URL:-http://127.0.0.1:4173}"
 OUT_ROOT="${OUT_ROOT:-results-campaign/12er-first40}"
-ANALYZE_SCRIPT="${ANALYZE_SCRIPT:-analyze}"
+ANALYZE_SCRIPT="${ANALYZE_SCRIPT:-analyze:llm-detector}"
 MODEL_DIR="$(echo "$MODEL" | tr '/: ' '___')"
 RESULTS_ROOT="$OUT_ROOT/$MODEL_DIR"
 
