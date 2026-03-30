@@ -11,7 +11,8 @@ export const config = {
   targetUrl: process.env.TARGET_URL ?? "http://localhost:3000",
   ollamaUrl: process.env.OLLAMA_URL ?? "http://localhost:11434",
   ollamaModel: process.env.OLLAMA_MODEL ?? "qwen2.5-coder:7b",
-  resultsDir: "./results",
+  resultsDir: process.env.RESULTS_DIR ?? "./results",
+  ollamaTimeoutMs: parseInt(process.env.OLLAMA_TIMEOUT_MS ?? "10800000", 10), // 3h default
   axe: {
     runOnly: {
       type: "tag" as const,

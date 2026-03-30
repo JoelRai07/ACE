@@ -177,6 +177,34 @@ interface SourceFile {
   absolutePath: string;
   relativePath: string;
   lines: string[];
+  isComment: boolean[];
+}
+
+/** Berechnet für jede Zeile, ob sie in einem Kommentar liegt (// oder /* ... *​/). */
+function computeCommentMap(lines: string[]): boolean[] {
+  const map: boolean[] = new Array(lines.length);
+  let inBlock = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trimStart();
+
+    if (inBlock) {
+      map[i] = true;
+      if (trimmed.includes("*/")) inBlock = false;
+    } else if (trimmed.startsWith("//")) {
+      map[i] = true;
+    } else if (trimmed.startsWith("/*") || trimmed.startsWith("/**")) {
+      map[i] = true;
+      inBlock = !trimmed.includes("*/");
+    } else if (trimmed.startsWith("*")) {
+      // Heuristic: Zeile beginnt mit * → wahrscheinlich JSDoc-Fortsetzung
+      map[i] = true;
+    } else {
+      map[i] = false;
+    }
+  }
+
+  return map;
 }
 
 function collectSourceFiles(srcDir: string): SourceFile[] {
@@ -186,10 +214,12 @@ function collectSourceFiles(srcDir: string): SourceFile[] {
     if (!INCLUDE_EXTENSIONS.has(ext)) return;
     try {
       const content = fs.readFileSync(filePath, "utf-8");
+      const lines = content.split("\n");
       files.push({
         absolutePath: filePath,
         relativePath: path.relative(srcDir, filePath),
-        lines: content.split("\n"),
+        lines,
+        isComment: computeCommentMap(lines),
       });
     } catch {
       // Datei nicht lesbar — überspringen
@@ -237,6 +267,7 @@ function searchInFiles(
 
     for (let i = 0; i < file.lines.length; i++) {
       if (hits.length >= maxMatches) break;
+      if (file.isComment[i]) continue;
       const line = file.lines[i];
       const match = literalMode ? line.includes(patternOrLiteral as string) : (patternOrLiteral as RegExp).test(line);
 

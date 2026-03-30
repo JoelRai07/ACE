@@ -40,7 +40,7 @@ interface SimpleResponse {
   json<T>(): Promise<T>;
 }
 
-const REQUEST_TIMEOUT_MS = 90 * 60 * 1_000;
+const REQUEST_TIMEOUT_MS = config.ollamaTimeoutMs;
 
 export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
   const endpoint = `${config.ollamaUrl}/api/generate`;
