@@ -55,7 +55,7 @@ Die Systemarchitektur muss eine klare modulare Trennung der Komponenten (Detecti
 
 \textfett{\ac{NFA}-04 Reproduzierbarkeit}
 
-Das System muss deterministisch genug sein, dass zwei aufeinanderfolgende Analyseläufe auf derselben Anwendungsversion im Wesentlichen dieselben Befunde produzieren. Da \ac{LLM}s inhärent probabilistisch sind, wird Reproduzierbarkeit durch eine feste Temperatur-Einstellung (Temperature = 0.1) für das Sprachmodell und durch strukturierte Ausgabeformate (\acs{JSON}-Schema im Prompt) sichergestellt.\footcites[Vgl.][Temperature]{OpenAI_Developers}[Vgl.][Temperature]{Anthropic_API_Docs}
+Das System muss deterministisch genug sein, dass zwei aufeinanderfolgende Analyseläufe auf derselben Anwendungsversion im Wesentlichen dieselben Befunde produzieren. Da \ac{LLM}s inhärent probabilistisch sind, wird Reproduzierbarkeit durch eine feste Temperatur-Einstellung (Temperature = 0.05) für das Sprachmodell und durch strukturierte Ausgabeformate (\acs{JSON}-Schema im Prompt) sichergestellt.\footcites[Vgl.][Temperature]{OpenAI_Developers}[Vgl.][Temperature]{Anthropic_API_Docs}
 
 \section{Lokale Inferenzinfrastruktur: Ollama}\label{kap:4.4}
  
@@ -139,7 +139,7 @@ Tabelle \ref{Anforderungstabelle} fasst die spezifizierten Anforderungen zusamme
 \hline
 \ac{NFA}-03 & Wartbarkeit und Erweiterbarkeit (modulare Architektur) & Software-Engineering Best Practice & Soll \\
 \hline
-\ac{NFA}-04 & Reproduzierbarkeit (Temperature\,=\,0.1, \acs{JSON}-Schema) & Forschungsmethodik & Soll \\
+\ac{NFA}-04 & Reproduzierbarkeit (Temperature\,=\,0.05, \acs{JSON}-Schema) & Forschungsmethodik & Soll \\
 \hline
 \end{tabular}%
 }

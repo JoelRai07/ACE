@@ -66,7 +66,7 @@ ACE ist eine lokal ausführbare Analysepipeline, die Barrierefreiheitsprobleme i
                   │     Ollama (lokal)       │
                   │                          │
                   │  qwen2.5-coder:7b        │
-                  │  temperature: 0.1        │
+                  │  temperature: 0.05       │
                   │  Single Combined Prompt  │
                   └────────────┬─────────────┘
                                │
@@ -241,12 +241,12 @@ Die Token-Schätzung basiert auf der Heuristik `Math.ceil(text.length / 3.5)`, d
 **Output:** `LlmResult` (Rohtext + Token-Zählung + Dauer)
 
 1. HTTP-POST an `localhost:11434/api/generate` (Ollama API)
-2. Parameter: `model: "qwen2.5-coder:7b"`, `temperature: 0.1`, `num_predict: 8192`, `stream: false`
+2. Parameter: `model: "qwen2.5-coder:7b"`, `temperature: 0.05`, `num_predict: 8192`, `stream: false`
 3. Timeout: 10 Minuten (lokale Inferenz auf Consumer-Hardware)
 4. Ollama liefert in der Antwort: `prompt_eval_count` (tatsächliche Prompt-Tokens) und `eval_count` (Output-Tokens)
 5. Diese werden mit der Schätzung aus Phase 4 verglichen (Metriken)
 
-**temperature = 0.1:** Niedrig gewählt für konsistente, faktenbasierte Ausgabe. Das LLM soll Findings priorisieren, nicht kreativ interpretieren.
+**temperature = 0.05:** Niedrig gewählt für konsistente, faktenbasierte Ausgabe. Das LLM soll Findings priorisieren, nicht kreativ interpretieren.
 
 **Kein Streaming:** Die Pipeline wartet auf die vollständige Antwort, da der Output als Ganzes geparst und in den Report geschrieben wird.
 

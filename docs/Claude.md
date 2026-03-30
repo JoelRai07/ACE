@@ -159,7 +159,7 @@ export interface UnifiedFinding {
 | NFA-01 | Lokale Ausführung, keine Cloud-API | ✅ Ollama | Vollständig |
 | NFA-02 | Gesamtlaufzeit ≤ 10 min | ✅ Ca. 3–5 min erwartet | Messung ausstehend |
 | NFA-03 | Output Markdown + JSON in results/ | ✅ Implementiert | Vollständig |
-| NFA-04 | temperature = 0.1 | ✅ 0.1 in ollama.ts | Korrigiert |
+| NFA-04 | temperature = 0.05 | ✅ 0.05 in ollama.ts | Korrigiert |
 
 ### FA-02 Detailerklärung: axe pro Zustand
 

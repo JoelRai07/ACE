@@ -13,7 +13,7 @@
   - tools + LLM-Priorisierung
   - tools + LLM-Detektor + LLM-Priorisierung
   - optional: ohne grep
-- Reproduzierbarkeit fixieren: gleiche Prompts, Temperature, Hardware/VM, Zeitfenster.
+- Reproduzierbarkeit fixieren: gleiche Prompts, Temperature = 0.05, Hardware/VM, Zeitfenster.
 
 ## Metriken
 - Detektion: Recall, Precision, F1, False-Positive-Rate.

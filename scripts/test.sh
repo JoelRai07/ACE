@@ -7,6 +7,7 @@ APP_DIR="${APP_DIR:-test}"
 APP_SRC_DIR="${APP_SRC_DIR:-test/src}"
 BASE_URL="${BASE_URL:-http://127.0.0.1:4173}"
 OUT_ROOT="${OUT_ROOT:-results-campaign/12er-first40}"
+ANALYZE_SCRIPT="${ANALYZE_SCRIPT:-analyze}"
 MODEL_DIR="$(echo "$MODEL" | tr '/: ' '___')"
 RESULTS_ROOT="$OUT_ROOT/$MODEL_DIR"
 
@@ -31,18 +32,16 @@ wait_for_url() {
 }
 
 run_one() {
-  local condition="$1"
-  local run_number="$2"
-  local script_name="$3"
+  local run_number="$1"
 
   local run_dir
-  run_dir="$RESULTS_ROOT/$condition/run-$(printf '%02d' "$run_number")"
+  run_dir="$RESULTS_ROOT/run-$(printf '%02d' "$run_number")"
   mkdir -p "$run_dir"
 
-  echo "[$condition][$run_number] npm run $script_name -- --url $BASE_URL --src-dir $APP_SRC_DIR"
+  echo "[run-$run_number] npm run $ANALYZE_SCRIPT -- --url $BASE_URL --src-dir $APP_SRC_DIR"
 
   RESULTS_DIR="$run_dir" TARGET_URL="$BASE_URL" OLLAMA_MODEL="$MODEL" \
-    npm run "$script_name" -- --url "$BASE_URL" --src-dir "$APP_SRC_DIR"
+    npm run "$ANALYZE_SCRIPT" -- --url "$BASE_URL" --src-dir "$APP_SRC_DIR"
 }
 
 mkdir -p "$RESULTS_ROOT"
@@ -63,26 +62,13 @@ trap cleanup EXIT
 
 wait_for_url "$BASE_URL" 120
 echo "[setup] Dev-Server ist erreichbar: $BASE_URL"
+echo "[setup] Modell: $MODEL"
+echo "[setup] Analyze-Script: $ANALYZE_SCRIPT"
+echo "[setup] Ergebnisse: $RESULTS_ROOT"
 
-conditions=(
-  "01-axe-only:axe"
-  "02-tools-only:prompt"
-  "03-tools-llm-prio:analyze"
-  "04-tools-llm-detector-prio:analyze:llm-detector"
-)
-
-total=$(( RUNS_PER_CONDITION * ${#conditions[@]} ))
-counter=0
-
-for item in "${conditions[@]}"; do
-  condition="${item%%:*}"
-  script_name="${item#*:}"
-
-  for ((run=1; run<=RUNS_PER_CONDITION; run++)); do
-    counter=$((counter + 1))
-    echo "[progress] $counter / $total"
-    run_one "$condition" "$run" "$script_name"
-  done
+for ((run=1; run<=RUNS_PER_CONDITION; run++)); do
+  echo "[progress] $run / $RUNS_PER_CONDITION"
+  run_one "$run"
 done
 
 echo "[done] Kampagne abgeschlossen. Ergebnisse unter: $RESULTS_ROOT"
