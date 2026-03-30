@@ -1,6 +1,6 @@
 /** Unified Finding Schema (UFS) — zentrales Datenmodell der Pipeline. */
 
-export type FindingSource = "axe" | "playwright" | "grep";
+export type FindingSource = "axe" | "playwright" | "grep" | "llm";
 
 export type Severity = "critical" | "serious" | "moderate" | "minor";
 
@@ -28,6 +28,7 @@ export interface PipelineFindings {
   axe: UnifiedFinding[];
   playwright: UnifiedFinding[];
   grep: UnifiedFinding[];
+  llm: UnifiedFinding[];
   collectedAt: string;
   targetUrl: string;
 }

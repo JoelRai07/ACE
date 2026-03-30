@@ -17,6 +17,7 @@ pnpm analyze -- --url http://localhost:xxxx --src-dir ../
 | Script             | Zweck                                                                    |
 | ------------------ | ------------------------------------------------------------------------ |
 | `pnpm analyze`     | Vollständige Pipeline inkl. Ollama-Aufruf                                |
+| `pnpm analyze:llm-detector` | Pipeline mit zusätzlicher LLM-Codeanalyse (Dateien lesen + Fusion) |
 | `pnpm prompt`      | Pipeline ohne LLM (Prompt wird unter `results/prompt-*.txt` gespeichert) |
 | `pnpm axe`         | Nur axe-core, ohne LLM                                                   |
 | `pnpm test:ollama` | Prüft, ob Ollama läuft und das konfigurierte Modell vorhanden ist        |
@@ -30,7 +31,8 @@ Ollama auf `http://localhost:11434` (Modell: `qwen2.5-coder:7b`).
 1. **axe-core** scannt das DOM im Headless-Chromium.
 2. **Playwright** führt Tastatur-/Fokus-Checks aus.
 3. **grep** reichert Findings mit Codezeilen an und meldet Pattern wie `<img>` ohne `alt`.
-4. **Prompt-Builder** fasst alles in einem Prompt zusammen.
+4. **Optional**: LLM-Codeanalyse (`--llm-detect`) liest Quellcode-Dateien und liefert zusätzliche Findings.
+5. **Prompt-Builder** fasst alle Quellen in einem Prompt zusammen.
 5. **Ollama** erstellt die To-Do-Liste, **Output** speichert Markdown + JSON in `results/`.
 
 Benötigst du nur den Prompt (z.B. für Review), nutze `pnpm prompt`. Möchtest du einen bestimmten

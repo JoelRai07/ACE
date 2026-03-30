@@ -11,7 +11,7 @@ export interface FormatterInput {
   llmResult: LlmResult;
   builtPrompt: BuiltPrompt;
   targetUrl: string;
-  totalFindings: { axe: number; playwright: number; grep: number };
+  totalFindings: { axe: number; playwright: number; grep: number; llm: number };
   metrics: PipelineMetrics;
 }
 
@@ -39,8 +39,8 @@ interface AnalysisReport {
   targetUrl: string;
   model: string;
   stats: {
-    findings: { axe: number; playwright: number; grep: number };
-    includedInPrompt: { axe: number; playwright: number; grep: number };
+    findings: { axe: number; playwright: number; grep: number; llm: number };
+    includedInPrompt: { axe: number; playwright: number; grep: number; llm: number };
     estimatedInputTokens: number;
     actualPromptTokens: number;
     actualOutputTokens: number;
@@ -103,8 +103,8 @@ function buildMarkdownReport(input: FormatterInput, parsed: ParsedTodoList): str
     `| **Datum** | ${ts} |`,
     `| **Modell** | ${llmResult.model} |`,
     `| **Dauer** | ${durationSec}s |`,
-    `| **Findings** | axe-core: ${totalFindings.axe}, Playwright: ${totalFindings.playwright}, grep: ${totalFindings.grep} |`,
-    `| **Im Prompt** | axe: ${builtPrompt.includedFindings.axe}, Playwright: ${builtPrompt.includedFindings.playwright}, grep: ${builtPrompt.includedFindings.grep} |`,
+    `| **Findings** | axe-core: ${totalFindings.axe}, Playwright: ${totalFindings.playwright}, grep: ${totalFindings.grep}, LLM-Code: ${totalFindings.llm} |`,
+    `| **Im Prompt** | axe: ${builtPrompt.includedFindings.axe}, Playwright: ${builtPrompt.includedFindings.playwright}, grep: ${builtPrompt.includedFindings.grep}, llm: ${builtPrompt.includedFindings.llm} |`,
     `| **Tokens (geschätzt/tatsächlich)** | ~${builtPrompt.estimatedTokens} / ${llmResult.promptTokens} (Prompt) + ${llmResult.outputTokens} (Output) |`,
   ].join("\n");
 

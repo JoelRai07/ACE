@@ -10,6 +10,7 @@ export interface PromptInput {
   axeFindings: UnifiedFinding[];
   playwrightFindings: UnifiedFinding[];
   grepFindings: UnifiedFinding[];
+  llmFindings: UnifiedFinding[];
   targetUrl: string;
 }
 
@@ -22,6 +23,7 @@ export interface BuiltPrompt {
     axe: number;
     playwright: number;
     grep: number;
+    llm: number;
   };
 }
 
@@ -38,7 +40,7 @@ const SEVERITY_ORDER: Record<Severity, number> = {
 };
 
 const SYSTEM_PROMPT = `Du bist ein erfahrener Barrierefreiheitsexperte für React/TypeScript-Webanwendungen.
-Deine Aufgabe ist es, Findings aus drei unabhängigen Analysewerkzeugen (axe-core, Playwright, grep) zu einer priorisierten, entwicklernahen To-Do-Liste zusammenzufassen.
+Deine Aufgabe ist es, Findings aus vier Analysequellen (axe-core, Playwright, grep und LLM-Codeanalyse) zu einer priorisierten, entwicklernahen To-Do-Liste zusammenzufassen.
 
 AUSGABEFORMAT (strikt einhalten):
 
@@ -129,17 +131,19 @@ export function buildPrompt(input: PromptInput): BuiltPrompt {
   const systemTokens = estimateTokens(SYSTEM_PROMPT);
   const availableForUser = AVAILABLE_INPUT_TOKENS - systemTokens;
 
-  const { axe, playwright, grep, truncated } = applyTokenBudget(
+  const { axe, playwright, grep, llm, truncated } = applyTokenBudget(
     input.axeFindings,
     input.playwrightFindings,
     input.grepFindings,
+    input.llmFindings,
     availableForUser,
   );
 
-  const userPrompt = buildUserPrompt(targetUrl, axe, playwright, grep, truncated, {
+  const userPrompt = buildUserPrompt(targetUrl, axe, playwright, grep, llm, truncated, {
     totalAxe: input.axeFindings.length,
     totalPlaywright: input.playwrightFindings.length,
     totalGrep: input.grepFindings.length,
+    totalLlm: input.llmFindings.length,
   });
 
   const totalTokens = systemTokens + estimateTokens(userPrompt);
@@ -168,6 +172,7 @@ export function buildPrompt(input: PromptInput): BuiltPrompt {
       axe: axe.length,
       playwright: playwright.length,
       grep: grep.length,
+      llm: llm.length,
     },
   };
 }
@@ -177,8 +182,9 @@ function buildUserPrompt(
   axeFindings: UnifiedFinding[],
   playwrightFindings: UnifiedFinding[],
   grepFindings: UnifiedFinding[],
+  llmFindings: UnifiedFinding[],
   truncated: boolean,
-  totals: { totalAxe: number; totalPlaywright: number; totalGrep: number },
+  totals: { totalAxe: number; totalPlaywright: number; totalGrep: number; totalLlm: number },
 ): string {
   const truncationNote =
     truncated ?
@@ -188,14 +194,16 @@ function buildUserPrompt(
         totals.totalPlaywright -
         playwrightFindings.length +
         totals.totalGrep -
-        grepFindings.length
+        grepFindings.length +
+        totals.totalLlm -
+        llmFindings.length
       } Findings (moderate/minor) weggelassen. Alle critical/serious Findings sind enthalten.\n`
     : "";
 
   return `# Barrierefreiheits-Analyse: ${targetUrl}
 
 Analysezeitpunkt: ${new Date().toISOString()}
-Findings gesamt: axe-core=${totals.totalAxe}, Playwright=${totals.totalPlaywright}, grep=${totals.totalGrep}
+Findings gesamt: axe-core=${totals.totalAxe}, Playwright=${totals.totalPlaywright}, grep=${totals.totalGrep}, llm=${totals.totalLlm}
 ${truncationNote}
 ---
 
@@ -217,6 +225,12 @@ ${serializeFindingList(grepFindings)}
 
 ---
 
+## Findings aus LLM-Codeanalyse (${llmFindings.length} von ${totals.totalLlm}):
+
+${serializeFindingList(llmFindings)}
+
+---
+
 Erstelle jetzt die priorisierte To-Do-Liste gemäß dem vorgegebenen Ausgabeformat.`.trim();
 }
 
@@ -224,11 +238,13 @@ function applyTokenBudget(
   axeFindings: UnifiedFinding[],
   playwrightFindings: UnifiedFinding[],
   grepFindings: UnifiedFinding[],
+  llmFindings: UnifiedFinding[],
   budgetTokens: number,
 ): {
   axe: UnifiedFinding[];
   playwright: UnifiedFinding[];
   grep: UnifiedFinding[];
+  llm: UnifiedFinding[];
   truncated: boolean;
 } {
   const sortBySeverity = (a: UnifiedFinding, b: UnifiedFinding) =>
@@ -238,16 +254,23 @@ function applyTokenBudget(
     axe: [...axeFindings].sort(sortBySeverity),
     playwright: [...playwrightFindings].sort(sortBySeverity),
     grep: [...grepFindings].sort(sortBySeverity),
+    llm: [...llmFindings].sort(sortBySeverity),
   };
 
-  const result = { axe: [] as UnifiedFinding[], playwright: [] as UnifiedFinding[], grep: [] as UnifiedFinding[] };
+  const result = {
+    axe: [] as UnifiedFinding[],
+    playwright: [] as UnifiedFinding[],
+    grep: [] as UnifiedFinding[],
+    llm: [] as UnifiedFinding[],
+  };
   let usedTokens = 50; // Section-Overhead
   let truncated = false;
 
-  const allSorted: Array<{ finding: UnifiedFinding; source: "axe" | "playwright" | "grep" }> = [
+  const allSorted: Array<{ finding: UnifiedFinding; source: "axe" | "playwright" | "grep" | "llm" }> = [
     ...sorted.axe.map((f) => ({ finding: f, source: "axe" as const })),
     ...sorted.playwright.map((f) => ({ finding: f, source: "playwright" as const })),
     ...sorted.grep.map((f) => ({ finding: f, source: "grep" as const })),
+    ...sorted.llm.map((f) => ({ finding: f, source: "llm" as const })),
   ].sort((a, b) => SEVERITY_ORDER[a.finding.severity] - SEVERITY_ORDER[b.finding.severity]);
 
   for (const { finding, source } of allSorted) {

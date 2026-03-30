@@ -20,6 +20,7 @@ import * as path from "path";
 import { config } from "./config.js";
 import { runAxeAnalysis } from "./modules/axe.js";
 import { enrichWithCodeContext, runGrepPatterns } from "./modules/code.js";
+import { runLlmCodeAnalysis } from "./modules/llmDetector.js";
 import { runPlaywrightChecks } from "./modules/playwright.js";
 import { callOllama } from "./ollama.js";
 import { formatAndSave } from "./output.js";
@@ -33,6 +34,7 @@ interface CliArgs {
   srcDir: string | null;
   skipLlm: boolean;
   axeOnly: boolean;
+  llmDetect: boolean;
 }
 
 function parseArgs(): CliArgs {
@@ -42,6 +44,7 @@ function parseArgs(): CliArgs {
     srcDir: null,
     skipLlm: false,
     axeOnly: false,
+    llmDetect: false,
   };
 
   for (let i = 0; i < argv.length; i++) {
@@ -59,6 +62,9 @@ function parseArgs(): CliArgs {
         break;
       case "--axe-only":
         args.axeOnly = true;
+        break;
+      case "--llm-detect":
+        args.llmDetect = true;
         break;
       default:
         if (argv[i]?.startsWith("--")) {
@@ -81,6 +87,7 @@ function printBanner(url: string, flags: Omit<CliArgs, "url">): void {
   if (flags.srcDir) console.log(`  src-dir:  ${flags.srcDir}`);
   if (flags.skipLlm) console.log(`  Modus:    --skip-llm (kein Ollama-Aufruf)`);
   if (flags.axeOnly) console.log(`  Modus:    --axe-only`);
+  if (flags.llmDetect) console.log(`  Modus:    --llm-detect (LLM liest Quellcode als zusätzliche Quelle)`);
   console.log();
 }
 
@@ -89,15 +96,15 @@ function printSectionHeader(title: string): void {
 }
 
 function printSummary(
-  findings: { axe: UnifiedFinding[]; playwright: UnifiedFinding[]; grep: UnifiedFinding[] },
+  findings: { axe: UnifiedFinding[]; playwright: UnifiedFinding[]; grep: UnifiedFinding[]; llm: UnifiedFinding[] },
   savedPaths: { markdownPath: string; jsonPath: string } | null,
   metrics: Partial<PipelineMetrics>,
 ): void {
-  const totalFindings = findings.axe.length + findings.playwright.length + findings.grep.length;
-  const critical = [...findings.axe, ...findings.playwright, ...findings.grep].filter(
+  const totalFindings = findings.axe.length + findings.playwright.length + findings.grep.length + findings.llm.length;
+  const critical = [...findings.axe, ...findings.playwright, ...findings.grep, ...findings.llm].filter(
     (f) => f.severity === "critical",
   ).length;
-  const serious = [...findings.axe, ...findings.playwright, ...findings.grep].filter(
+  const serious = [...findings.axe, ...findings.playwright, ...findings.grep, ...findings.llm].filter(
     (f) => f.severity === "serious",
   ).length;
 
@@ -108,6 +115,7 @@ function printSummary(
   console.log(`    axe-core:       ${findings.axe.length}`);
   console.log(`    Playwright:     ${findings.playwright.length}`);
   console.log(`    grep-Pattern:   ${findings.grep.length}`);
+  console.log(`    LLM-Code:       ${findings.llm.length}`);
   console.log(`  Kritisch:         ${critical} critical, ${serious} serious`);
 
   if (metrics.phaseTimings) {
@@ -200,7 +208,7 @@ function buildMetrics(
 async function run(): Promise<void> {
   const pipelineStart = timeMs();
   const args = parseArgs();
-  printBanner(args.url, { srcDir: args.srcDir, skipLlm: args.skipLlm, axeOnly: args.axeOnly });
+  printBanner(args.url, { srcDir: args.srcDir, skipLlm: args.skipLlm, axeOnly: args.axeOnly, llmDetect: args.llmDetect });
 
   const timings: PipelineMetrics["phaseTimings"] = {
     axeMs: 0,
@@ -223,7 +231,7 @@ async function run(): Promise<void> {
   if (args.axeOnly) {
     timings.totalMs = timeMs() - pipelineStart;
     console.log("\n[pipeline] --axe-only: Pipeline nach axe-core beendet.");
-    printSummary({ axe: axeFindings, playwright: [], grep: [] }, null, { phaseTimings: timings });
+    printSummary({ axe: axeFindings, playwright: [], grep: [], llm: [] }, null, { phaseTimings: timings });
     return;
   }
 
@@ -233,6 +241,7 @@ async function run(): Promise<void> {
 
   // ── Schritt 3: Code — Anreicherung + Pattern-Findings ─────────────────
   let grepFindings: UnifiedFinding[] = [];
+  let llmFindings: UnifiedFinding[] = [];
 
   if (args.srcDir) {
     const srcDir = args.srcDir;
@@ -245,6 +254,11 @@ async function run(): Promise<void> {
     const grepResult = await timed(timings, "codePatternMs", () => runGrepPatterns(srcDir));
     grepFindings = grepResult.findings;
     dedupStats = { beforeDedup: grepResult.beforeDedup, afterDedup: grepResult.afterDedup };
+
+    if (args.llmDetect && !args.skipLlm) {
+      printSectionHeader("LLM Codeanalyse");
+      llmFindings = await runLlmCodeAnalysis(srcDir);
+    }
   } else {
     console.log("[pipeline] Kein --src-dir angegeben — Code-Phase übersprungen.");
   }
@@ -252,7 +266,7 @@ async function run(): Promise<void> {
   // ── Schritt 4: Prompt Builder ────────────────────────────────────────
   printSectionHeader("Prompt Builder");
   const builtPrompt = await timed(timings, "promptBuildMs", async () =>
-    buildPrompt({ axeFindings, playwrightFindings: pwFindings, grepFindings, targetUrl: args.url }),
+    buildPrompt({ axeFindings, playwrightFindings: pwFindings, grepFindings, llmFindings, targetUrl: args.url }),
   );
 
   // ── Schritt 5: Ollama ────────────────────────────────────────────────
@@ -261,7 +275,7 @@ async function run(): Promise<void> {
     savePromptToDisk(builtPrompt.systemPrompt, builtPrompt.userPrompt);
     timings.totalMs = timeMs() - pipelineStart;
     printSummary(
-      { axe: axeFindings, playwright: pwFindings, grep: grepFindings },
+      { axe: axeFindings, playwright: pwFindings, grep: grepFindings, llm: llmFindings },
       null,
       buildMetrics(timings, enrichmentStats, dedupStats),
     );
@@ -288,13 +302,14 @@ async function run(): Promise<void> {
       axe: axeFindings.length,
       playwright: pwFindings.length,
       grep: grepFindings.length,
+      llm: llmFindings.length,
     },
     metrics,
   });
   timings.outputMs = timeMs() - t0;
   timings.totalMs = timeMs() - pipelineStart;
 
-  printSummary({ axe: axeFindings, playwright: pwFindings, grep: grepFindings }, saved, metrics);
+  printSummary({ axe: axeFindings, playwright: pwFindings, grep: grepFindings, llm: llmFindings }, saved, metrics);
 }
 
 // ── Einstiegspunkt ────────────────────────────────────────────────────────

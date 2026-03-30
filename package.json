@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "analyze": "tsx src/index.ts",
+    "analyze:llm-detector": "tsx src/index.ts --llm-detect",
     "prompt": "tsx src/index.ts --skip-llm",
     "axe": "tsx src/index.ts --axe-only --skip-llm",
     "test:ollama": "tsx src/ollama.ts",
