@@ -18,7 +18,7 @@ npm run dev
 | V2  | `<html>` ohne `lang`-Attribut                      | syntaktisch | axe-core              | 3.1.1 | index.html                        |
 | V3  | Logo `<img>` ohne `alt`                            | syntaktisch | axe-core + grep       | 1.1.1 | App.tsx                           |
 | V4  | Deko-Bild ohne `alt=""` / `role="presentation"`    | syntaktisch | axe-core + grep       | 1.1.1 | App.tsx                           |
-| V5  | Hamburger-Button ohne zugaenglichen Namen           | syntaktisch | axe-core              | 4.1.2 | App.tsx                           |
+| V5  | Hamburger-Button ohne zugänglichen Namen           | syntaktisch | axe-core              | 4.1.2 | App.tsx                           |
 | V6  | `<a>` ohne `href` — nicht fokussierbar             | semantisch  | axe-core              | 2.1.1 | App.tsx                           |
 | V7  | Badge Kontrast zu niedrig (#aac auf #0057b8)       | layout      | axe-core              | 1.4.3 | styles.css                        |
 | V8  | CSS `order` weicht von DOM-Reihenfolge ab          | semantisch  | axe-core              | 1.3.2 | styles.css                        |
@@ -27,9 +27,9 @@ npm run dev
 | V11 | `onClick` auf `<li>` ohne `onKeyDown`              | semantisch  | grep                  | 2.1.1 | Sidebar.tsx                       |
 | V12 | `role="button"` ohne `tabIndex`                    | semantisch  | axe-core + grep       | 4.1.2 | Sidebar.tsx                       |
 | V13 | `onClick` auf `<li>` ohne `onKeyDown`              | semantisch  | grep                  | 2.1.1 | Sidebar.tsx                       |
-| V14 | Button 16x16px < 24x24px Mindestgroesse            | layout      | grep (CSS)            | 2.5.8 | styles.css                        |
+| V14 | Button 16x16px < 24x24px Mindestgröße            | layout      | grep (CSS)            | 2.5.8 | styles.css                        |
 | V15 | `aria-hidden="true"` auf fokussierbarem Element    | syntaktisch | axe-core              | 4.1.2 | Sidebar.tsx                       |
-| V16 | Ueberschriften-Hierarchie uebersprungen (h3 statt h1) | semantisch | axe-core          | 1.3.1 | Dashboard.tsx                     |
+| V16 | Überschriften-Hierarchie übersprungen (h3 statt h1) | semantisch | axe-core          | 1.3.1 | Dashboard.tsx                     |
 | V17 | KPI-Icon `<img>` ohne `alt`                        | syntaktisch | axe-core + grep       | 1.1.1 | Dashboard.tsx                     |
 | V18 | KPI-Wert Kontrast zu niedrig (#bbb auf #fff)       | layout      | axe-core              | 1.4.3 | styles.css                        |
 | V19 | KPI-Icon `<img>` ohne `alt`                        | syntaktisch | axe-core + grep       | 1.1.1 | Dashboard.tsx                     |
@@ -44,7 +44,7 @@ npm run dev
 | V28 | Input ohne `<label>` (E-Mail)                      | syntaktisch | axe-core              | 1.3.1 | UserProfile.tsx                   |
 | V29 | Textarea ohne `<label>` (Bio)                      | syntaktisch | axe-core              | 1.3.1 | UserProfile.tsx                   |
 | V30 | Pflichtfeld ohne `required` / `aria-required`      | syntaktisch | manuell               | 3.3.2 | UserProfile.tsx                   |
-| V31 | Fehlermeldung nicht programmatisch verknuepft       | semantisch  | manuell               | 3.3.1 | UserProfile.tsx                   |
+| V31 | Fehlermeldung nicht programmatisch verknüpft       | semantisch  | manuell               | 3.3.1 | UserProfile.tsx                   |
 | V32 | Button Kontrast zu niedrig (#999 auf #fff)         | layout      | axe-core              | 1.4.3 | styles.css                        |
 | V33 | `outline: none` auf Button (Fokus entfernt)        | layout      | Playwright            | 2.4.7 | UserProfile.tsx                   |
 | V34 | Statusmeldung ohne `aria-live`                     | semantisch  | manuell               | 4.1.3 | UserProfile.tsx                   |
@@ -55,12 +55,12 @@ npm run dev
 | V39 | Checkbox ohne Label (Header)                       | syntaktisch | axe-core              | 1.3.1 | DataTable.tsx                     |
 | V40 | Checkbox ohne Label (Zeilen)                       | syntaktisch | axe-core              | 1.3.1 | DataTable.tsx                     |
 | V41 | Status nur durch Farbe kodiert                     | semantisch  | manuell               | 1.4.1 | DataTable.tsx                     |
-| V42 | Icon-Button ohne zugaenglichen Namen               | syntaktisch | axe-core              | 4.1.2 | DataTable.tsx                     |
+| V42 | Icon-Button ohne zugänglichen Namen               | syntaktisch | axe-core              | 4.1.2 | DataTable.tsx                     |
 | V43 | Paginierung: `onClick` auf `<div>` ohne Keyboard   | semantisch  | grep                  | 2.1.1 | DataTable.tsx                     |
 | V44 | `<li>` mit `onClick` ohne `onKeyDown`              | semantisch  | grep                  | 2.1.1 | Notifications.tsx                 |
 | V45 | Ungelesen nur durch Farbe kodiert                  | semantisch  | manuell               | 1.4.1 | Notifications.tsx                 |
 | V46 | Zeitangabe Kontrast zu niedrig (#bbb auf #fff)     | layout      | axe-core              | 1.4.3 | styles.css                        |
-| V47 | Button 16x16px < 24x24px Mindestgroesse            | layout      | grep (CSS)            | 2.5.8 | styles.css                        |
+| V47 | Button 16x16px < 24x24px Mindestgröße            | layout      | grep (CSS)            | 2.5.8 | styles.css                        |
 | V48 | Modaler Dialog ohne Fokus-Trap                     | semantisch  | Playwright            | 2.1.2 | Notifications.tsx                 |
 | V49 | Dialog ohne `aria-labelledby`                      | syntaktisch | axe-core              | 4.1.2 | Notifications.tsx                 |
 | V50 | `outline: none` im Modal-Button (Fokus entfernt)  | layout      | Playwright            | 2.4.7 | Notifications.tsx                 |
@@ -76,4 +76,4 @@ npm run dev
 ## Hinweis
 
 Alle Violations sind absichtlich eingebaut und durch Kommentare im Quellcode dokumentiert.
-Dieses Projekt ist ausschliesslich fuer Evaluationszwecke im Rahmen der Bachelorarbeit bestimmt.
+Dieses Projekt ist ausschliesslich für Evaluationszwecke im Rahmen der Bachelorarbeit bestimmt.

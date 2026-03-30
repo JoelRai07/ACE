@@ -32,7 +32,7 @@ export default function App() {
         <img src="https://placehold.co/24x24/ccc/999" className="header-icon" />
 
         <div className="header-actions">
-          {/* V5: Button ohne zugaenglichen Namen (syntaktisch, WCAG 4.1.2) */}
+          {/* V5: Button ohne zugänglichen Namen (syntaktisch, WCAG 4.1.2) */}
           <button className="btn-icon-header" onClick={() => {}}>
             <span aria-hidden="true">&#9776;</span>
           </button>

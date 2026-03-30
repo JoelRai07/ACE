@@ -29,7 +29,7 @@ export default function Settings() {
 
       {activeTab === 0 && (
         <div className="settings-panel">
-          {/* V54: Toggle ohne zugaenglichen Namen (syntaktisch, WCAG 4.1.2) */}
+          {/* V54: Toggle ohne zugänglichen Namen (syntaktisch, WCAG 4.1.2) */}
           <div className="setting-row">
             <span>Dark Mode</span>
             <div
@@ -66,12 +66,12 @@ export default function Settings() {
 
           {/* V58: Passwortfeld ohne Label (syntaktisch, WCAG 1.3.1) */}
           <div className="field-group">
-            <span className="field-label-fake">Passwort bestaetigen</span>
-            <input type="password" className="field-input" placeholder="Bestaetigen" />
+            <span className="field-label-fake">Passwort bestätigen</span>
+            <input type="password" className="field-input" placeholder="Bestätigen" />
           </div>
 
           {/* V59: Button mit zu niedrigem Kontrast (layout, WCAG 1.4.3) */}
-          <button className="btn-lowcontrast">Passwort aendern</button>
+          <button className="btn-lowcontrast">Passwort ändern</button>
         </div>
       )}
 

@@ -17,7 +17,7 @@ export default function SearchResults() {
       {/* V61: Suchformular: Input ohne Label (syntaktisch, WCAG 1.3.1) */}
       <div className="search-bar">
         <input type="search" className="search-input" placeholder="Suche..." />
-        {/* V62: Button ohne zugaenglichen Namen (syntaktisch, WCAG 4.1.2) */}
+        {/* V62: Button ohne zugänglichen Namen (syntaktisch, WCAG 4.1.2) */}
         <button className="btn-icon-small" onClick={() => {}}>&#128269;</button>
       </div>
 
@@ -46,7 +46,7 @@ export default function SearchResults() {
 
       {/* V70: Paginierung role="button" ohne tabIndex (semantisch, WCAG 4.1.2) */}
       <div className="pagination">
-        <div className="page-btn" role="button" onClick={() => {}}>Zurueck</div>
+        <div className="page-btn" role="button" onClick={() => {}}>Zurück</div>
         <div className="page-btn" role="button" onClick={() => {}}>Weiter</div>
       </div>
     </section>

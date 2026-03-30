@@ -47,7 +47,7 @@ export default function App() {
         {/* V4: Deko-Bild ohne alt="" (syntaktisch, WCAG 1.1.1) */}
         <img src="https://placehold.co/24x24/ccc/999" className="header-icon" />
 
-        {/* V5: Button ohne zugaenglichen Namen (syntaktisch, WCAG 4.1.2) */}
+        {/* V5: Button ohne zugänglichen Namen (syntaktisch, WCAG 4.1.2) */}
         <button className="btn-icon-header" onClick={() => {}}>
           <span aria-hidden="true">&#9776;</span>
         </button>
@@ -65,7 +65,7 @@ export default function App() {
           {/* V9: <nav> ohne aria-label bei mehrfacher nav (syntaktisch, WCAG 1.3.1) */}
           <ul className="sidebar-list">
             {pages.map((p) => (
-              // V10: onClick auf <li> ohne onKeyDown (semantisch, WCAG 2.1.1) — 10 Instanzen, zaehlt als 1 Violation-Typ
+              // V10: onClick auf <li> ohne onKeyDown (semantisch, WCAG 2.1.1) — 10 Instanzen, zählt als 1 Violation-Typ
               <li
                 key={p.key}
                 className={`sidebar-item ${page === p.key ? "active" : ""}`}

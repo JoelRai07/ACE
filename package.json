@@ -11,6 +11,7 @@
     "campaign:12x40": "powershell -ExecutionPolicy Bypass -File ./scripts/run-12suite-first40.ps1",
     "test:suite": "bash ./scripts/test.sh",
     "test:ollama": "tsx src/ollama.ts",
+    "benchmark": "tsx src/benchmark.ts",
     "clean": "rm -rf results",
     "postinstall": "playwright install chromium"
   },

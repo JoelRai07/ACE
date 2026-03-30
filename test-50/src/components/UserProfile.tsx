@@ -18,7 +18,7 @@ export default function UserProfile() {
         {/* V26: Avatar-Bild ohne alt (syntaktisch, WCAG 1.1.1) */}
         <img src="https://placehold.co/80x80/0057B8/white" className="avatar" />
 
-        {/* V27: Input ohne zugehoeriges <label> (syntaktisch, WCAG 1.3.1) */}
+        {/* V27: Input ohne zugehöriges <label> (syntaktisch, WCAG 1.3.1) */}
         <div className="field-group">
           <span className="field-label-fake">Anzeigename</span>
           <input
@@ -30,7 +30,7 @@ export default function UserProfile() {
           />
         </div>
 
-        {/* V28: Input ohne zugehoeriges <label> (syntaktisch, WCAG 1.3.1) */}
+        {/* V28: Input ohne zugehöriges <label> (syntaktisch, WCAG 1.3.1) */}
         <div className="field-group">
           <span className="field-label-fake">E-Mail</span>
           <input
@@ -50,7 +50,7 @@ export default function UserProfile() {
             onChange={(e) => setBio(e.target.value)}
             className="field-input"
             rows={3}
-            placeholder="Ueber mich..."
+            placeholder="Über mich..."
           />
         </div>
 
@@ -60,11 +60,11 @@ export default function UserProfile() {
           <input id="dept" type="text" className="field-input" placeholder="Pflichtfeld" />
         </div>
 
-        {/* V31: Fehlermeldung nicht programmatisch verknuepft (semantisch, WCAG 3.3.1) */}
+        {/* V31: Fehlermeldung nicht programmatisch verknüpft (semantisch, WCAG 3.3.1) */}
         <div className="field-group">
           <label htmlFor="phone" className="field-label">Telefon</label>
           <input id="phone" type="tel" className="field-input" />
-          <span className="error-text">Bitte gueltige Nummer eingeben</span>
+          <span className="error-text">Bitte gültige Nummer eingeben</span>
         </div>
 
         {/* V32: Kontrast des Buttons zu niedrig (layout, WCAG 1.4.3) */}

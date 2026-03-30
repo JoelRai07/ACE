@@ -41,11 +41,11 @@ export default function UserProfile() {
         <input id="dept" type="text" className="field-input" />
       </div>
 
-      {/* V26: Fehlermeldung nicht programmatisch verknuepft (semantisch, WCAG 3.3.1) */}
+      {/* V26: Fehlermeldung nicht programmatisch verknüpft (semantisch, WCAG 3.3.1) */}
       <div className="field-group">
         <label htmlFor="phone" className="field-label">Telefon</label>
         <input id="phone" type="tel" className="field-input" />
-        <span className="error-text">Ungueltige Nummer</span>
+        <span className="error-text">Ungültige Nummer</span>
       </div>
 
       {/* V27: Kontrast Button zu niedrig (layout, WCAG 1.4.3) */}

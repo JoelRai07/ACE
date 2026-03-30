@@ -121,7 +121,7 @@ body {
 
 .sidebar-footer { margin-top: auto; padding: 8px 20px; }
 
-/* V14: 16x16px unterschreitet 24x24px Mindestgroesse */
+/* V14: 16x16px unterschreitet 24x24px Mindestgröße */
 .btn-tiny-sidebar {
   width: 16px;
   height: 16px;

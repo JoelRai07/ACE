@@ -5,7 +5,7 @@
 export default function Dashboard() {
   return (
     <section className="dashboard">
-      {/* V16: Ueberschriften-Hierarchie uebersprungen: h1 fehlt, direkt h3 (semantisch, WCAG 1.3.1) */}
+      {/* V16: Überschriften-Hierarchie übersprungen: h1 fehlt, direkt h3 (semantisch, WCAG 1.3.1) */}
       <h3 className="dashboard-title">Dashboard-Uebersicht</h3>
 
       <div className="kpi-grid">

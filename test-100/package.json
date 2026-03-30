@@ -1,7 +1,7 @@
 {
   "name": "a11y-test-100",
   "version": "1.0.0",
-  "description": "Synthetische Testkomponente mit 100 WCAG-Violations fuer ACE-PoC Evaluation",
+  "description": "Synthetische Testkomponente mit 100 WCAG-Violations für ACE-PoC Evaluation",
   "scripts": {
     "dev": "vite --port 5175",
     "build": "tsc && vite build",

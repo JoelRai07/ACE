@@ -56,7 +56,7 @@ export default function DataTable() {
               <td><span className={`dot ${row.status}`}></span></td>
               <td>{row.load}%</td>
               <td>
-                {/* V37: Icon-Button ohne zugaenglichen Namen (syntaktisch, WCAG 4.1.2) */}
+                {/* V37: Icon-Button ohne zugänglichen Namen (syntaktisch, WCAG 4.1.2) */}
                 <button className="btn-icon-small" onClick={() => {}}>&#9998;</button>
               </td>
             </tr>
@@ -66,7 +66,7 @@ export default function DataTable() {
 
       {/* V38-V40: Paginierung: 3x div mit onClick ohne onKeyDown (semantisch, WCAG 2.1.1) */}
       <div className="pagination">
-        <div className="page-btn" onClick={() => {}}>Zurueck</div>
+        <div className="page-btn" onClick={() => {}}>Zurück</div>
         <div className="page-btn" onClick={() => {}}>1</div>
         <div className="page-btn" onClick={() => {}}>Weiter</div>
       </div>
