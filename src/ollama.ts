@@ -41,6 +41,14 @@ interface SimpleResponse {
 }
 
 const REQUEST_TIMEOUT_MS = config.ollamaTimeoutMs;
+const DEFAULT_NUM_PREDICT = 1536;
+
+function getNumPredict(): number {
+  const raw = process.env.OLLAMA_NUM_PREDICT;
+  const parsed = raw ? Number.parseInt(raw, 10) : DEFAULT_NUM_PREDICT;
+  if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_NUM_PREDICT;
+  return parsed;
+}
 
 export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
   const endpoint = `${config.ollamaUrl}/api/generate`;
@@ -55,7 +63,7 @@ export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
     think: false,
     options: {
       temperature: 0.05,
-      num_predict: 3_072,
+      num_predict: getNumPredict(),
     },
   };
 

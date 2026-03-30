@@ -195,20 +195,74 @@ function parseMarkdownTodoList(markdown: string): ParsedTodoList {
   try {
     const mustHaveMatch = /^#{1,3}\s*Must-have\b/im.exec(markdown);
     const niceToHaveMatch = /^#{1,3}\s*Nice-to-have\b/im.exec(markdown);
-    if (!mustHaveMatch) return { mustHave: [], niceToHave: [], parseSuccess: false };
-    const mustHaveStart = mustHaveMatch.index + mustHaveMatch[0].length;
-    const mustHaveEnd = niceToHaveMatch ? niceToHaveMatch.index : markdown.length;
-    const niceToHaveStart = niceToHaveMatch ? niceToHaveMatch.index + niceToHaveMatch[0].length : markdown.length;
-    const mustHaveSection = markdown.slice(mustHaveStart, mustHaveEnd);
-    const niceToHaveSection = markdown.slice(niceToHaveStart);
-    return {
-      mustHave: extractItems(mustHaveSection),
-      niceToHave: extractItems(niceToHaveSection),
-      parseSuccess: true,
-    };
+    if (mustHaveMatch) {
+      const mustHaveStart = mustHaveMatch.index + mustHaveMatch[0].length;
+      const mustHaveEnd = niceToHaveMatch ? niceToHaveMatch.index : markdown.length;
+      const niceToHaveStart = niceToHaveMatch ? niceToHaveMatch.index + niceToHaveMatch[0].length : markdown.length;
+      const mustHaveSection = markdown.slice(mustHaveStart, mustHaveEnd);
+      const niceToHaveSection = markdown.slice(niceToHaveStart);
+      return {
+        mustHave: extractItems(mustHaveSection),
+        niceToHave: extractItems(niceToHaveSection),
+        parseSuccess: true,
+      };
+    }
+
+    const severityParsed = parseSeverityBuckets(markdown);
+    if (severityParsed.parseSuccess) {
+      return severityParsed;
+    }
+
+    return { mustHave: [], niceToHave: [], parseSuccess: false };
   } catch {
     return { mustHave: [], niceToHave: [], parseSuccess: false };
   }
+}
+
+function parseSeverityBuckets(markdown: string): ParsedTodoList {
+  const critical = extractSeverityItems(markdown, "critical");
+  const serious = extractSeverityItems(markdown, "serious");
+  const moderate = extractSeverityItems(markdown, "moderate");
+  const minor = extractSeverityItems(markdown, "minor");
+
+  const mustHave = [...critical, ...serious];
+  const niceToHave = [...moderate, ...minor];
+  const parseSuccess = mustHave.length + niceToHave.length > 0;
+
+  return { mustHave, niceToHave, parseSuccess };
+}
+
+function extractSeverityItems(markdown: string, severity: "critical" | "serious" | "moderate" | "minor"): TodoItem[] {
+  const headerRegex = new RegExp(`^#{1,3}\\s*${severity}\\b[^\\n]*$`, "gim");
+  const match = headerRegex.exec(markdown);
+  if (!match) return [];
+
+  const start = match.index + match[0].length;
+  const rest = markdown.slice(start);
+  const nextHeader = /^#{1,3}\s*(critical|serious|moderate|minor)\b/im.exec(rest);
+  const section = nextHeader ? rest.slice(0, nextHeader.index) : rest;
+
+  return extractNumberedItems(section, severity.toUpperCase());
+}
+
+function extractNumberedItems(section: string, severityLabel: string): TodoItem[] {
+  const itemRegex = /^\s*\d+\.\s*\*\*(.+?)\*\*/gm;
+  const items: TodoItem[] = [];
+  const matches = [...section.matchAll(itemRegex)];
+
+  for (let i = 0; i < matches.length; i++) {
+    const current = matches[i];
+    const next = matches[i + 1];
+    const titleRaw = (current[1] ?? "").trim();
+    if (!titleRaw) continue;
+
+    const blockStart = (current.index ?? 0) + current[0].length;
+    const blockEnd = next?.index ?? section.length;
+    const rawText = section.slice(blockStart, blockEnd).trim();
+    items.push({ title: `[${severityLabel}] ${titleRaw}`, rawText });
+  }
+
+  return items;
 }
 
 function extractItems(section: string): TodoItem[] {
