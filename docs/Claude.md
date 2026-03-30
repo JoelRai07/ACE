@@ -220,8 +220,8 @@ Ollama läuft auf `http://localhost:11434`. API-Aufruf:
   "system": "<system prompt>",
   "stream": false,
   "options": {
-    "temperature": 0.1,      // Niedrig für konsistente, faktenbasierte Ausgabe (NFA-04)
-    "num_predict": 8192       // Max Output-Tokens
+    "temperature": 0.05,      // Niedrig für konsistente, faktenbasierte Ausgabe (NFA-04)
+    "num_predict": 1536       // Default, per Env variierbar
   }
 }
 ```
@@ -235,7 +235,7 @@ Ollama läuft auf `http://localhost:11434`. API-Aufruf:
 5. **Playwright Modul:** `src/modules/playwright.ts` — 7 ACE-Checks + WCAG-Mapping + category ✓
 6. **Code-Modul:** `src/modules/code.ts` — grep-Anreicherung + 6 Pattern-Checks + category ✓
 7. **Prompt Builder:** `src/prompt.ts` — Token-Budget, Severity-Sortierung, Serialisierung ✓
-8. **Ollama Client:** `src/ollama.ts` — HTTP-Aufruf, Timeout, `testConnection()`, temperature=0.1 ✓
+8. **Ollama Client:** `src/ollama.ts` — HTTP-Aufruf, Timeout, `testConnection()`, temperature=0.05 ✓
 9. **Output Formatter:** `src/output.ts` — Markdown + JSON Report, Parsing der LLM-Antwort ✓
 10. **Pipeline Orchestrierung:** `src/index.ts` — CLI-Flags, Ablaufsteuerung ✓
 11. **Testen gegen BWEC Client:** Ausstehend
