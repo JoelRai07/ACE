@@ -1,10 +1,8 @@
-/**
- * Playwright Modul — führt Interaktionschecks aus und mappt sie auf WCAG.
- */
+/** Playwright Modul — führt Interaktionschecks aus und mappt sie auf WCAG. */
 
-import { chromium, type Page } from "playwright";
 import { config } from "../config.js";
-import type { UnifiedFinding, AceCheckDefinition } from "../types.js";
+import type { AceCheckDefinition, UnifiedFinding } from "../types.js";
+import { chromium, type Page } from "playwright";
 
 export interface PlaywrightCheckResult {
   checkId:
@@ -21,7 +19,7 @@ export interface PlaywrightCheckResult {
   url: string;
 }
 
-// ── Öffentliche API ─────────────────────────────────────────────────────
+// ──  API ─────────────────────────────────────────────────────
 
 export async function runPlaywrightChecks(url: string): Promise<UnifiedFinding[]> {
   const results = await collectPlaywrightFindings(url);
@@ -32,9 +30,6 @@ export async function runPlaywrightChecks(url: string): Promise<UnifiedFinding[]
 
 const CHECKS: Array<{ id: PlaywrightCheckResult["checkId"]; fn: (page: Page) => Promise<CheckOutcome> }> = [];
 
-/**
- * Wir initialisieren die Checks einmal, damit der Code unten leichter zu lesen ist.
- */
 (function registerChecks() {
   CHECKS.push({ id: "keyboard-tab-reachable", fn: checkKeyboardTabReachable });
   CHECKS.push({ id: "keyboard-trap-free", fn: checkKeyboardTrapFree });
@@ -60,7 +55,7 @@ export async function collectPlaywrightFindings(url: string): Promise<Playwright
       try {
         const outcome = await check.fn(page);
         results.push({ checkId: check.id, url, ...outcome });
-        console.log(`[playwright] ${(outcome.passed ? "✓" : "✗")} ${check.id}`);
+        console.log(`[playwright] ${outcome.passed ? "✓" : "✗"} ${check.id}`);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         console.error(`[playwright] ! ${check.id} Fehler: ${message}`);
@@ -216,8 +211,8 @@ async function checkFocusAfterDialog(page: Page): Promise<CheckOutcome> {
   const triggerSelector = await page.evaluate(() => {
     const candidates = Array.from(
       document.querySelectorAll<HTMLElement>(
-        '[aria-haspopup], [data-bs-toggle="modal"], [data-dialog], button[data-target]'
-      )
+        '[aria-haspopup], [data-bs-toggle="modal"], [data-dialog], button[data-target]',
+      ),
     );
     const visible = candidates.find((el) => {
       const rect = el.getBoundingClientRect();

@@ -1,0 +1,56 @@
+{
+  "version": "1.1",
+  "timestamp": "2026-03-26T11:03:22.250Z",
+  "targetUrl": "http://localhost:5173",
+  "model": "qwen2.5-coder:7b",
+  "stats": {
+    "findings": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "includedInPrompt": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "estimatedInputTokens": 4180,
+    "actualPromptTokens": 4096,
+    "actualOutputTokens": 579,
+    "durationMs": 588574,
+    "tokensBudgetTruncated": false
+  },
+  "metrics": {
+    "phaseTimings": {
+      "axeMs": 3619,
+      "playwrightMs": 3096,
+      "codeEnrichMs": 2,
+      "codePatternMs": 3,
+      "promptBuildMs": 1,
+      "llmMs": 588574,
+      "outputMs": 0,
+      "totalMs": 0
+    },
+    "tokens": {
+      "estimated": 4180,
+      "actualPrompt": 4096,
+      "actualOutput": 579
+    },
+    "enrichment": {
+      "enrichedCount": 4,
+      "totalEnrichable": 5,
+      "quote": 0.8
+    },
+    "deduplication": {
+      "beforeDedup": 10,
+      "afterDedup": 10,
+      "removed": 0
+    }
+  },
+  "parsed": {
+    "success": false,
+    "mustHaveCount": 0,
+    "niceToHaveCount": 0
+  },
+  "rawLlmResponse": "# Priorisierte To-Do-Liste\n\n## CRITICAL (Kritisch)\n1. **CRITICAL** - **Fix missing `label` elements for inputs**: Ensure all input fields have associated `<label>` elements with the correct `htmlFor` attribute.\n   - **Files**: `components/LoginForm.tsx`, `components/ContactForm.tsx`\n   - **Description**: Missing labels can lead to accessibility issues, especially for screen readers.\n\n2. **CRITICAL** - **Fix missing `tabIndex` and `onClick` handlers on non-button elements with `role=\"button\"`**: Ensure all elements with `role=\"button\"` have a valid `tabIndex` and an `onClick` handler.\n   - **Files**: `components/ContactForm.tsx`\n   - **Description**: Non-standard buttons without proper keyboard support can be confusing for users.\n\n## HIGH (Hoch)\n3. **HIGH** - **Fix missing `alt` text for images**: Ensure all images have descriptive `alt` text.\n   - **File**: `App.tsx`\n   - **Description**: Missing alt text can lead to accessibility issues, especially for visually impaired users.\n\n4. **HIGH** - **Fix missing `aria-label` or `aria-labelledby` on interactive elements**: Ensure all interactive elements have appropriate ARIA attributes to improve accessibility.\n   - **Files**: `components/LoginForm.tsx`, `components/ContactForm.tsx`\n   - **Description**: Missing ARIA labels can make it difficult for screen readers and keyboard users to understand the purpose of an element.\n\n## MEDIUM (Mittel)\n5. **MEDIUM** - **Fix contrast issues in text elements**: Ensure all text has sufficient contrast against its background.\n   - **Files**: `components/LoginForm.tsx`, `components/ContactForm.tsx`\n   - **Description**: Insufficient contrast can make it difficult for users with visual impairments to read the content.\n\n6. **MEDIUM** - **Fix missing focus trap in modal dialogs**: Ensure all modal dialogs have a proper focus trap.\n   - **File**: `components/LoginForm.tsx`\n   - **Description**: A focus trap ensures that keyboard navigation stays within the dialog, improving usability and accessibility.\n\n## LOW (Niedrig)\n7. **LOW** - **Review and adjust `autoFocus` usage**: Evaluate the use of `autoFocus` to ensure it does not disrupt the user's flow.\n   - **File**: `components/ContactForm.tsx`\n   - **Description**: While `autoFocus` can be useful, it should be used judiciously to avoid disrupting the user's focus.\n\n---\n\nThis prioritized To-Do list ensures that critical accessibility issues are addressed first, followed by high and medium priority issues. Low-priority items can be reviewed and implemented as time allows."
+}

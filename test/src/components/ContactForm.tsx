@@ -1,17 +1,15 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 /**
- * ContactForm – enthält folgende Violations:
- *   V6:  onClick-Handler auf <div> ohne onKeyDown (semantisch, WCAG 2.1.1)
- *   V7:  role="button" auf <div> ohne tabIndex (semantisch, WCAG 4.1.2)
- *   V8:  Modaler Dialog ohne Fokus-Trap (semantisch, WCAG 2.1.2)
- *   V12: Senden-Button zu klein – 18x18px (layout, WCAG 2.5.8)
+ * ContactForm – enthält folgende Violations: V6: onClick-Handler auf <div> ohne onKeyDown (semantisch, WCAG 2.1.1) V7:
+ * role="button" auf <div> ohne tabIndex (semantisch, WCAG 4.1.2) V8: Modaler Dialog ohne Fokus-Trap (semantisch, WCAG
+ * 2.1.2) V12: Senden-Button zu klein – 18x18px (layout, WCAG 2.5.8)
  */
 export default function ContactForm() {
-  const [name, setName] = useState('')
-  const [message, setMessage] = useState('')
-  const [topic, setTopic] = useState('')
-  const [modalOpen, setModalOpen] = useState(false)
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [topic, setTopic] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <section className="form-container">
@@ -19,7 +17,9 @@ export default function ContactForm() {
 
       <div className="form-body">
         <div className="field-group">
-          <label htmlFor="name" className="field-label">Name</label>
+          <label htmlFor="name" className="field-label">
+            Name
+          </label>
           <input
             id="name"
             type="text"
@@ -38,10 +38,10 @@ export default function ContactForm() {
         <div className="field-group">
           <span className="field-label">Betreff auswählen</span>
           <div className="topic-grid">
-            {['Allgemein', 'Technisch', 'Abrechnung', 'Sonstiges'].map((t) => (
+            {["Allgemein", "Technisch", "Abrechnung", "Sonstiges"].map((t) => (
               <div
                 key={t}
-                className={`topic-tile ${topic === t ? 'selected' : ''}`}
+                className={`topic-tile ${topic === t ? "selected" : ""}`}
                 onClick={() => setTopic(t)}
                 // Kein onKeyDown – V6
               >
@@ -52,7 +52,9 @@ export default function ContactForm() {
         </div>
 
         <div className="field-group">
-          <label htmlFor="message" className="field-label">Nachricht</label>
+          <label htmlFor="message" className="field-label">
+            Nachricht
+          </label>
           <textarea
             id="message"
             value={message}
@@ -68,10 +70,7 @@ export default function ContactForm() {
             V12: Button ist 18x18px – unterschreitet Mindestgröße von 24x24px.
             (layout, WCAG 2.5.8)
           */}
-          <button
-            onClick={() => setModalOpen(true)}
-            className="btn-tiny"
-          >
+          <button onClick={() => setModalOpen(true)} className="btn-tiny">
             Senden
           </button>
 
@@ -82,7 +81,11 @@ export default function ContactForm() {
           */}
           <div
             role="button"
-            onClick={() => { setName(''); setMessage(''); setTopic('') }}
+            onClick={() => {
+              setName("");
+              setMessage("");
+              setTopic("");
+            }}
             className="btn-fake"
           >
             Zurücksetzen
@@ -97,12 +100,7 @@ export default function ContactForm() {
         (semantisch, WCAG 2.1.2)
       */}
       {modalOpen && (
-        <div
-          className="modal-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
-        >
+        <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
           <div className="modal-box">
             <h2 id="modal-title">Nachricht gesendet</h2>
             <p>Ihre Anfrage wurde erfolgreich übermittelt.</p>
@@ -115,5 +113,5 @@ export default function ContactForm() {
         </div>
       )}
     </section>
-  )
+  );
 }

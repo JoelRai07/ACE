@@ -1,9 +1,8 @@
 /**
- * Code-Modul — kümmert sich um Pattern-Findings und
- * die Anreicherung vorhandener Findings mit Quellcode.
+ * Code-Modul — kümmert sich um Pattern-Findings und die Anreicherung vorhandener Findings mit Quellcode.
  *
- * Nutzt Node.js-natives File-Reading + RegExp statt grep,
- * damit die Pipeline plattformunabhängig läuft (Windows/macOS/Linux).
+ * Nutzt Node.js-natives File-Reading + RegExp statt grep, damit die Pipeline plattformunabhängig läuft
+ * (Windows/macOS/Linux).
  */
 
 import * as fs from "fs";
@@ -98,7 +97,7 @@ export interface CodeModuleStats {
 
 export async function enrichWithCodeContext(
   findings: UnifiedFinding[],
-  srcDir: string
+  srcDir: string,
 ): Promise<{ enrichedCount: number; totalEnrichable: number }> {
   if (!fs.existsSync(srcDir)) {
     console.warn(`[code] srcDir nicht gefunden: ${srcDir}`);
@@ -110,7 +109,13 @@ export async function enrichWithCodeContext(
   let enriched = 0;
 
   for (const finding of enrichable) {
-    const terms = extractSearchTerms(finding.selector!);
+    // Primär: Selektor-basierte Terme; Fallback: HTML-Attribute des Elements
+    const selectorTerms = extractSearchTerms(finding.selector!);
+    const htmlTerms = typeof finding.rawData?.html === "string" ? extractTermsFromHtml(finding.rawData.html) : [];
+
+    // Selector-Terme zuerst; dann HTML-Terme als Fallback
+    const terms = selectorTerms.length > 0 ? [...new Set([...selectorTerms, ...htmlTerms])] : htmlTerms;
+
     if (terms.length === 0) continue;
 
     for (const term of terms) {
@@ -132,7 +137,7 @@ export async function enrichWithCodeContext(
 }
 
 export async function runGrepPatterns(
-  srcDir: string
+  srcDir: string,
 ): Promise<{ findings: UnifiedFinding[]; beforeDedup: number; afterDedup: number }> {
   if (!fs.existsSync(srcDir)) {
     console.warn(`[code] srcDir nicht gefunden: ${srcDir}`);
@@ -223,7 +228,7 @@ function searchInFiles(
   patternOrLiteral: RegExp | string,
   _srcDir: string,
   maxMatches: number,
-  literalMode: boolean
+  literalMode: boolean,
 ): SearchHit[] {
   const hits: SearchHit[] = [];
 
@@ -233,9 +238,7 @@ function searchInFiles(
     for (let i = 0; i < file.lines.length; i++) {
       if (hits.length >= maxMatches) break;
       const line = file.lines[i];
-      const match = literalMode
-        ? line.includes(patternOrLiteral as string)
-        : (patternOrLiteral as RegExp).test(line);
+      const match = literalMode ? line.includes(patternOrLiteral as string) : (patternOrLiteral as RegExp).test(line);
 
       if (match) {
         hits.push({
@@ -253,35 +256,129 @@ function searchInFiles(
 
 // ── Hilfsfunktionen ─────────────────────────────────────────────────────
 
+// Attributwerte die so generisch sind, dass ein Literal-Match nichts bringt
+const GENERIC_ATTR_VALUES = new Set([
+  "true",
+  "false",
+  "1",
+  "0",
+  "text",
+  "submit",
+  "button",
+  "reset",
+  "checkbox",
+  "radio",
+  "file",
+  "main",
+  "dialog",
+  "alert",
+  "banner",
+  "navigation",
+  "region",
+  "none",
+  "presentation",
+]);
+
+const GENERIC_CLASS_NAMES = new Set([
+  "active",
+  "disabled",
+  "selected",
+  "open",
+  "hidden",
+  "show",
+  "fade",
+  "row",
+  "col",
+  "btn",
+  "nav",
+  "app",
+]);
+
 function extractSearchTerms(selector: string): string[] {
   const terms = new Set<string>();
-  const idMatch = /^#([\w-]+)$|#([\w-]+)/.exec(selector);
-  if (idMatch) {
-    const id = idMatch[1] ?? idMatch[2];
-    terms.add(`id="${id}"`);
-    terms.add(`id='${id}'`);
-    terms.add(`id={\`${id}\`}`);
+
+  // Pseudo-Klassen/-Elemente entfernen (:nth-child(2), ::before, etc.)
+  const clean = selector.replace(/::?[\w-]+(\([^)]*\))?/g, "");
+
+  // 1. Alle IDs extrahieren: #password, div#foo → id="password", id="foo"
+  for (const m of clean.matchAll(/#([\w-]+)/g)) {
+    terms.add(`id="${m[1]}"`);
+    terms.add(`id='${m[1]}'`);
   }
+
+  // 2. aria-label
   const ariaMatch = /\[aria-label="([^"]+)"\]/.exec(selector);
-  if (ariaMatch) {
-    terms.add(`aria-label="${ariaMatch[1]}"`);
+  if (ariaMatch) terms.add(`aria-label="${ariaMatch[1]}"`);
+
+  // 3. CSS-Klassen (mind. 3 Zeichen, nicht generisch)
+  for (const m of clean.matchAll(/\.([\w-]{3,})/g)) {
+    if (!GENERIC_CLASS_NAMES.has(m[1])) terms.add(m[1]);
   }
-  const classMatches = [...selector.matchAll(/\.([\w-]{4,})/g)];
-  const GENERIC = new Set(["active", "disabled", "selected", "open", "hidden", "show", "fade"]);
-  for (const cls of classMatches) {
-    if (!GENERIC.has(cls[1])) terms.add(cls[1]);
+
+  // 4. Alle Attributwerte extrahieren: [type="password"] → type="password"
+  //    [href="#reset"] → href="#reset"  (nur wenn Wert nicht zu generisch)
+  for (const m of selector.matchAll(/\[([\w-]+)="([^"]{2,})"\]/g)) {
+    const attrName = m[1];
+    const attrValue = m[2];
+    if (attrName === "aria-label") continue; // schon oben behandelt
+    if (GENERIC_ATTR_VALUES.has(attrValue)) continue;
+    terms.add(`${attrName}="${attrValue}"`);
+    // Auch den nackten Wert als Fallback (z.B. für href="#reset" → "#reset")
+    if (attrValue.length >= 3) terms.add(attrValue);
   }
-  const attrMatch = /\[([\w-]+)="([^"]{3,})"\]/.exec(selector);
-  if (attrMatch && attrMatch[1] !== "aria-label") {
-    terms.add(attrMatch[2]);
+
+  console.log(`[code:enrich]  selector="${selector}" → terms=[${[...terms].join(", ")}]`);
+  return [...terms];
+}
+
+/** Extrahiert Suchbegriffe aus dem rohen HTML-Snippet eines axe-Findings. */
+function extractTermsFromHtml(html: string): string[] {
+  const terms = new Set<string>();
+
+  // class="foo bar" → alle Klassen (mind. 3 Zeichen, nicht generisch)
+  const classMatch = /\bclass="([^"]+)"/.exec(html);
+  if (classMatch) {
+    for (const cls of classMatch[1].split(/\s+/)) {
+      if (cls.length >= 3 && !GENERIC_CLASS_NAMES.has(cls)) {
+        terms.add(cls);
+      }
+    }
+  }
+
+  // id="foo" → id="foo"
+  const idMatch = /\bid="([\w-]+)"/.exec(html);
+  if (idMatch) {
+    terms.add(`id="${idMatch[1]}"`);
+    terms.add(`id='${idMatch[1]}'`);
+  }
+
+  // aria-label="..." → aria-label="..."
+  const ariaMatch = /\baria-label="([^"]+)"/.exec(html);
+  if (ariaMatch) terms.add(`aria-label="${ariaMatch[1]}"`);
+
+  // href="..." → href="..."  (z.B. href="#reset")
+  const hrefMatch = /\bhref="([^"]{2,})"/.exec(html);
+  if (hrefMatch && !GENERIC_ATTR_VALUES.has(hrefMatch[1])) {
+    terms.add(`href="${hrefMatch[1]}"`);
+  }
+
+  // placeholder="..." → placeholder="..."
+  const placeholderMatch = /\bplaceholder="([^"]{3,})"/.exec(html);
+  if (placeholderMatch) terms.add(`placeholder="${placeholderMatch[1]}"`);
+
+  // name="..." → name="..."
+  const nameMatch = /\bname="([\w-]{3,})"/.exec(html);
+  if (nameMatch && !GENERIC_ATTR_VALUES.has(nameMatch[1])) {
+    terms.add(`name="${nameMatch[1]}"`);
+  }
+
+  if (terms.size > 0) {
+    console.log(`[code:enrich]  html-fallback → terms=[${[...terms].join(", ")}]`);
   }
   return [...terms];
 }
 
-function readSnippet(
-  filePath: string,
-  lineNumber: number
-): { snippet: string; lineRange: [number, number] } | null {
+function readSnippet(filePath: string, lineNumber: number): { snippet: string; lineRange: [number, number] } | null {
   try {
     const content = fs.readFileSync(filePath, "utf-8");
     const lines = content.split("\n");

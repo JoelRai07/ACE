@@ -1,6 +1,4 @@
-/**
- * Output Formatter — schreibt Markdown + JSON Reports.
- */
+/** Output Formatter — schreibt Markdown + JSON Reports. */
 
 import * as fs from "fs";
 import * as path from "path";
@@ -71,7 +69,7 @@ export function formatAndSave(input: FormatterInput): SavedReport {
   const parsed = parseMarkdownTodoList(input.llmResult.rawResponse);
   if (parsed.parseSuccess) {
     console.log(
-      `[output] Parsing erfolgreich — ${parsed.mustHave.length} Must-have, ${parsed.niceToHave.length} Nice-to-have`
+      `[output] Parsing erfolgreich — ${parsed.mustHave.length} Must-have, ${parsed.niceToHave.length} Nice-to-have`,
     );
   } else {
     console.warn(`[output] Parsing fehlgeschlagen — Rohausgabe wird gespeichert`);
@@ -131,23 +129,21 @@ function buildMarkdownReport(input: FormatterInput, parsed: ParsedTodoList): str
     `| Tatsächliche Tokens (Prompt) | ${metrics.tokens.actualPrompt} |`,
     `| Tatsächliche Tokens (Output) | ${metrics.tokens.actualOutput} |`,
     `| Schätzungsabweichung | ${metrics.tokens.actualPrompt > 0 ? ((metrics.tokens.estimated / metrics.tokens.actualPrompt - 1) * 100).toFixed(1) + "%" : "n/a"} |`,
-    metrics.enrichment.totalEnrichable > 0
-      ? `| Anreicherungsquote | ${metrics.enrichment.enrichedCount}/${metrics.enrichment.totalEnrichable} (${(metrics.enrichment.quote * 100).toFixed(0)}%) |`
-      : null,
-    metrics.deduplication.removed > 0
-      ? `| Deduplizierung | ${metrics.deduplication.beforeDedup} → ${metrics.deduplication.afterDedup} (${metrics.deduplication.removed} entfernt) |`
-      : null,
+    metrics.enrichment.totalEnrichable > 0 ?
+      `| Anreicherungsquote | ${metrics.enrichment.enrichedCount}/${metrics.enrichment.totalEnrichable} (${(metrics.enrichment.quote * 100).toFixed(0)}%) |`
+    : null,
+    metrics.deduplication.removed > 0 ?
+      `| Deduplizierung | ${metrics.deduplication.beforeDedup} → ${metrics.deduplication.afterDedup} (${metrics.deduplication.removed} entfernt) |`
+    : null,
   ]
     .filter(Boolean)
     .join("\n");
 
-  const truncationWarning = builtPrompt.truncated
-    ? `\n> **Token-Budget:** Einige Findings (moderate/minor) wurden weggelassen.\n`
-    : "";
+  const truncationWarning =
+    builtPrompt.truncated ? `\n> **Token-Budget:** Einige Findings (moderate/minor) wurden weggelassen.\n` : "";
 
-  const parseWarning = !parsed.parseSuccess
-    ? `\n> **Parsing:** Struktur der LLM-Antwort weicht vom erwarteten Format ab.\n`
-    : "";
+  const parseWarning =
+    !parsed.parseSuccess ? `\n> **Parsing:** Struktur der LLM-Antwort weicht vom erwarteten Format ab.\n` : "";
 
   return [
     metaBlock,
@@ -226,5 +222,8 @@ function extractItems(section: string): TodoItem[] {
 }
 
 function toFileTimestamp(date: Date): string {
-  return date.toISOString().replace(/\.\d{3}Z$/, "").replace(/:/g, "-");
+  return date
+    .toISOString()
+    .replace(/\.\d{3}Z$/, "")
+    .replace(/:/g, "-");
 }

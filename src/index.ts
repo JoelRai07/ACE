@@ -2,30 +2,29 @@
  * Pipeline-Orchestrierung
  *
  * Verkettet alle Schritte der Barrierefreiheits-Analysepipeline:
- *   1. axe-core  → Collect → Normalize
- *   2. Playwright → Collect → Normalize
- *   3. Code       → Enrich (bestehende Findings) + Collect (Pattern-Findings) → Normalize
- *   4. Prompt Builder  → Token-Budget prüfen
- *   5. Ollama Client   → LLM-Aufruf
- *   6. Formatter       → Markdown + JSON speichern
  *
- * CLI-Flags:
- *   --url <url>         Ziel-URL (default: config.targetUrl)
- *   --src-dir <path>    Pfad zum src/-Verzeichnis der React-App (für Code-Anreicherung)
- *   --skip-llm          Prompt in results/ speichern, Ollama-Aufruf überspringen
- *   --axe-only          Nur axe-core ausführen (schneller Test)
+ * 1. Axe-core → Collect → Normalize
+ * 2. Playwright → Collect → Normalize
+ * 3. Code → Enrich (bestehende Findings) + Collect (Pattern-Findings) → Normalize
+ * 4. Prompt Builder → Token-Budget prüfen
+ * 5. Ollama Client → LLM-Aufruf
+ * 6. Formatter → Markdown + JSON speichern
+ *
+ * CLI-Flags: --url <url> Ziel-URL (default: config.targetUrl) --src-dir <path> Pfad zum src/-Verzeichnis der React-App
+ * (für Code-Anreicherung) --skip-llm Prompt in results/ speichern, Ollama-Aufruf überspringen --axe-only Nur axe-core
+ * ausführen (schneller Test)
  */
 
-import { runAxeAnalysis } from "./modules/axe.js";
-import { runPlaywrightChecks } from "./modules/playwright.js";
-import { enrichWithCodeContext, runGrepPatterns } from "./modules/code.js";
-import { buildPrompt } from "./prompt.js";
-import { callOllama } from "./ollama.js";
-import { formatAndSave } from "./output.js";
-import { config } from "./config.js";
-import type { UnifiedFinding, PipelineMetrics } from "./types.js";
 import * as fs from "fs";
 import * as path from "path";
+import { config } from "./config.js";
+import { runAxeAnalysis } from "./modules/axe.js";
+import { enrichWithCodeContext, runGrepPatterns } from "./modules/code.js";
+import { runPlaywrightChecks } from "./modules/playwright.js";
+import { callOllama } from "./ollama.js";
+import { formatAndSave } from "./output.js";
+import { buildPrompt } from "./prompt.js";
+import type { PipelineMetrics, UnifiedFinding } from "./types.js";
 
 // ── CLI-Argument-Parser ───────────────────────────────────────────────────
 
@@ -92,17 +91,17 @@ function printSectionHeader(title: string): void {
 function printSummary(
   findings: { axe: UnifiedFinding[]; playwright: UnifiedFinding[]; grep: UnifiedFinding[] },
   savedPaths: { markdownPath: string; jsonPath: string } | null,
-  metrics: Partial<PipelineMetrics>
+  metrics: Partial<PipelineMetrics>,
 ): void {
   const totalFindings = findings.axe.length + findings.playwright.length + findings.grep.length;
   const critical = [...findings.axe, ...findings.playwright, ...findings.grep].filter(
-    (f) => f.severity === "critical"
+    (f) => f.severity === "critical",
   ).length;
   const serious = [...findings.axe, ...findings.playwright, ...findings.grep].filter(
-    (f) => f.severity === "serious"
+    (f) => f.severity === "serious",
   ).length;
 
-  console.log("\n╔══════════════════════════════════════════════════════╗");
+  console.log("╔══════════════════════════════════════════════════════╗");
   console.log("║                  Analyse abgeschlossen               ║");
   console.log("╚══════════════════════════════════════════════════════╝");
   console.log(`  Findings gesamt:  ${totalFindings}`);
@@ -168,11 +167,7 @@ function timeMs(): number {
 }
 
 /** Misst die Dauer eines async Schritts und speichert sie in timings[key]. */
-async function timed<T>(
-  timings: Record<string, number>,
-  key: string,
-  fn: () => Promise<T>
-): Promise<T> {
+async function timed<T>(timings: Record<string, number>, key: string, fn: () => Promise<T>): Promise<T> {
   const t0 = timeMs();
   const result = await fn();
   timings[key] = timeMs() - t0;
@@ -184,16 +179,14 @@ function buildMetrics(
   timings: PipelineMetrics["phaseTimings"],
   enrichmentStats: { enrichedCount: number; totalEnrichable: number },
   dedupStats: { beforeDedup: number; afterDedup: number },
-  tokens?: { estimated: number; actualPrompt: number; actualOutput: number }
+  tokens?: { estimated: number; actualPrompt: number; actualOutput: number },
 ): PipelineMetrics {
   return {
     phaseTimings: timings,
     tokens: tokens ?? { estimated: 0, actualPrompt: 0, actualOutput: 0 },
     enrichment: {
       ...enrichmentStats,
-      quote: enrichmentStats.totalEnrichable > 0
-        ? enrichmentStats.enrichedCount / enrichmentStats.totalEnrichable
-        : 0,
+      quote: enrichmentStats.totalEnrichable > 0 ? enrichmentStats.enrichedCount / enrichmentStats.totalEnrichable : 0,
     },
     deduplication: {
       ...dedupStats,
@@ -210,8 +203,14 @@ async function run(): Promise<void> {
   printBanner(args.url, { srcDir: args.srcDir, skipLlm: args.skipLlm, axeOnly: args.axeOnly });
 
   const timings: PipelineMetrics["phaseTimings"] = {
-    axeMs: 0, playwrightMs: 0, codeEnrichMs: 0, codePatternMs: 0,
-    promptBuildMs: 0, llmMs: 0, outputMs: 0, totalMs: 0,
+    axeMs: 0,
+    playwrightMs: 0,
+    codeEnrichMs: 0,
+    codePatternMs: 0,
+    promptBuildMs: 0,
+    llmMs: 0,
+    outputMs: 0,
+    totalMs: 0,
   };
 
   let enrichmentStats = { enrichedCount: 0, totalEnrichable: 0 };
@@ -239,7 +238,7 @@ async function run(): Promise<void> {
     const srcDir = args.srcDir;
     printSectionHeader("Code-Anreicherung");
     enrichmentStats = await timed(timings, "codeEnrichMs", () =>
-      enrichWithCodeContext([...axeFindings, ...pwFindings], srcDir)
+      enrichWithCodeContext([...axeFindings, ...pwFindings], srcDir),
     );
 
     printSectionHeader("Code Pattern-Findings");
@@ -253,7 +252,7 @@ async function run(): Promise<void> {
   // ── Schritt 4: Prompt Builder ────────────────────────────────────────
   printSectionHeader("Prompt Builder");
   const builtPrompt = await timed(timings, "promptBuildMs", async () =>
-    buildPrompt({ axeFindings, playwrightFindings: pwFindings, grepFindings, targetUrl: args.url })
+    buildPrompt({ axeFindings, playwrightFindings: pwFindings, grepFindings, targetUrl: args.url }),
   );
 
   // ── Schritt 5: Ollama ────────────────────────────────────────────────
@@ -264,7 +263,7 @@ async function run(): Promise<void> {
     printSummary(
       { axe: axeFindings, playwright: pwFindings, grep: grepFindings },
       null,
-      buildMetrics(timings, enrichmentStats, dedupStats)
+      buildMetrics(timings, enrichmentStats, dedupStats),
     );
     return;
   }
@@ -295,11 +294,7 @@ async function run(): Promise<void> {
   timings.outputMs = timeMs() - t0;
   timings.totalMs = timeMs() - pipelineStart;
 
-  printSummary(
-    { axe: axeFindings, playwright: pwFindings, grep: grepFindings },
-    saved,
-    metrics
-  );
+  printSummary({ axe: axeFindings, playwright: pwFindings, grep: grepFindings }, saved, metrics);
 }
 
 // ── Einstiegspunkt ────────────────────────────────────────────────────────

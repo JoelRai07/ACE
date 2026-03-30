@@ -4,7 +4,7 @@
  * Bündelt alle Findings in einem einzigen Prompt für das LLM.
  */
 
-import type { UnifiedFinding, Severity } from "./types.js";
+import type { Severity, UnifiedFinding } from "./types.js";
 
 export interface PromptInput {
   axeFindings: UnifiedFinding[];
@@ -133,7 +133,7 @@ export function buildPrompt(input: PromptInput): BuiltPrompt {
     input.axeFindings,
     input.playwrightFindings,
     input.grepFindings,
-    availableForUser
+    availableForUser,
   );
 
   const userPrompt = buildUserPrompt(targetUrl, axe, playwright, grep, truncated, {
@@ -145,14 +145,17 @@ export function buildPrompt(input: PromptInput): BuiltPrompt {
   const totalTokens = systemTokens + estimateTokens(userPrompt);
 
   console.log(
-    `[prompt] ~${totalTokens} Tokens geschätzt (Budget: ${TOTAL_CONTEXT_WINDOW}, Input: ${AVAILABLE_INPUT_TOKENS})`
+    `[prompt] ~${totalTokens} Tokens geschätzt (Budget: ${TOTAL_CONTEXT_WINDOW}, Input: ${AVAILABLE_INPUT_TOKENS})`,
   );
 
   if (truncated) {
     const skipped =
-      input.axeFindings.length - axe.length +
-      input.playwrightFindings.length - playwright.length +
-      input.grepFindings.length - grep.length;
+      input.axeFindings.length -
+      axe.length +
+      input.playwrightFindings.length -
+      playwright.length +
+      input.grepFindings.length -
+      grep.length;
     console.warn(`[prompt] Token-Budget überschritten — ${skipped} Findings (moderate/minor) weggelassen`);
   }
 
@@ -175,13 +178,17 @@ function buildUserPrompt(
   playwrightFindings: UnifiedFinding[],
   grepFindings: UnifiedFinding[],
   truncated: boolean,
-  totals: { totalAxe: number; totalPlaywright: number; totalGrep: number }
+  totals: { totalAxe: number; totalPlaywright: number; totalGrep: number },
 ): string {
-  const truncationNote = truncated
-    ? `\n Hinweis: Wegen Token-Budget wurden ${
-        totals.totalAxe - axeFindings.length +
-        totals.totalPlaywright - playwrightFindings.length +
-        totals.totalGrep - grepFindings.length
+  const truncationNote =
+    truncated ?
+      `\n Hinweis: Wegen Token-Budget wurden ${
+        totals.totalAxe -
+        axeFindings.length +
+        totals.totalPlaywright -
+        playwrightFindings.length +
+        totals.totalGrep -
+        grepFindings.length
       } Findings (moderate/minor) weggelassen. Alle critical/serious Findings sind enthalten.\n`
     : "";
 
@@ -217,7 +224,7 @@ function applyTokenBudget(
   axeFindings: UnifiedFinding[],
   playwrightFindings: UnifiedFinding[],
   grepFindings: UnifiedFinding[],
-  budgetTokens: number
+  budgetTokens: number,
 ): {
   axe: UnifiedFinding[];
   playwright: UnifiedFinding[];
@@ -260,7 +267,7 @@ function applyTokenBudget(
 function serializeFinding(finding: UnifiedFinding): string {
   const lines: string[] = [];
   lines.push(
-    `[${finding.id}] ${finding.severity.toUpperCase()} | ${finding.ruleId} | WCAG ${finding.wcagCriteria.join(", ")} (${finding.wcagLevel})`
+    `[${finding.id}] ${finding.severity.toUpperCase()} | ${finding.ruleId} | WCAG ${finding.wcagCriteria.join(", ")} (${finding.wcagLevel})`,
   );
   const desc = finding.description.length > 300 ? `${finding.description.slice(0, 297)}...` : finding.description;
   lines.push(`Beschreibung: ${desc}`);

@@ -1,7 +1,8 @@
-/**
- * Ollama Client — kapselt den HTTP-Aufruf zum lokalen Modell.
- */
+/** Ollama Client — kapselt den HTTP-Aufruf zum lokalen Modell. */
 
+import http from "node:http";
+import https from "node:https";
+import { URL } from "node:url";
 import { config } from "./config.js";
 import type { BuiltPrompt } from "./prompt.js";
 
@@ -27,7 +28,19 @@ interface OllamaTagsResponse {
   models: Array<{ name: string }>;
 }
 
-const REQUEST_TIMEOUT_MS = 10 * 60 * 1_000;
+interface ErrorWithCause extends Error {
+  cause?: unknown;
+}
+
+interface SimpleResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  text(): Promise<string>;
+  json<T>(): Promise<T>;
+}
+
+const REQUEST_TIMEOUT_MS = 90 * 60 * 1_000;
 
 export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
   const endpoint = `${config.ollamaUrl}/api/generate`;
@@ -38,22 +51,23 @@ export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
     prompt: builtPrompt.userPrompt,
     system: builtPrompt.systemPrompt,
     stream: false,
+    think: false,
     options: {
       temperature: 0.1,
-      num_predict: 8_192,
+      num_predict: 3_072,
     },
   };
 
   console.log(`[ollama] Sende Prompt an ${config.ollamaModel} …`);
 
-  const response = await fetchWithTimeout(
+  const response = await requestWithTimeout(
     endpoint,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),
     },
-    REQUEST_TIMEOUT_MS
+    REQUEST_TIMEOUT_MS,
   );
 
   if (!response.ok) {
@@ -61,7 +75,7 @@ export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
     throw new Error(`Ollama HTTP ${response.status}: ${response.statusText}\nBody: ${body.slice(0, 500)}`);
   }
 
-  const data = (await response.json()) as OllamaGenerateResponse;
+  const data = await response.json<OllamaGenerateResponse>();
 
   if (!data.response || !data.done) {
     throw new Error(`Unerwartete Ollama-Antwort: done=${String(data.done)}, response=${data.response?.slice(0, 80)}`);
@@ -72,7 +86,7 @@ export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
   const promptTokens = data.prompt_eval_count ?? 0;
 
   console.log(
-    `[ollama] Fertig in ${(durationMs / 1000).toFixed(1)}s — ${promptTokens} Prompt-Tokens, ${outputTokens} Output-Tokens`
+    `[ollama] Fertig in ${(durationMs / 1000).toFixed(1)}s — ${promptTokens} Prompt-Tokens, ${outputTokens} Output-Tokens`,
   );
 
   return {
@@ -87,38 +101,130 @@ export async function callOllama(builtPrompt: BuiltPrompt): Promise<LlmResult> {
 export async function testConnection(): Promise<void> {
   const tagsUrl = `${config.ollamaUrl}/api/tags`;
   console.log(`[ollama] Verbindungstest: ${tagsUrl}`);
-  const response = await fetchWithTimeout(tagsUrl, { method: "GET" }, 10_000);
+  const response = await requestWithTimeout(tagsUrl, { method: "GET" }, 10_000);
   if (!response.ok) {
     throw new Error(`Ollama /api/tags: HTTP ${response.status}`);
   }
-  const data = (await response.json()) as OllamaTagsResponse;
+  const data = await response.json<OllamaTagsResponse>();
   const availableModels = data.models.map((m) => m.name);
-  if (!availableModels.some((name) => name === config.ollamaModel || name.startsWith(config.ollamaModel.split(":")[0]))) {
+  if (
+    !availableModels.some((name) => name === config.ollamaModel || name.startsWith(config.ollamaModel.split(":")[0]))
+  ) {
     throw new Error(
       `Modell "${config.ollamaModel}" nicht gefunden.\n` +
-        `Lade es mit: ollama pull ${config.ollamaModel}\nVerfügbar: ${availableModels.join(", ")}`
+        `Lade es mit: ollama pull ${config.ollamaModel}\nVerfügbar: ${availableModels.join(", ")}`,
     );
   }
   console.log(`[ollama] ✓ Modell "${config.ollamaModel}" ist bereit.`);
+
+  const generateUrl = `${config.ollamaUrl}/api/generate`;
+  console.log(`[ollama] Generierungstest: ${generateUrl}`);
+  const generateResponse = await requestWithTimeout(
+    generateUrl,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: config.ollamaModel,
+        prompt: "Antworte nur mit OK.",
+        stream: false,
+        think: false,
+        options: {
+          temperature: 0,
+          num_predict: 64,
+        },
+      }),
+    },
+    3 * 60_000,
+  );
+
+  if (!generateResponse.ok) {
+    const body = await generateResponse.text().catch(() => "(kein Body)");
+    throw new Error(`Ollama /api/generate: HTTP ${generateResponse.status}\nBody: ${body.slice(0, 500)}`);
+  }
+
+  const generateData = await generateResponse.json<OllamaGenerateResponse>();
+  if (!generateData.done || !generateData.response) {
+    throw new Error(
+      `Ollama /api/generate lieferte keine nutzbare Antwort: done=${String(generateData.done)}, ` +
+        `response=${generateData.response?.slice(0, 80)}`,
+    );
+  }
+
+  console.log(`[ollama] ✓ Generierung funktioniert (${generateData.response.trim().slice(0, 80)})`);
 }
 
-async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const response = await fetch(url, { ...options, signal: controller.signal });
-    return response;
-  } catch (err) {
-    if (err instanceof Error && err.name === "AbortError") {
-      throw new Error(
-        `Ollama-Anfrage abgebrochen nach ${timeoutMs / 1000}s Timeout. Läuft "${config.ollamaModel}" bereits? ` +
-          `Prüfe mit: ollama list`
+async function requestWithTimeout(
+  url: string,
+  options: { method: string; headers?: Record<string, string>; body?: string },
+  timeoutMs: number,
+): Promise<SimpleResponse> {
+  const parsedUrl = new URL(url);
+  const transport = parsedUrl.protocol === "https:" ? https : http;
+
+  return await new Promise<SimpleResponse>((resolve, reject) => {
+    const request = transport.request(
+      parsedUrl,
+      {
+        method: options.method,
+        headers: options.headers,
+      },
+      (response) => {
+        const chunks: Buffer[] = [];
+
+        response.on("data", (chunk: Buffer | string) => {
+          chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+        });
+
+        response.on("end", () => {
+          clearTimeout(timeoutId);
+          const rawBody = Buffer.concat(chunks).toString("utf8");
+
+          resolve({
+            ok: (response.statusCode ?? 0) >= 200 && (response.statusCode ?? 0) < 300,
+            status: response.statusCode ?? 0,
+            statusText: response.statusMessage ?? "",
+            text: async () => rawBody,
+            json: async <T>() => JSON.parse(rawBody) as T,
+          });
+        });
+      },
+    );
+
+    const timeoutId = setTimeout(() => {
+      request.destroy(
+        new Error(
+          `Ollama-Anfrage abgebrochen nach ${timeoutMs / 1000}s Timeout. Läuft "${config.ollamaModel}" bereits? ` +
+            `Prüfe mit: ollama list`,
+        ),
       );
+    }, timeoutMs);
+
+    request.on("error", (err: ErrorWithCause) => {
+      clearTimeout(timeoutId);
+
+      if (err.message.includes("Timeout")) {
+        reject(err);
+        return;
+      }
+
+      const causeMessage =
+        err.cause instanceof Error ? err.cause.message
+        : err.cause ? String(err.cause)
+        : "";
+      const details = causeMessage ? `\nUrsache: ${causeMessage}` : "";
+
+      reject(
+        new Error(`Ollama nicht erreichbar unter ${url}. Starte Ollama mit: ollama serve\n${err.message}${details}`),
+      );
+    });
+
+    if (options.body) {
+      request.write(options.body);
     }
-    throw new Error(`Ollama nicht erreichbar unter ${url}. Starte Ollama mit: ollama serve\n${String(err)}`);
-  } finally {
-    clearTimeout(timeoutId);
-  }
+
+    request.end();
+  });
 }
 
 if (require.main === module) {

@@ -1,0 +1,56 @@
+{
+  "version": "1.1",
+  "timestamp": "2026-03-26T14:17:03.885Z",
+  "targetUrl": "http://localhost:5173",
+  "model": "qwen2.5-coder:14b",
+  "stats": {
+    "findings": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "includedInPrompt": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "estimatedInputTokens": 4180,
+    "actualPromptTokens": 4096,
+    "actualOutputTokens": 1252,
+    "durationMs": 1721607,
+    "tokensBudgetTruncated": false
+  },
+  "metrics": {
+    "phaseTimings": {
+      "axeMs": 3284,
+      "playwrightMs": 3072,
+      "codeEnrichMs": 6,
+      "codePatternMs": 2,
+      "promptBuildMs": 1,
+      "llmMs": 1721607,
+      "outputMs": 0,
+      "totalMs": 0
+    },
+    "tokens": {
+      "estimated": 4180,
+      "actualPrompt": 4096,
+      "actualOutput": 1252
+    },
+    "enrichment": {
+      "enrichedCount": 4,
+      "totalEnrichable": 5,
+      "quote": 0.8
+    },
+    "deduplication": {
+      "beforeDedup": 10,
+      "afterDedup": 10,
+      "removed": 0
+    }
+  },
+  "parsed": {
+    "success": false,
+    "mustHaveCount": 0,
+    "niceToHaveCount": 0
+  },
+  "rawLlmResponse": "# Priorisierte To-Do-Liste zur Barrierefreiheit\n\n## CRITICAL (Kritisch)\n1. **Fehlende `alt` Attribute für Bilder**\n   - **Dateien:** App.tsx, ContactForm.tsx, LoginForm.tsx\n   - **Details:** `<img>` Elemente ohne `alt` Attribut.\n   - **Aktion:** Füge `alt` Attribute hinzu, um Bildinhalte zu beschreiben.\n\n2. **Fehlende Labels für Inputs**\n   - **Dateien:** LoginForm.tsx, ContactForm.tsx\n   - **Details:** `<input>` Elemente ohne zugehörige `<label>`.\n   - **Aktion:** Füge `<label>` Elemente hinzu und verknüpfe sie mit den entsprechenden Inputs über `for` und `id`.\n\n3. **Fehlende Skip Navigation Links**\n   - **Dateien:** App.tsx, ContactForm.tsx, LoginForm.tsx\n   - **Details:** Keine Möglichkeit, direkt zum Hauptinhalt zu springen.\n   - **Aktion:** Füge einen \"Skip to Main Content\" Link hinzu.\n\n4. **Fehlende `aria-label` oder `aria-labelledby` für komplexe Elemente**\n   - **Dateien:** LoginForm.tsx, ContactForm.tsx\n   - **Details:** Komplexe Elemente ohne semantische Unterstützung.\n   - **Aktion:** Füge `aria-label` oder `aria-labelledby` hinzu, um die Bedeutung der Elemente zu beschreiben.\n\n## HIGH (Hoch)\n1. **Fehlende Focus Styles**\n   - **Dateien:** App.tsx, ContactForm.tsx, LoginForm.tsx\n   - **Details:** Keine sichtbaren Focus Styles.\n   - **Aktion:** Füge CSS hinzu, um den Fokus von Benutzern mit Sehbehinderungen zu markieren.\n\n2. **Fehlende `tabIndex` für interaktive Elemente**\n   - **Dateien:** ContactForm.tsx\n   - **Details:** `<div>` Elemente mit `role=\"button\"` ohne `tabIndex`.\n   - **Aktion:** Füge `tabIndex={0}` hinzu, um die Tastaturfokussierbarkeit sicherzustellen.\n\n3. **Fehlende Keyboard Support für interaktive Elemente**\n   - **Dateien:** ContactForm.tsx\n   - **Details:** `<div>` Elemente mit `role=\"button\"` ohne `onKeyDown` Handler.\n   - **Aktion:** Füge `onKeyDown` Handler hinzu, um die Tastaturinteraktivität zu unterstützen.\n\n4. **Fehlende Focus Trap in Modals**\n   - **Dateien:** ContactForm.tsx\n   - **Details:** Modale Dialoge ohne Focus Trap.\n   - **Aktion:** Implementiere einen Focus Trap, um den Fokus innerhalb des Modals zu halten.\n\n## MEDIUM (Mittel)\n1. **Fehlende `aria-hidden` Attribute für nicht sichtbare Elemente**\n   - **Dateien:** App.tsx, ContactForm.tsx\n   - **Details:** Nicht sichtbare Elemente ohne `aria-hidden=\"true\"`.\n   - **Aktion:** Füge `aria-hidden=\"true\"` hinzu, um Screenreadern zu signalisieren, dass diese Elemente ignoriert werden sollen.\n\n2. **Fehlende `role` Attribute für semantisch korrekte Elemente**\n   - **Dateien:** App.tsx, ContactForm.tsx\n   - **Details:** Nicht-Button-Elemente mit `role=\"button\"`.\n   - **Aktion:** Entferne oder korrigiere die `role` Attribute, um semantische Korrektheit sicherzustellen.\n\n3. **Fehlende `aria-live` für dynamischen Inhalt**\n   - **Dateien:** App.tsx, ContactForm.tsx\n   - **Details:** Dynamischer Inhalt ohne `aria-live`.\n   - **Aktion:** Füge `aria-live` hinzu, um Benutzern mit Sehbehinderungen zu signalisieren, dass sich der Inhalt aktualisiert hat.\n\n## LOW (Niedrig)\n1. **Fehlende `lang` Attribute auf HTML Element**\n   - **Dateien:** App.tsx\n   - **Details:** Kein Sprachattribut auf dem `<html>` Element.\n   - **Aktion:** Füge ein `lang` Attribut hinzu, um die Sprache des Dokuments zu definieren.\n\n2. **Fehlende `aria-describedby` für zusätzliche Informationen**\n   - **Dateien:** App.tsx, ContactForm.tsx\n   - **Details:** Elemente ohne `aria-describedby`.\n   - **Aktion:** Füge `aria-describedby` hinzu, um zusätzliche Informationen bereitzustellen.\n\n3. **Fehlende `title` Attribute für Icons**\n   - **Dateien:** App.tsx, ContactForm.tsx\n   - **Details:** Icons ohne `title` Attribut.\n   - **Aktion:** Füge `title` Attribute hinzu, um die Bedeutung von Icons zu beschreiben.\n\n4. **Fehlende `aria-controls` für interaktive Elemente**\n   - **Dateien:** App.tsx, ContactForm.tsx\n   - **Details:** Interaktive Elemente ohne `aria-controls`.\n   - **Aktion:** Füge `aria-controls` hinzu, um die Steuerung von anderen Elementen zu signalisieren.\n\n---\n\nDiese To-Do-Liste sollte Ihnen helfen, Ihre Website schrittweise barrierefrei zu gestalten. Beginnen Sie mit den kritischen Punkten und arbeiten Sie sich dann nach unten durch die Liste."
+}

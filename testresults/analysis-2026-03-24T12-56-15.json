@@ -1,0 +1,56 @@
+{
+  "version": "1.1",
+  "timestamp": "2026-03-24T12:56:15.648Z",
+  "targetUrl": "http://localhost:5173",
+  "model": "qwen3:32b",
+  "stats": {
+    "findings": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "includedInPrompt": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "estimatedInputTokens": 3791,
+    "actualPromptTokens": 4096,
+    "actualOutputTokens": 873,
+    "durationMs": 3238063,
+    "tokensBudgetTruncated": false
+  },
+  "metrics": {
+    "phaseTimings": {
+      "axeMs": 3232,
+      "playwrightMs": 2944,
+      "codeEnrichMs": 2,
+      "codePatternMs": 2,
+      "promptBuildMs": 1,
+      "llmMs": 3238064,
+      "outputMs": 0,
+      "totalMs": 0
+    },
+    "tokens": {
+      "estimated": 3791,
+      "actualPrompt": 4096,
+      "actualOutput": 873
+    },
+    "enrichment": {
+      "enrichedCount": 4,
+      "totalEnrichable": 5,
+      "quote": 0.8
+    },
+    "deduplication": {
+      "beforeDedup": 10,
+      "afterDedup": 10,
+      "removed": 0
+    }
+  },
+  "parsed": {
+    "success": false,
+    "mustHaveCount": 0,
+    "niceToHaveCount": 0
+  },
+  "rawLlmResponse": "# Priorisierte To-Do-Liste für Barrierefreiheitsverbesserungen\n\n## Hochprioritäre Verbesserungen (Kritisch)\n\n### 1. Fehlende Labels für Formularelemente\n**Datei:** `components/LoginForm.tsx`  \n**Problem:** Passwort-Input hat kein zugeordnetes `<label>` (WCAG 1.3.1, 4.1.2)  \n**Lösung:** Füge ein `<label htmlFor=\"password\">Passwort</label>` vor dem Input hinzu.\n\n### 2. Fehlender Skip-Link\n**Datei:** `App.tsx`  \n**Problem:** Kein Skip-Link vorhanden (WCAG 2.4.1)  \n**Lösung:** Füge einen `<a href=\"#main-content\">Zum Inhalt springen</a>`-Link am Anfang der Seite hinzu.\n\n### 3. `aria-hidden=\"true\"` auf fokussierbarem Element\n**Datei:** `components/LoginForm.tsx`  \n**Problem:** Hilfe-Link hat `aria-hidden=\"true\"` (WCAG 4.1.2)  \n**Lösung:** Entferne `aria-hidden=\"true\"` von fokussierbaren Elementen.\n\n### 4. `role=\"button\"` auf Nicht-Button-Element ohne `tabIndex`\n**Datei:** `components/ContactForm.tsx`  \n**Problem:** `<div role=\"button\">` ohne `tabIndex` (WCAG 4.1.2)  \n**Lösung:** Füge `tabIndex={0}` hinzu oder verwende stattdessen ein `<button>`-Element.\n\n### 5. Fehlender Fokus-Trap im Modal\n**Datei:** `components/ContactForm.tsx`  \n**Problem:** Modal ohne Fokus-Trap (WCAG 2.1.2)  \n**Lösung:** Implementiere einen Fokus-Trap, der den Fokus innerhalb des Modals hält.\n\n## Mittelprioritäre Verbesserungen (Wichtig)\n\n### 6. `role=\"button\"` auf Nicht-Button-Element ohne Keyboard-Support\n**Datei:** `components/ContactForm.tsx`  \n**Problem:** `<div role=\"button\">` ohne `onKeyDown`-Handler (WCAG 2.1.1)  \n**Lösung:** Füge `onKeyDown={(e) => e.key === 'Enter' && ...}` hinzu oder verwende `<button>`.\n\n### 7. Elemente zu klein für Tastaturbedienung\n**Datei:** `components/ContactForm.tsx`  \n**Problem:** \"Senden\"-Button ist nur 18x18px groß (WCAG 2.5.8)  \n**Lösung:** Vergrößere den Button auf mindestens 24x24px.\n\n### 8. DOM-Reihenfolge weicht von visueller Reihenfolge ab\n**Datei:** `App.tsx`  \n**Problem:** DOM-Reihenfolge ist nicht logisch (WCAG 1.3.2)  \n**Lösung:** Anpassung der HTML-Struktur, um der visuellen Reihenfolge zu entsprechen.\n\n### 9. Fokus-Outline wurde entfernt\n**Datei:** `components/LoginForm.tsx`  \n**Problem:** `outline: none` wurde verwendet (WCAG 2.4.7)  \n**Lösung:** Entferne `outline: none` oder implementiere eine alternative Fokussierung.\n\n## Niedrigprioritäre Verbesserungen (Empfohlen)\n\n### 10. `autoFocus` kann den Fokusfluss stören\n**Datei:** `components/ContactForm.tsx`  \n**Problem:** Kein `autoFocus` im Modal (WCAG 2.4.3)  \n**Lösung:** Setze den Fokus automatisch auf das erste Element im Modal bei Öffnen."
+}

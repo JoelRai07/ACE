@@ -3,14 +3,16 @@
    Enthält bewusste CSS-Violations: V4, V5, V11, V12
    ============================================================ */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: #f5f7fa;
   color: #1a1a2e;
   min-height: 100vh;
@@ -24,7 +26,7 @@ body {
 }
 
 .app-header {
-  background: #0057B8;
+  background: #0057b8;
   color: white;
   padding: 12px 32px;
   display: flex;
@@ -49,7 +51,7 @@ body {
 
 .nav-btn {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.4);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   color: white;
   padding: 6px 16px;
   border-radius: 4px;
@@ -58,12 +60,12 @@ body {
 }
 
 .nav-btn.active {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-color: white;
 }
 
 .nav-btn:hover {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .app-main {
@@ -85,7 +87,7 @@ body {
 .form-container {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   padding: 40px;
   width: 100%;
   max-width: 480px;
@@ -125,8 +127,8 @@ body {
 }
 
 .field-input:focus {
-  outline: 2px solid #0057B8;
-  border-color: #0057B8;
+  outline: 2px solid #0057b8;
+  border-color: #0057b8;
 }
 
 .form-actions {
@@ -172,7 +174,7 @@ body {
 
 .info-box {
   background: #eef4ff;
-  border-left: 3px solid #0057B8;
+  border-left: 3px solid #0057b8;
   padding: 10px 14px;
   font-size: 13px;
   border-radius: 0 4px 4px 0;
@@ -185,7 +187,7 @@ body {
 
 .form-footer-links a {
   font-size: 13px;
-  color: #0057B8;
+  color: #0057b8;
   text-decoration: underline;
   /* V5 outline:none ist direkt im JSX als style-Prop gesetzt */
 }
@@ -215,9 +217,9 @@ body {
 }
 
 .topic-tile.selected {
-  background: #0057B8;
+  background: #0057b8;
   color: white;
-  border-color: #0057B8;
+  border-color: #0057b8;
 }
 
 /* V7: .btn-fake simuliert einen Button, ist aber ein <div> ohne tabIndex */
@@ -238,7 +240,7 @@ body {
   height: 18px;
   padding: 0;
   font-size: 8px;
-  background: #0057B8;
+  background: #0057b8;
   color: white;
   border: none;
   border-radius: 2px;
@@ -248,7 +250,7 @@ body {
 }
 
 .btn-primary {
-  background: #0057B8;
+  background: #0057b8;
   color: white;
   border: none;
   padding: 10px 24px;
@@ -261,7 +263,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -276,7 +278,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .modal-box h2 {

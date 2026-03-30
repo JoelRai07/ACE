@@ -1,6 +1,6 @@
 # ACE – Accessibility Companion (vereinfachte Nutzung)
 
-ACE scannt eine laufende React-Anwendung (z.B. `sbw-feedbackformular`) mit drei Quellen:
+ACE scannt eine laufende React-Anwendung mit drei Quellen:
 axe-core, Playwright-Checks und grep-basierte Codepattern. Alle Ergebnisse landen in einer
 priorisierten Must-have/Nice-to-have-Liste, inklusive Markdown- und JSON-Report.
 
@@ -8,18 +8,18 @@ priorisierten Must-have/Nice-to-have-Liste, inklusive Markdown- und JSON-Report.
 
 ```bash
 cd ACE
-pnpm install          # einmalig (installiert auch die Playwright-Browser)
-pnpm analyze -- --url http://localhost:5200 --src-dir ../sbw-feedbackformular/app
+pnpm install 
+pnpm analyze -- --url http://localhost:xxxx --src-dir ../
 ```
 
 ### Praktische Skripte
 
-| Script            | Zweck |
-|-------------------|-------|
-| `pnpm analyze`    | Vollständige Pipeline inkl. Ollama-Aufruf |
-| `pnpm prompt`     | Pipeline ohne LLM (Prompt wird unter `results/prompt-*.txt` gespeichert) |
-| `pnpm axe`        | Nur axe-core, ohne LLM |
-| `pnpm test:ollama`| Prüft, ob Ollama läuft und das konfigurierte Modell vorhanden ist |
+| Script             | Zweck                                                                    |
+| ------------------ | ------------------------------------------------------------------------ |
+| `pnpm analyze`     | Vollständige Pipeline inkl. Ollama-Aufruf                                |
+| `pnpm prompt`      | Pipeline ohne LLM (Prompt wird unter `results/prompt-*.txt` gespeichert) |
+| `pnpm axe`         | Nur axe-core, ohne LLM                                                   |
+| `pnpm test:ollama` | Prüft, ob Ollama läuft und das konfigurierte Modell vorhanden ist        |
 
 `TARGET_URL`, `OLLAMA_URL`, `OLLAMA_MODEL` und `RESULTS_DIR` lassen sich per Umgebungsvariablen
 überschreiben. Standardmäßig erwartet ACE einen Dev-Server unter `http://localhost:3000` und

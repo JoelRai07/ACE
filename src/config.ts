@@ -1,9 +1,10 @@
 /**
- * Zentraler Konfigurationsblock, überschreibbar via Umgebungsvariablen.
- * Lädt .env-Datei aus dem Projektroot (falls vorhanden).
+ * Zentraler Konfigurationsblock, überschreibbar via Umgebungsvariablen. Lädt .env-Datei aus dem Projektroot (falls
+ * vorhanden).
  */
 
 import * as dotenv from "dotenv";
+
 dotenv.config();
 
 export const config = {

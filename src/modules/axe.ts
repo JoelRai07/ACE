@@ -1,13 +1,10 @@
-/**
- * axe-core Modul — sammelt DOM-Findings und normalisiert sie direkt
- * in das Unified Finding Schema.
- */
+/** Axe-core Modul — sammelt DOM-Findings und normalisiert sie direkt in das Unified Finding Schema. */
 
-import { chromium } from "playwright";
-import AxeBuilder from "@axe-core/playwright";
-import type { AxeResults, Result, NodeResult, ImpactValue } from "axe-core";
 import { config } from "../config.js";
-import type { UnifiedFinding, Severity, WcagLevel, ViolationCategory } from "../types.js";
+import type { Severity, UnifiedFinding, ViolationCategory, WcagLevel } from "../types.js";
+import AxeBuilder from "@axe-core/playwright";
+import type { AxeResults, ImpactValue, NodeResult, Result } from "axe-core";
+import { chromium } from "playwright";
 
 export async function runAxeAnalysis(url: string): Promise<UnifiedFinding[]> {
   const results = await collectAxeFindings(url);
@@ -24,13 +21,11 @@ async function collectAxeFindings(url: string): Promise<AxeResults> {
     await page.goto(url, { waitUntil: "networkidle", timeout: config.playwright.timeoutMs });
     await page.waitForTimeout(config.playwright.navigationWaitMs);
 
-    const results = await new AxeBuilder({ page })
-      .withTags([...config.axe.runOnly.values])
-      .analyze();
+    const results = await new AxeBuilder({ page }).withTags([...config.axe.runOnly.values]).analyze();
 
     console.log(
       `[axe] Fertig — ${results.violations.length} Violations, ` +
-        `${results.passes.length} Passes, ${results.incomplete.length} Incomplete`
+        `${results.passes.length} Passes, ${results.incomplete.length} Incomplete`,
     );
 
     return results;
@@ -39,8 +34,7 @@ async function collectAxeFindings(url: string): Promise<AxeResults> {
   }
 }
 
-// ── Normalisierung ──────────────────────────────────────────────────────
-
+// Normaliser
 let axeIdCounter = 0;
 
 function normalizeAxeResults(results: AxeResults): UnifiedFinding[] {
@@ -60,15 +54,21 @@ function normalizeAxeResults(results: AxeResults): UnifiedFinding[] {
   return findings;
 }
 
-/** Regeln, die primär visuell/layout-basiert sind */
 const LAYOUT_RULES = new Set(["color-contrast", "color-contrast-enhanced"]);
 
-/** Regeln, die semantische Bedeutung/Struktur betreffen */
 const SEMANTIC_RULES = new Set([
-  "heading-order", "landmark-one-main", "landmark-unique",
-  "aria-required-children", "aria-required-parent", "aria-roles",
-  "aria-allowed-attr", "aria-prohibited-attr", "aria-valid-attr",
-  "aria-valid-attr-value", "aria-hidden-focus", "aria-hidden-body",
+  "heading-order",
+  "landmark-one-main",
+  "landmark-unique",
+  "aria-required-children",
+  "aria-required-parent",
+  "aria-roles",
+  "aria-allowed-attr",
+  "aria-prohibited-attr",
+  "aria-valid-attr",
+  "aria-valid-attr-value",
+  "aria-hidden-focus",
+  "aria-hidden-body",
 ]);
 
 function mapCategory(ruleId: string): ViolationCategory {
@@ -81,13 +81,12 @@ function mapNodeToFinding(
   violation: Result,
   node: NodeResult,
   wcagLevel: WcagLevel,
-  wcagCriteria: string[]
+  wcagCriteria: string[],
 ): UnifiedFinding {
   const selectorEntry = node.target.length > 0 ? node.target.at(-1) : null;
-  const selector = typeof selectorEntry === "string"
-    ? selectorEntry
-    : Array.isArray(selectorEntry)
-    ? selectorEntry.join(" ")
+  const selector =
+    typeof selectorEntry === "string" ? selectorEntry
+    : Array.isArray(selectorEntry) ? selectorEntry.join(" ")
     : null;
 
   return {

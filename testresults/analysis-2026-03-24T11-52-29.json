@@ -1,0 +1,56 @@
+{
+  "version": "1.1",
+  "timestamp": "2026-03-24T11:52:29.950Z",
+  "targetUrl": "http://localhost:5173",
+  "model": "qwen2.5-coder:7b",
+  "stats": {
+    "findings": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "includedInPrompt": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "estimatedInputTokens": 3791,
+    "actualPromptTokens": 4096,
+    "actualOutputTokens": 578,
+    "durationMs": 490986,
+    "tokensBudgetTruncated": false
+  },
+  "metrics": {
+    "phaseTimings": {
+      "axeMs": 3237,
+      "playwrightMs": 2993,
+      "codeEnrichMs": 3,
+      "codePatternMs": 2,
+      "promptBuildMs": 1,
+      "llmMs": 490986,
+      "outputMs": 0,
+      "totalMs": 0
+    },
+    "tokens": {
+      "estimated": 3791,
+      "actualPrompt": 4096,
+      "actualOutput": 578
+    },
+    "enrichment": {
+      "enrichedCount": 4,
+      "totalEnrichable": 5,
+      "quote": 0.8
+    },
+    "deduplication": {
+      "beforeDedup": 10,
+      "afterDedup": 10,
+      "removed": 0
+    }
+  },
+  "parsed": {
+    "success": false,
+    "mustHaveCount": 0,
+    "niceToHaveCount": 0
+  },
+  "rawLlmResponse": "# Priorisierte To-Do-Liste\n\n## 1. **Hochpriorität (CRITICAL)**\n   - **Aktion:** Implementiere `aria-label` oder `aria-labelledby` für alle fokussierbaren Elemente, die keine natürliche Button-Tags verwenden.\n     - **Betroffene Dateien:**\n       - `components/LoginForm.tsx`\n       - `components/ContactForm.tsx`\n\n   - **Aktion:** Füge `tabIndex={0}` zu allen fokussierbaren Elementen hinzu, die keine natürliche Button-Tags verwenden.\n     - **Betroffene Dateien:**\n       - `components/LoginForm.tsx`\n       - `components/ContactForm.tsx`\n\n   - **Aktion:** Implementiere einen Fokus-Trap für alle modalen Dialoge.\n     - **Betroffene Dateien:**\n       - `components/LoginForm.tsx`\n       - `components/ContactForm.tsx`\n\n## 2. **Mittelpriorität (IMPORTANT)**\n   - **Aktion:** Verbessere den Kontrast der Schaltflächen, um die Barrierefreiheit zu erhöhen.\n     - **Betroffene Dateien:**\n       - `components/LoginForm.tsx`\n       - `components/ContactForm.tsx`\n\n   - **Aktion:** Entferne das `autoFocus`-Attribut aus dem Modal-Dialog, da es den Fokusfluss stören kann.\n     - **Betroffene Datei:**\n       - `components/ContactForm.tsx`\n\n## 3. **Niedrige Priorität (NORMAL)**\n   - **Aktion:** Implementiere einen Schließen-Button mit einem Label für die LoginForm.\n     - **Betroffene Datei:**\n       - `components/LoginForm.tsx`\n\n   - **Aktion:** Füge ein visuelles Label zu jedem Input-Feld hinzu, um das Barrierefreiheit zu verbessern.\n     - **Betroffene Dateien:**\n       - `components/LoginForm.tsx`\n       - `components/ContactForm.tsx`\n\n   - **Aktion:** Überprüfe und optimiere die DOM-Reihenfolge, um sie semantisch korrekt zu gestalten.\n     - **Betroffene Datei:**\n       - `App.tsx` (falls vorhanden)\n\n---\n\nDiese To-Do-Liste priorisiert die Aktionen basierend auf ihrer Bedeutung für die Barrierefreiheit und den Benutzererlebnissen. Beginnen Sie mit der Implementierung der hochpriorisierten Aufgaben, um sofortige Verbesserungen vorzunehmen."
+}

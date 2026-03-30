@@ -1,0 +1,56 @@
+{
+  "version": "1.1",
+  "timestamp": "2026-03-26T11:24:57.801Z",
+  "targetUrl": "http://localhost:5173",
+  "model": "qwen2.5-coder:7b",
+  "stats": {
+    "findings": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "includedInPrompt": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "estimatedInputTokens": 4180,
+    "actualPromptTokens": 4096,
+    "actualOutputTokens": 715,
+    "durationMs": 616437,
+    "tokensBudgetTruncated": false
+  },
+  "metrics": {
+    "phaseTimings": {
+      "axeMs": 3197,
+      "playwrightMs": 2890,
+      "codeEnrichMs": 2,
+      "codePatternMs": 1,
+      "promptBuildMs": 1,
+      "llmMs": 616437,
+      "outputMs": 0,
+      "totalMs": 0
+    },
+    "tokens": {
+      "estimated": 4180,
+      "actualPrompt": 4096,
+      "actualOutput": 715
+    },
+    "enrichment": {
+      "enrichedCount": 4,
+      "totalEnrichable": 5,
+      "quote": 0.8
+    },
+    "deduplication": {
+      "beforeDedup": 10,
+      "afterDedup": 10,
+      "removed": 0
+    }
+  },
+  "parsed": {
+    "success": false,
+    "mustHaveCount": 0,
+    "niceToHaveCount": 0
+  },
+  "rawLlmResponse": "# Priorisierte To-Do-Liste\n\n## CRITICAL (Kritisch)\n1. **CRITICAL** - [CRITICAL] Implement `alt` attribute for all images to ensure accessibility.\n   - **Datei**: App.tsx, ContactForm.tsx\n   - **Code**: `<img src=\"...\" alt=\"Description of image\" />`\n\n2. **CRITICAL** - [CRITICAL] Add labels to all form inputs using the `htmlFor` attribute.\n   - **Datei**: LoginForm.tsx, ContactForm.tsx\n   - **Code**: `<label htmlFor=\"email\">Email</label>`, `<label htmlFor=\"password\">Password</label>`\n\n3. **CRITICAL** - [CRITICAL] Ensure all buttons have a proper `tabIndex` and are accessible via keyboard.\n   - **Datei**: App.tsx, ContactForm.tsx\n   - **Code**: `<button tabIndex={0}>Submit</button>`, `<div role=\"button\" tabIndex={0}>Senden</div>`\n\n## HIGH (Hoch)\n4. **HIGH** - [HIGH] Remove `autoFocus` from the modal to prevent focus issues.\n   - **Datei**: ContactForm.tsx\n   - **Code**: Remove `autoFocus` from the button.\n\n5. **HIGH** - [HIGH] Ensure all interactive elements have a sufficient contrast ratio (at least 4.5:1).\n   - **Datei**: LoginForm.tsx, ContactForm.tsx\n   - **Code**: Adjust colors to meet WCAG 2.0 standards.\n\n## MEDIUM (Mittel)\n6. **MEDIUM** - [MEDIUM] Implement a focus trap for the modal dialog.\n   - **Datei**: ContactForm.tsx\n   - **Code**: Add logic to ensure that keyboard navigation stays within the modal.\n\n7. **MEDIUM** - [MEDIUM] Ensure all buttons have a proper `onClick` handler and are accessible via keyboard.\n   - **Datei**: App.tsx, ContactForm.tsx\n   - **Code**: `<button onClick={() => setModalOpen(false)}>Schließen</button>`\n\n## LOW (Niedrig)\n8. **LOW** - [LOW] Consider adding a `title` attribute to images for additional accessibility.\n   - **Datei**: App.tsx, ContactForm.tsx\n   - **Code**: `<img src=\"...\" alt=\"Description of image\" title=\"Description of image\" />`\n\n9. **LOW** - [LOW] Ensure all form elements are properly nested within a `form` tag for better accessibility.\n   - **Datei**: LoginForm.tsx, ContactForm.tsx\n   - **Code**: Wrap form elements in a `<form>` tag.\n\n10. **LOW** - [LOW] Consider adding a `aria-label` attribute to non-interactive elements that require additional context.\n    - **Datei**: App.tsx, ContactForm.tsx\n    - **Code**: `<div aria-label=\"Close modal\" onClick={() => setModalOpen(false)}>Schließen</div>`\n\n---\n\nDiese To-Do-Liste priorisiert die wichtigsten Änderungen basierend auf den kritischen und hohen Schweregraden. Die niedrigen Schweregrade sollten nach der Implementierung der kritischen und hohen Punkte überprüft werden, um eine vollständige Barrierefreiheit zu erreichen."
+}

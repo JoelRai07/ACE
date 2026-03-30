@@ -1,21 +1,19 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 /**
- * LoginForm – enthält folgende Violations:
- *   V2:  Schließen-Button ohne Label (syntaktisch, WCAG 4.1.2)
- *   V3:  Passwort-Input ohne <label> (syntaktisch, WCAG 1.3.1)
- *   V4:  Submit-Button mit zu niedrigem Kontrast (#888 auf #fff) (layout, WCAG 1.4.3)
- *   V5:  Fokus-Outline via inline-style entfernt (layout, WCAG 2.4.7)
- *   V10: aria-hidden="true" auf fokussierbarem Hilfe-Link (syntaktisch, WCAG 4.1.2)
+ * LoginForm – enthält folgende Violations: V2: Schließen-Button ohne Label (syntaktisch, WCAG 4.1.2) V3: Passwort-Input
+ * ohne <label> (syntaktisch, WCAG 1.3.1) V4: Submit-Button mit zu niedrigem Kontrast (#888 auf #fff) (layout, WCAG
+ * 1.4.3) V5: Fokus-Outline via inline-style entfernt (layout, WCAG 2.4.7) V10: aria-hidden="true" auf fokussierbarem
+ * Hilfe-Link (syntaktisch, WCAG 4.1.2)
  */
 export default function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showInfo, setShowInfo] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleSubmit = () => {
-    alert(`Login mit: ${email}`)
-  }
+    alert(`Login mit: ${email}`);
+  };
 
   return (
     <section className="form-container">
@@ -52,18 +50,12 @@ export default function LoginForm() {
 
         <div className="form-actions">
           {/* V4: Kontrastverhältnis ~2.5:1 – schlechter Kontrast (WCAG 1.4.3) */}
-          <button
-            onClick={handleSubmit}
-            className="btn-submit-lowcontrast"
-          >
+          <button onClick={handleSubmit} className="btn-submit-lowcontrast">
             Anmelden
           </button>
 
           {/* V2: Icon-Button ohne aria-label und ohne sichtbaren Text (WCAG 4.1.2) */}
-          <button
-            className="btn-icon"
-            onClick={() => setShowInfo(!showInfo)}
-          >
+          <button className="btn-icon" onClick={() => setShowInfo(!showInfo)}>
             ?
           </button>
         </div>
@@ -77,16 +69,11 @@ export default function LoginForm() {
         {/* V5: Fokus-Outline entfernt via style-Prop (WCAG 2.4.7) */}
         {/* V10: aria-hidden="true" auf fokussierbarem <a>-Element (WCAG 4.1.2) */}
         <div className="form-footer-links">
-          <a
-            href="#reset"
-            style={{ outline: 'none' }}
-            aria-hidden="true"
-            tabIndex={0}
-          >
+          <a href="#reset" style={{ outline: "none" }} aria-hidden="true" tabIndex={0}>
             Passwort vergessen?
           </a>
         </div>
       </div>
     </section>
-  )
+  );
 }

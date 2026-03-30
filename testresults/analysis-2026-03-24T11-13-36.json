@@ -1,0 +1,56 @@
+{
+  "version": "1.1",
+  "timestamp": "2026-03-24T11:13:36.437Z",
+  "targetUrl": "http://localhost:5173",
+  "model": "qwen3:latest",
+  "stats": {
+    "findings": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "includedInPrompt": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 10
+    },
+    "estimatedInputTokens": 3791,
+    "actualPromptTokens": 4096,
+    "actualOutputTokens": 3072,
+    "durationMs": 1931607,
+    "tokensBudgetTruncated": false
+  },
+  "metrics": {
+    "phaseTimings": {
+      "axeMs": 3474,
+      "playwrightMs": 3166,
+      "codeEnrichMs": 2,
+      "codePatternMs": 1,
+      "promptBuildMs": 1,
+      "llmMs": 1931607,
+      "outputMs": 0,
+      "totalMs": 0
+    },
+    "tokens": {
+      "estimated": 3791,
+      "actualPrompt": 4096,
+      "actualOutput": 3072
+    },
+    "enrichment": {
+      "enrichedCount": 4,
+      "totalEnrichable": 5,
+      "quote": 0.8
+    },
+    "deduplication": {
+      "beforeDedup": 10,
+      "afterDedup": 10,
+      "removed": 0
+    }
+  },
+  "parsed": {
+    "success": false,
+    "mustHaveCount": 0,
+    "niceToHaveCount": 0
+  },
+  "rawLlmResponse": "odynamisch\n\n# Priorisierte To-Do-Liste (gemäß vorgegebenem Format)\n\n## 🔥 **Kritische / Hochpriorisierte Aufgaben (Level 1)**\n\n### ✅ **1. Fehler in der Semantik und Barrierefreiheit (WCAG 4.1.2)**\n- **Beschreibung:** Fokussierbare Elemente mit `aria-hidden=\"true\"` oder `role=\"button\"` auf Nicht-Button-Elementen.\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V10)\n  - `components/ContactForm.tsx` (V7)\n- **Priorität:** 🔥\n- **Beschreibung:** Fokussierbare Elemente mit `aria-hidden=\"true\"` oder `role=\"button\"` auf Nicht-Button-Elementen können für Screenreader und Tastaturnutzer unerwartet sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## ⚠️ **Hochpriorisierte Aufgaben (Level 2)**\n\n### ✅ **2. Kontrastfehler (WCAG 1.4.3)**\n- **Beschreibung:** Submit-Button mit zu niedrigem Kontrast (#888 auf #fff).\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V4)\n- **Priorität:** ⚠️\n- **Beschreibung:** Der Submit-Button hat einen zu niedrigen Kontrast, was für Sehbehinderte schwer lesbar ist. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 1.4.3).\n\n---\n\n## 🛠️ **Mittlere Priorität (Level 3)**\n\n### ✅ **3. Fehlende Beschriftungen für Eingabefelder (WCAG 1.3.1)**\n- **Beschreibung:** Eingabefelder ohne zugehörige `<label>`-Elemente.\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V3)\n- **Priorität:** 🛠️\n- **Beschreibung:** Eingabefelder ohne `<label>`-Elemente sind für Screenreader und Benutzer mit eingeschränkter Sehfähigkeit schwer zu navigieren. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 1.3.1).\n\n---\n\n## 📌 **Niedrige Priorität (Level 4)**\n\n### ✅ **4. Fehlende Fokus-Trap in Modalen (WCAG 2.1.2)**\n- **Beschreibung:** Modalfenster ohne Fokus-Trap.\n- **Betroffene Dateien:**\n  - `components/ContactForm.tsx` (V8)\n- **Priorität:** 📌\n- **Beschreibung:** Modalfenster ohne Fokus-Trap können zu Fokusverlusten führen, wenn Benutzer mit Tastatur interagieren. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 2.1.2).\n\n---\n\n## 📝 **Zusätzliche Empfehlungen**\n\n### ✅ **5. Fehlende Fokus-Indikatoren (WCAG 2.4.3)**\n- **Beschreibung:** Fokus-Indikatoren wurden über `inline-style` entfernt.\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V5)\n- **Priorität:** 📝\n- **Beschreibung:** Fokus-Indikatoren sind für Benutzer mit eingeschränkter Sehfähigkeit unerlässlich. Der Entfernung der Fokus-Indikatoren via `inline-style` verletzt die Barrierefreiheitsrichtlinien (WCAG 2.4.3).\n\n---\n\n## 📌 **Weitere Empfehlungen (nicht kritisch, aber zu beachten)**\n\n### ✅ **6. Fehlende Skalierung von Interaktions-Elementen (WCAG 2.5.8)**\n- **Beschreibung:** Interaktions-Elemente sind kleiner als 24x24px.\n- **Betroffene Dateien:**\n  - `App.tsx` (V12)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktions-Elemente sollten mindestens 24x24px groß sein, um für Benutzer mit eingeschränkter Sehfähigkeit zugänglich zu sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 2.5.8).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge**\n\n### ✅ **7. Fehlender Skip-Link (WCAG 2.4.1)**\n- **Beschreibung:** Kein Skip-Link für Benutzer mit Tastatur.\n- **Betroffene Dateien:**\n  - `App.tsx` (V9)\n- **Priorität:** 📌\n- **Beschreibung:** Skip-Links sind für Benutzer mit Tastaturnavigation unerlässlich, um direkt zu Inhalt zu gelangen. Der Fehlende Skip-Link verletzt die Barrierefreiheitsrichtlinien (WCAG 2.4.1).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **8. Fehlende Beschriftungen für Buttons (WCAG 4.1.2)**\n- **Beschreibung:** Buttons ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `App.tsx` (V2)\n- **Priorität:** 📌\n- **Beschreibung:** Buttons ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **9. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/ContactForm.tsx` (V6)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **10. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/ContactForm.tsx` (V7)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **11. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/ContactForm.tsx` (V8)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **12. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/ContactForm.tsx` (V12)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **13. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V3)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **14. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V4)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **15. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V5)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **16. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V6)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria,` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **17. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V7)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **18. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label`.\n- **Betroffene Dateien:**\n  - `components/LoginForm.tsx` (V8)\n- **Priorität:** 📌\n- **Beschreibung:** Interaktive Elemente ohne Text oder `aria-label` können für Screenreader und Tastaturnutzer unklar sein. Dies verletzt die Barrierefreiheitsrichtlinien (WCAG 4.1.2).\n\n---\n\n## 📌 **Zusätzliche Verbesserungsvorschläge (nicht kritisch, aber zu beachten)**\n\n### ✅ **19. Fehlende Beschriftungen für interaktive Elemente (WCAG 4.1.2)**\n-"
+}
