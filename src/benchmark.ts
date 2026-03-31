@@ -60,7 +60,7 @@ const ALL_SUITES: Record<string, SuiteConfig> = {
 
 const DEFAULT_RUNS = 10;
 const BENCHMARK_DIR = "./results/benchmark";
-const DEFAULT_LLM_DETECT_NUM_PREDICT = "400";
+const DEFAULT_LLM_DETECT_NUM_PREDICT = "1536";
 const DEFAULT_LLM_DETECT_CHUNK_CHARS = "3000";
 const DEFAULT_LLM_DETECT_MAX_FILES = "25";
 
