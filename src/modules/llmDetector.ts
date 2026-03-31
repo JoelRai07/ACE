@@ -172,6 +172,9 @@ function parseJsonFindings(rawResponse: string): LlmCodeFinding[] {
     }
   }
 
+  const markdownFallback = parseMarkdownFindings(rawResponse);
+  if (markdownFallback.length > 0) return markdownFallback;
+
   return [];
 }
 
@@ -191,20 +194,34 @@ function coerceLlmFinding(value: unknown): LlmCodeFinding | null {
   if (!value || typeof value !== "object") return null;
   const item = value as Record<string, unknown>;
 
-  const title = asNonEmptyString(item.title);
-  const ruleId = asNonEmptyString(item.ruleId);
-  const filePath = asNonEmptyString(item.filePath);
-  const evidence = asNonEmptyString(item.evidence);
+  const title =
+    asNonEmptyString(item.title) ??
+    asNonEmptyString(item.description) ??
+    asNonEmptyString(item.problem);
+  const ruleId = asNonEmptyString(item.ruleId) ?? asNonEmptyString(item.id) ?? buildRuleId(title ?? "finding");
+  const filePath =
+    asNonEmptyString(item.filePath) ??
+    asNonEmptyString(item.componentPath) ??
+    asNonEmptyString(item.element);
+  const evidence =
+    asNonEmptyString(item.evidence) ??
+    asNonEmptyString(item.problem) ??
+    asNonEmptyString(item.description);
   if (!title || !ruleId || !filePath || !evidence) return null;
 
-  const wcagCriteria = Array.isArray(item.wcagCriteria) ? item.wcagCriteria.filter((x): x is string => typeof x === "string") : [];
+  const wcagCriteriaFromArray = Array.isArray(item.wcagCriteria)
+    ? item.wcagCriteria.filter((x): x is string => typeof x === "string")
+    : [];
+  const wcagCriteria = wcagCriteriaFromArray.length > 0
+    ? wcagCriteriaFromArray
+    : extractWcagCriteria(asString(item.wcag) || asString(item.wcagCriteria));
 
-  const wcagLevel = coerceWcagLevel(item.wcagLevel);
+  const wcagLevel = coerceWcagLevel(item.wcagLevel || extractWcagLevel(asString(item.wcag)));
   const severity = coerceSeverity(item.severity);
-  const category = coerceCategory(item.category);
-  const startLine = coerceLineNumber(item.startLine, 1);
-  const endLine = coerceLineNumber(item.endLine, startLine);
-  const fixSuggestion = asString(item.fixSuggestion);
+  const category = coerceCategory(item.category || inferCategory(`${title} ${evidence}`));
+  const startLine = coerceLineNumber(item.startLine ?? item.line ?? item.lineStart, 1);
+  const endLine = coerceLineNumber(item.endLine ?? item.lineEnd, startLine);
+  const fixSuggestion = asString(item.fixSuggestion || item.fix);
 
   return {
     title,
@@ -219,6 +236,111 @@ function coerceLlmFinding(value: unknown): LlmCodeFinding | null {
     evidence,
     fixSuggestion,
   };
+}
+
+function parseMarkdownFindings(rawResponse: string): LlmCodeFinding[] {
+  const blocks = rawResponse
+    .split(/\n(?=###\s+)/g)
+    .map((b) => b.trim())
+    .filter((b) => b.startsWith("### "));
+
+  const findings: LlmCodeFinding[] = [];
+
+  for (const block of blocks) {
+    const titleLine = block.split("\n")[0] ?? "";
+    const title = titleLine.replace(/^###\s*/, "").trim();
+    if (!title) continue;
+
+    const bracketRule = title.match(/\[([^\]]+)\]/)?.[1]?.trim();
+    const fileRaw =
+      block.match(/\*\*\s*(?:Element\/Datei|Datei|File)\s*:\s*\*\*\s*([^\n]+)/i)?.[1]?.trim() ??
+      block.match(/(?:Element\/Datei|Datei|File)\s*:\s*([^\n]+)/i)?.[1]?.trim();
+    if (!fileRaw) continue;
+
+    const file = parseFileAndLines(fileRaw);
+    const problem =
+      block.match(/\*\*\s*(?:Problem|Issue|Befund)\s*:\s*\*\*\s*([^\n]+)/i)?.[1]?.trim() ??
+      block.match(/(?:Problem|Issue|Befund)\s*:\s*([^\n]+)/i)?.[1]?.trim() ??
+      title;
+
+    const fix =
+      block.match(/\*\*\s*(?:Fix|Lösung|Loesung|Empfehlung)\s*:\s*\*\*\s*([^\n]+)/i)?.[1]?.trim() ??
+      "";
+
+    const wcagRaw =
+      block.match(/\*\*\s*WCAG\s*:\s*\*\*\s*([^\n]+)/i)?.[1]?.trim() ??
+      block.match(/WCAG\s*:\s*([^\n]+)/i)?.[1]?.trim() ??
+      "";
+
+    const severityRaw =
+      block.match(/\*\*\s*(?:Schweregrad|Severity)\s*:\s*\*\*\s*([^\n]+)/i)?.[1]?.trim() ??
+      block.match(/(?:Schweregrad|Severity)\s*:\s*([^\n]+)/i)?.[1]?.trim() ??
+      "moderate";
+
+    findings.push({
+      title,
+      ruleId: bracketRule || buildRuleId(title),
+      wcagCriteria: extractWcagCriteria(wcagRaw),
+      wcagLevel: coerceWcagLevel(extractWcagLevel(wcagRaw)),
+      severity: coerceSeverity(severityRaw),
+      category: coerceCategory(inferCategory(`${title} ${problem}`)),
+      filePath: file.filePath,
+      startLine: file.startLine,
+      endLine: file.endLine,
+      evidence: problem,
+      fixSuggestion: fix,
+    });
+  }
+
+  return findings;
+}
+
+function parseFileAndLines(value: string): { filePath: string; startLine: number; endLine: number } {
+  const first = value.split(",")[0]?.trim() ?? value.trim();
+  const m = first.match(/^(.*?):(\d+)(?:-(\d+))?$/);
+  if (m) {
+    const filePath = m[1].trim();
+    const startLine = Number.parseInt(m[2], 10);
+    const endLine = Number.parseInt(m[3] ?? m[2], 10);
+    return { filePath, startLine, endLine };
+  }
+
+  return { filePath: first, startLine: 1, endLine: 1 };
+}
+
+function buildRuleId(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48) || "llm-finding";
+}
+
+function extractWcagCriteria(text: string): string[] {
+  return [...new Set((text.match(/\d\.\d\.\d/g) ?? []))];
+}
+
+function extractWcagLevel(text: string): string {
+  const m = text.match(/\bAAA\b|\bAA\b|\bA\b/i);
+  return (m?.[0] ?? "AA").toUpperCase();
+}
+
+function inferCategory(text: string): ViolationCategory {
+  const raw = text.toLowerCase();
+  if (raw.includes("kontrast") || raw.includes("contrast") || raw.includes("layout")) return "layout";
+  if (
+    raw.includes("aria") ||
+    raw.includes("label") ||
+    raw.includes("semantik") ||
+    raw.includes("semantic") ||
+    raw.includes("fokus") ||
+    raw.includes("focus") ||
+    raw.includes("keyboard")
+  ) {
+    return "semantisch";
+  }
+
+  return "syntaktisch";
 }
 
 function extractJsonPayloadCandidates(text: string): string[] {
