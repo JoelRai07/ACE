@@ -259,8 +259,8 @@ function executeRun(
   const startMs = Date.now();
 
   const result = spawnSync(
-    "npx",
-    ["tsx", "src/index.ts", "--url", suite.url, "--src-dir", suite.srcDir, "--llm-detect"],
+    "npm",
+    ["run", "analyze:llm-detector", "--", "--url", suite.url, "--src-dir", suite.srcDir],
     {
       env,
       cwd: process.cwd(),
