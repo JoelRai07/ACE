@@ -60,6 +60,9 @@ const ALL_SUITES: Record<string, SuiteConfig> = {
 
 const DEFAULT_RUNS = 10;
 const BENCHMARK_DIR = "./results/benchmark";
+const DEFAULT_LLM_DETECT_NUM_PREDICT = "400";
+const DEFAULT_LLM_DETECT_CHUNK_CHARS = "3000";
+const DEFAULT_LLM_DETECT_MAX_FILES = "25";
 
 // ── CLI-Parser ───────────────────────────────────────────────────────────
 
@@ -248,6 +251,9 @@ function executeRun(
     OLLAMA_MODEL: model,
     RESULTS_DIR: runDir,
     OLLAMA_NUM_PREDICT: String(suite.numPredict),
+    LLM_DETECT_NUM_PREDICT: process.env.LLM_DETECT_NUM_PREDICT ?? DEFAULT_LLM_DETECT_NUM_PREDICT,
+    LLM_DETECT_CHUNK_CHARS: process.env.LLM_DETECT_CHUNK_CHARS ?? DEFAULT_LLM_DETECT_CHUNK_CHARS,
+    LLM_DETECT_MAX_FILES: process.env.LLM_DETECT_MAX_FILES ?? DEFAULT_LLM_DETECT_MAX_FILES,
   };
 
   const startMs = Date.now();
@@ -394,7 +400,11 @@ async function main(): Promise<void> {
         completed++;
         const elapsed = formatDuration(Date.now() - benchmarkStart);
         const progress = `[${completed}/${totalRuns}]`;
-        console.log(`\n${progress} ${model} | ${suite.name} (numPredict: ${suite.numPredict}) | Run ${run}/${config.runs} | Elapsed: ${elapsed}`);
+        console.log(
+          `\n${progress} ${model} | ${suite.name} ` +
+          `(numPredict: ${suite.numPredict}, llmDetect: ${process.env.LLM_DETECT_NUM_PREDICT ?? DEFAULT_LLM_DETECT_NUM_PREDICT}/${process.env.LLM_DETECT_CHUNK_CHARS ?? DEFAULT_LLM_DETECT_CHUNK_CHARS}/${process.env.LLM_DETECT_MAX_FILES ?? DEFAULT_LLM_DETECT_MAX_FILES}) ` +
+          `| Run ${run}/${config.runs} | Elapsed: ${elapsed}`,
+        );
         console.log("-".repeat(70));
 
         const result = executeRun(model, suite, run);
