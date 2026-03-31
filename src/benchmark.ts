@@ -171,6 +171,7 @@ interface RunResult {
   findingsAxe: number;
   findingsPlaywright: number;
   findingsGrep: number;
+  findingsLlm: number;
   numPredict: number;
   error?: string;
 }
@@ -194,6 +195,7 @@ function readResultJson(resultsDir: string): Partial<RunResult> {
       findingsAxe: data.stats?.findings?.axe ?? 0,
       findingsPlaywright: data.stats?.findings?.playwright ?? 0,
       findingsGrep: data.stats?.findings?.grep ?? 0,
+      findingsLlm: data.stats?.findings?.llm ?? 0,
     };
   } catch (err) {
     return { success: false, error: String(err) };
@@ -252,7 +254,7 @@ function executeRun(
 
   const result = spawnSync(
     "npx",
-    ["tsx", "src/index.ts", "--url", suite.url, "--src-dir", suite.srcDir],
+    ["tsx", "src/index.ts", "--url", suite.url, "--src-dir", suite.srcDir, "--llm-detect"],
     {
       env,
       cwd: process.cwd(),
@@ -281,6 +283,7 @@ function executeRun(
       findingsAxe: 0,
       findingsPlaywright: 0,
       findingsGrep: 0,
+      findingsLlm: 0,
       numPredict: suite.numPredict,
       error: errSnippet,
     };
@@ -301,6 +304,7 @@ function executeRun(
     findingsAxe: parsed.findingsAxe ?? 0,
     findingsPlaywright: parsed.findingsPlaywright ?? 0,
     findingsGrep: parsed.findingsGrep ?? 0,
+    findingsLlm: parsed.findingsLlm ?? 0,
     numPredict: suite.numPredict,
   };
 }
@@ -316,7 +320,7 @@ function writeSummary(results: RunResult[], config: BenchmarkConfig): void {
     "model", "suite", "run", "success", "parseSuccess",
     "mustHaveCount", "niceToHaveCount", "durationMs",
     "promptTokens", "outputTokens", "numPredict",
-    "findingsAxe", "findingsPlaywright", "findingsGrep", "error",
+    "findingsAxe", "findingsPlaywright", "findingsGrep", "findingsLlm", "error",
   ].join(",");
 
   const csvRows = results.map((r) =>
@@ -324,7 +328,7 @@ function writeSummary(results: RunResult[], config: BenchmarkConfig): void {
       r.model, r.suite, r.run, r.success, r.parseSuccess,
       r.mustHaveCount, r.niceToHaveCount, r.durationMs,
       r.promptTokens, r.outputTokens, r.numPredict,
-      r.findingsAxe, r.findingsPlaywright, r.findingsGrep,
+      r.findingsAxe, r.findingsPlaywright, r.findingsGrep, r.findingsLlm,
       `"${(r.error ?? "").replace(/"/g, '""').replace(/\n/g, " ")}"`,
     ].join(","),
   );
