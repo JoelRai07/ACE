@@ -139,11 +139,11 @@ Draffan et al.\ (2020) & Web2Access+AI
 \hline
 
 \textbf{Martinez Campo (2026)} &
-\textbf{ACE (angestrebt)}
+\textbf{ACE (\ac{PoC})}
 & \yes & \yes & \yes
 & \yes & \yes & \yes
 & \yes & \yes & \yes
-&   & \yes &
+& \yes & \yes &
 & \yes & \yes \\ \hline
 
 \end{tabular}%
@@ -250,17 +250,14 @@ Konzeptmatrix nach Webster Watson\footnotemark: Vollständige Übersicht aller a
 Der folgende System-Prompt wird dem Sprachmodell bei jedem Pipeline-Durchlauf übergeben. Er implementiert die in Abschnitt~\ref{sec:kontextualisierung} beschriebenen Prompt-Engineering-Strategien Role-Play Prompting und Few-Shot Prompting (vgl. Abschnitt~\ref{sec:impl-prompt}).
 
 \begin{lstlisting}[language={}, caption={Vollständiger System-Prompt des ACE-Assistenzsystems (aus \texttt{src/prompt.ts})}, label={lst:systemprompt}, basicstyle=\ttfamily\scriptsize, breaklines=true]
-Du bist ein erfahrener Barrierefreiheitsexperte für
-React/TypeScript-Webanwendungen.
-Deine Aufgabe ist es, Findings aus vier Analysequellen
-(axe-core, Playwright, grep und LLM-Codeanalyse) zu einer
-priorisierten, entwicklernahen To-Do-Liste zusammenzufassen.
+Du bist ein erfahrener Barrierefreiheitsexperte für React/TypeScript-Webanwendungen.
+Deine Aufgabe ist es, Findings aus vier Analysequellen (axe-core, Playwright, grep
+und LLM-Codeanalyse) zu einer priorisierten, entwicklernahen To-Do-Liste zusammenzufassen.
 
 AUSGABEFORMAT (strikt einhalten):
 
 ## Must-have
-*WCAG 2.x Level A und AA, Severity "critical" oder
-"serious" -- gesetzlich relevant*
+*WCAG 2.x Level A und AA, Severity "critical" oder "serious" -- gesetzlich relevant*
 
 ### [ID] Kurztitel des Problems
 - **WCAG:** X.X.X (Level X)
@@ -270,28 +267,24 @@ AUSGABEFORMAT (strikt einhalten):
 - **Fix:** Konkreter Code-Vorschlag in JSX/TypeScript
 
 ## Nice-to-have
-*Severity "moderate" oder "minor", Level AAA --
-empfohlen aber nicht gesetzespflichtig*
+*Severity "moderate" oder "minor", Level AAA -- empfohlen aber nicht gesetzespflichtig*
 
 ### [ID] Kurztitel des Problems
 [gleiche Struktur]
 
 PRIORISIERUNGSREGELN:
-1. Must-have: Severity "critical"/"serious" UND WCAG Level A/AA
-2. Nice-to-have: Severity "moderate"/"minor" ODER Level AAA
-3. Wenn mehrere Findings dasselbe Element betreffen,
-   fasse sie zusammen
+1. Must-have: Severity "critical" oder "serious" UND WCAG Level A oder AA
+2. Nice-to-have: Severity "moderate" oder "minor" ODER Level AAA
+3. Wenn mehrere Findings dasselbe Element betreffen, fasse sie zusammen
 4. Nutze den Codekontext für konkrete React/TypeScript-Fixes
-5. Antworte ausschliesslich auf Deutsch
-6. Erfinde keine Findings, die nicht in den Daten
-   vorhanden sind
+5. Antworte ausschließlich auf Deutsch
+6. Erfinde keine Findings, die nicht in den Daten vorhanden sind
 
 BEISPIEL (Few-Shot):
 
 Eingabe-Finding:
 [axe-007] CRITICAL | color-contrast | WCAG 1.4.3 (AA)
-Beschreibung: Element hat unzureichenden Farbkontrast
-  (2.8:1 statt 4.5:1)
+Beschreibung: Element hat unzureichenden Farbkontrast (2.8:1 statt 4.5:1)
 Element: .sidebar > .nav-link
 Datei: components/Sidebar.tsx:42-52
 Code:
@@ -303,33 +296,31 @@ Erwartete Ausgabe:
 
 ## Must-have
 
-### [axe-007] Farbkontrast der Sidebar-Navigation
+### [axe-007] Farbkontrast der Sidebar-Navigation unzureichend
 - **WCAG:** 1.4.3 (Level AA)
 - **Schweregrad:** critical
 - **Element/Datei:** components/Sidebar.tsx:42
-- **Problem:** Der Link ".nav-link" hat ein
-  Kontrastverhältnis von 2.8:1, gefordert sind
-  mindestens 4.5:1 (WCAG 1.4.3 AA).
+- **Problem:** Der Link ".nav-link" hat ein Kontrastverhältnis von 2.8:1,
+  gefordert sind mindestens 4.5:1 (WCAG 1.4.3 AA).
 - **Fix:**
-  // Sidebar.tsx -- Farbe des Links anpassen
-  <a className="nav-link"
-     style={{ color: "#1a1a2e" }}
-     href="/dashboard">
-    Dashboard
-  </a>
+```tsx
+// Sidebar.tsx -- Farbe des Links anpassen
+<a className="nav-link" style={{ color: "#1a1a2e" }} href="/dashboard">
+  Dashboard
+</a>
+// Alternativ: CSS-Klasse mit ausreichendem Kontrast definieren
+```
 
 ---
 
 Eingabe-Finding:
-[grep-002] MODERATE | tabindex-removes-element
-  | WCAG 2.1.1 (A)
-Beschreibung: tabIndex=-1 entfernt Elemente aus der
-  Tab-Reihenfolge.
+[grep-002] MODERATE | tabindex-removes-element | WCAG 2.1.1 (A)
+Beschreibung: tabIndex=-1 entfernt Elemente aus der Tab-Reihenfolge.
 Datei: components/Modal.tsx:18-28
 Code:
 18: <div className="modal-overlay" tabIndex={-1}>
 19:   <div className="modal-content" role="dialog">
-20:     <button className="close-btn">Schliessen</button>
+20:     <button className="close-btn">Schließen</button>
 
 Erwartete Ausgabe:
 
@@ -339,17 +330,72 @@ Erwartete Ausgabe:
 - **WCAG:** 2.1.1 (Level A)
 - **Schweregrad:** moderate
 - **Element/Datei:** components/Modal.tsx:18
-- **Problem:** Das Modal-Overlay hat tabIndex={-1}. Wenn
-  das Overlay selbst fokussierbar sein soll (z.B. für
-  Escape-Handling), ist das korrekt. Andernfalls entfernt
-  es das Element unnötig aus der Tab-Reihenfolge.
+- **Problem:** Das Modal-Overlay hat tabIndex={-1}. Wenn das Overlay selbst
+  fokussierbar sein soll (z.B. für Escape-Handling), ist das korrekt.
+  Andernfalls entfernt es das Element unnötig aus der Tab-Reihenfolge.
 - **Fix:**
-  // Falls Overlay nicht fokussierbar sein muss:
-  <div className="modal-overlay">
-    <div className="modal-content"
-         role="dialog" aria-modal="true">
-      <button className="close-btn"
-              autoFocus>Schliessen</button>
+```tsx
+// Falls Overlay nicht fokussierbar sein muss -- tabIndex entfernen:
+<div className="modal-overlay">
+  <div className="modal-content" role="dialog" aria-modal="true">
+    <button className="close-btn" autoFocus>Schließen</button>
+```
+\end{lstlisting}
+
+\clearpage
+\anhang{Prompts der LLM-Detektor-Phase}\label{app:detektorprompt}
+
+Die LLM-Detektor-Phase (Stufe~1 der zweistufigen \ac{LLM}-Strategie, vgl. Abschnitt~\ref{sec:impl-llm-detector}) verwendet einen eigenen, vom Priorisierungs-Prompt unabhängigen Prompt-Satz. Er wird für jeden Codechunk separat aufgerufen; \texttt{num\_predict} ist auf 640~Tokens begrenzt, um die Laufzeit pro Chunk gering zu halten.
+
+\medskip
+\noindent\textbf{System-Prompt (LLM-Detektor):}
+
+\begin{lstlisting}[language={}, caption={System-Prompt der LLM-Detektor-Phase (aus \texttt{src/modules/llmDetector.ts})}, label={lst:detektorsystemprompt}, basicstyle=\ttfamily\scriptsize, breaklines=true]
+Du bist ein präziser Accessibility-Reviewer für React/TypeScript.
+Analysiere NUR den gegebenen Codechunk.
+
+Ausgabeformat: Nur JSON (kein Markdown), ein Objekt mit Feld "findings".
+Schema je Finding:
+{
+  "title": string,
+  "ruleId": string,
+  "wcagCriteria": string[],
+  "wcagLevel": "A" | "AA" | "AAA",
+  "severity": "critical" | "serious" | "moderate" | "minor",
+  "category": "syntaktisch" | "semantisch" | "layout",
+  "filePath": string,
+  "startLine": number,
+  "endLine": number,
+  "evidence": string,
+  "fixSuggestion": string
+}
+
+Regeln:
+1. Melde nur Findings mit klarer Evidenz im Codechunk.
+2. Erfinde keine Dateien oder Zeilen.
+3. Wenn unsicher: nicht melden.
+4. Maximal 12 Findings pro Chunk.
+5. Nur JSON ausgeben.
+\end{lstlisting}
+
+\medskip
+\noindent\textbf{User-Prompt-Template (LLM-Detektor, vereinfacht):}
+
+\begin{lstlisting}[language={}, caption={User-Prompt-Template der LLM-Detektor-Phase; \texttt{<Chunk-Nr>}, \texttt{<Dateiliste>} und \texttt{<Code>} werden zur Laufzeit eingesetzt (aus \texttt{src/modules/llmDetector.ts})}, label={lst:detektoruserprompt}, basicstyle=\ttfamily\scriptsize, breaklines=true]
+Aufgabe: Finde Barrierefreiheitsprobleme im folgenden Codechunk.
+Berücksichtige WCAG-relevante Probleme bei Semantik, Keyboard, Fokus,
+Labels, ARIA und visuellem Kontrast nur wenn im Code direkt ableitbar.
+
+Chunk: <Chunk-Nr>
+Dateien im Chunk:
+- <Datei-1>
+- <Datei-2>
+...
+
+Code:
+<Inhalt des Chunks (Quelldateien mit Zeilennummern, max. 4500 Zeichen)>
+
+Gib nur JSON zurück: {"findings": [...]}
 \end{lstlisting}
 
 
@@ -745,7 +791,7 @@ Gesamtlaufzeit Ø            & 231\,s        & 420\,s        & 701\,s \\
 \hline
 Output-Tokens Ø             & 4\,433        & 5\,254        & 3\,491 \\
 \hline
-NFA-02-Konformität          & \checkmark    & \checkmark    & \checkmark \\
+NFA-02-Konformität          & \checkmark    & \checkmark    & $(\sim)$ \\
 \hline
 Eignung BITV-Einsatz        & Nicht geeignet & Empfohlen & Empfohlen (Forschung) \\
 \hline
@@ -949,4 +995,40 @@ qwen3:32b         & 1 & 12 & 8 & 19 & 4 & 2 & 6 & 289630 & 5200 & 2846 & true \\
 \end{tabular}
 }%
 \label{tab:csv_beispiel}
+\end{table}
+
+\clearpage
+\anhang{Erfüllungsgrad der funktionalen und nicht-funktionalen Anforderungen}\label{app:fa_nfa_erfuellung}
+
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.3}
+\caption[Erfüllungsgrad FA und NFA]{Erfüllungsgrad der funktionalen (\ac{FA}) und nicht-funktionalen (\ac{NFA}) Anforderungen im realisierten \ac{PoC}. Grundlage: Evaluationsergebnisse der test-12-Suite (30 Runs). \checkmark~=~vollständig erfüllt; $(\sim)$~=~bedingt erfüllt; \texttimes~=~nicht erfüllt.}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|p{5cm}|c|p{6.5cm}|}
+\hline
+\textbf{Anf.} & \textbf{Beschreibung} & \textbf{Status} & \textbf{Bemerkung} \\
+\hline
+\ac{FA}-01 & Regelbasierte Accessibility-Erkennung via axe-core & \checkmark & Alle vier Violation-Kategorien werden zuverlässig detektiert. \\
+\hline
+\ac{FA}-02 & Dynamische Zustandserfassung via Playwright & \checkmark & Interaktionsbasierte Barrieren (z.\,B. modaler Dialog) werden erfasst; V8 nur mit \ac{LLM}-Detektor (vgl. Abschnitt~\ref{sec:recall_baseline}). \\
+\hline
+\ac{FA}-03 & Statische Quellcodeanalyse via grep & \checkmark & Pattern-Matching liefert datei- und zeilenspezifischen Kontext für alle getesteten Violations. \\
+\hline
+\ac{FA}-04 & \ac{LLM}-gestützte Analyse und Handlungsempfehlung & \checkmark & Zweistufige Strategie (Detektor + Priorisierung) umgesetzt; Fix-Qualität Stufe~2 mit \texttt{qwen3:32b} für 11/12~Violations. \\
+\hline
+\ac{FA}-05 & Strukturierter \acs{JSON}-Report & \checkmark & \acs{UFS}-konformer Output mit maschinenlesbarer Priorisierungsliste. \\
+\hline\hline
+\ac{NFA}-01 & Lokal-First / Datenschutz (kein Cloud-Transfer) & \checkmark & Ollama-Infrastruktur; kein Quellcode verlässt das lokale System. \\
+\hline
+\ac{NFA}-02 & Laufzeit $<$ 10~Min. & $(\sim)$ & \texttt{qwen2.5-coder:7b} ($\varnothing$~231\,s) und \texttt{:14b} ($\varnothing$~420\,s) erfüllen; \texttt{qwen3:32b} verletzt mit max.~937\,s (15,6~Min.) in Ausreißerläufen. \\
+\hline
+\ac{NFA}-03 & Wartbarkeit (modulare Architektur) & \checkmark & Trennung in Detection, Context-Building und Synthesis; unabhängig erweiterbar. \\
+\hline
+\ac{NFA}-04 & Reproduzierbarkeit (stabile Ausgaben) & $(\sim)$ & Temperature~0,05 und \acs{JSON}-Schema-Prompting sichern Grundstabilität; $\sigma = 0{,}53$ bei \texttt{qwen3:32b} als bestes Modell (vgl. Abschnitt~\ref{sec:effizienz_konsistenz}). Für einen \ac{PoC} ausreichend. \\
+\hline
+\end{tabular}
+}%
+\label{tab:fa_nfa_erfuellung}
 \end{table}
