@@ -1,8 +1,66 @@
 \chapter{Fazit} \label{kap:8}
 
-Fazit und Ausblick
-Zusammenfassung aller Ergebnisse
-Fine Tuning?
-Axe pro Zustand (konstant laufen lassen)
-Bessere Modelle (mehr Rechenleistung nötig)
-Cloud Modelle laufen lassen mit Einschränkungen
+Dieses abschließende Kapitel fasst die Ergebnisse der vorliegenden Arbeit zusammen (Abschnitt~\ref{sec:fazit_zusammenfassung}), würdigt sie kritisch im Hinblick auf methodische und externe Einschränkungen (Abschnitt~\ref{sec:fazit_reflexion}) und zeigt Richtungen für künftige Weiterentwicklungen auf (Abschnitt~\ref{sec:fazit_ausblick}).
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Zusammenfassung der Ergebnisse}
+\label{sec:fazit_zusammenfassung}
+
+\subsection{Beitrag zur übergeordneten Forschungsfrage}
+\label{sec:fazit_ff}
+
+Ziel der Arbeit war die Entwicklung und Evaluation eines lokal ausführbaren, \ac{LLM}-gestützten Assistenzsystems (\ac{ACE}), das axe-core-Violation-Reports, Playwright-Interaktionsdaten und statische Quellcodeanalyse kombiniert, um entwicklernahe Handlungsempfehlungen für React-basierte Webanwendungen zu generieren. Das System wurde nach dem \ac{DSR}-Paradigma konzipiert: Problemidentifikation, Artefaktdesign, Prototypimplementierung und formale Evaluation bilden den methodischen Bogen der Arbeit.
+
+Die Evaluation auf der kontrollierten test-12-Suite mit 30 Benchmarkläufen (3 Modelle $\times$ 10 Runs) zeigt, dass \ac{ACE} beide Teilforschungsfragen positiv beantwortet. \textbf{TF1} konnte bestätigt werden: Mit \texttt{qwen3:32b} werden alle drei Verstoßkategorien vollständig erkannt -- syntaktische und layout-bezogene Violations zu jeweils 100\,\%, semantische Violations ebenfalls zu 100\,\% gegenüber 60\,\% in der Baseline ohne LLM-Detektor. \textbf{TF2} konnte ebenfalls bestätigt werden: Die Kontextkombination erhöht den Recall von 66,7\,\% (8/12) auf bis zu 100\,\% und steigert die Fix-Qualität auf Stufe~2 für 11 von 12~Violations mit \texttt{qwen3:32b} -- ein Niveau, das mit reiner Tool-DOM-Analyse strukturell nicht erreichbar ist, da fehlender Quellcodekontext die Generierung datei- und zeilenspezifischer Empfehlungen ausschließt.
+
+\subsection{Erfüllung der funktionalen und nicht-funktionalen Anforderungen}
+\label{sec:fazit_anforderungen}
+
+Die fünf funktionalen Anforderungen \ac{FA}-01 bis \ac{FA}-05 sind vollständig umgesetzt. Axe-core liefert regelbasierte Detektion (\ac{FA}-01), Playwright erfasst zustandsabhängige Barrieren (\ac{FA}-02), grep-Pattern analysieren den Quellcode (\ac{FA}-03), der LLM-Detektor und das Priorisierungsmodell generieren kontextsensitive Empfehlungen (\ac{FA}-04), und der strukturierte \acs{JSON}-Report stellt maschinenlesbare Ausgaben bereit (\ac{FA}-05).
+
+Bei den nicht-funktionalen Anforderungen ist das Bild differenzierter. \ac{NFA}-01 (Lokal-First) wird durch die Ollama-Infrastruktur vollständig erfüllt: Kein Quellcode und kein \ac{DOM}-Inhalt verlässt das lokale System. \ac{NFA}-02 (Laufzeit $<$ 10~Min.) erfüllen \texttt{qwen2.5-coder:7b} (Ø~173\,s) und \texttt{qwen2.5-coder:14b} (Ø~320\,s) komfortabel; \texttt{qwen3:32b} gilt mit Ø~681\,s als bedingt konform. \ac{NFA}-03 (Wartbarkeit) wird durch die modulare Trennung in Detection, Context-Building und Synthesis sichergestellt. \ac{NFA}-04 (Reproduzierbarkeit) wird durch Temperature~0,05 und \acs{JSON}-Schema-Prompting unterstützt; \texttt{qwen3:32b} erreicht 90\,\% Run-Konsistenz, was für einen \ac{PoC} als ausreichend gilt.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Kritische Reflexion}
+\label{sec:fazit_reflexion}
+
+\subsection{Grenzen der externen Validität}
+\label{sec:fazit_extern}
+
+Die Evaluation basiert ausschließlich auf einer synthetisch konstruierten Testsuite mit 12 gezielt eingebetteten Violations. Dies hat den Vorteil einer vollständig bekannten Ground Truth, schränkt aber die Übertragbarkeit auf produktive Anwendungen ein. Reale Webanwendungen unterscheiden sich in mehrfacher Hinsicht: Die Codebase ist deutlich umfangreicher, die Anzahl tatsächlicher Violations unbekannt, und die Violations sind häufig implizierter und kontextabhängiger als in synthetischen Suiten. Ob die auf test-12 erzielten Recall-Werte auf einer produktiven Anwendung -- insbesondere dem \ac{BWEC}-Client -- replizierbar sind, bleibt eine offene empirische Frage, die in den geplanten Folgestudien (Abschnitt~\ref{sec:eval_erweiterung}) adressiert wird.
+
+Zudem wurden ausschließlich lokale CPU-basierte Laufzeitmessungen erhoben. Auf GPU-beschleunigter Hardware würden sich die Laufzeiten erheblich reduzieren, sodass \ac{NFA}-02 für alle drei Modelle klar erfüllbar wäre. Die Laufzeitaussagen dieser Arbeit gelten damit nur unter den dokumentierten Hardwarevoraussetzungen.
+
+\subsection{Methodische Einschränkungen}
+\label{sec:fazit_intern}
+
+Das Token-Limit von 3\,072~Output-Tokens hatte einen messbaren Einfluss auf die Priorisierungsqualität: Alle Runs mit \texttt{qwen2.5-coder:7b} und \texttt{qwen2.5-coder:14b} wurden abgeschnitten, sodass Nice-to-have-Findings am Listenende systematisch unterrepräsentiert sind. Die nach Abschluss der Messreihe vorgenommene Erhöhung auf 6\,144~Tokens beseitigt diesen Effekt für künftige Runs, kann aber die bereits erhobenen Priorisierungswerte nicht korrigieren. Die Werte in Tabelle~\ref{tab:priorisierungsqualitaet} sind daher für 7b und 14b als untere Schranken zu lesen.
+
+Ein weiteres methodisches Risiko liegt in der Operationalisierung der Erkennungsmetrik: Eine Violation gilt als erkannt, wenn sie in der Mehrzahl der zehn Runs im finalen Report erscheint. Dies setzt voraus, dass das Modell sie konsistent und nicht unter paraphrasierten Bezeichnungen ausgibt. Semantisch äquivalente, aber syntaktisch verschiedene Formulierungen können zu konservativen Zuordnungen führen -- ein Aspekt, der in einer kanonischen Äquivalenzklassen-basierten Auswertung robuster adressiert werden könnte.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Ausblick}
+\label{sec:fazit_ausblick}
+
+\subsection{Kurzfristige Erweiterungen}
+\label{sec:ausblick_kurz}
+
+Als unmittelbare nächste Schritte sind drei Maßnahmen priorisiert. Erstens sollen Benchmarkläufe auf den bereits implementierten Testsuiten test-50 und test-100 mit \texttt{num\_predict}~=~6\,144 durchgeführt werden, um Skalierungseffekte bei wachsender Violationszahl zu quantifizieren und zu prüfen, ob das Token-Budget unter realem Druck kippt (vgl. Abschnitt~\ref{sec:eval_suiten}). Zweitens ist die Evaluation am realen \ac{BWEC}-Client der \ac{BITBW} vorgesehen, um die externe Validität des \ac{PoC} an einer produktiv betriebenen React-\ac{SPA} mit unbekannter Ground Truth zu testen (vgl. Abschnitt~\ref{sec:eval_bwec}). Drittens sollte der Playwright-Satz um einen dedizierten Fokus-Trap-Test erweitert werden, sodass V8 (modaler Dialog ohne Fokus-Trap) zuverlässig auch ohne LLM-Detektor erfasst wird.
+
+\subsection{Mittelfristige Weiterentwicklungen}
+\label{sec:ausblick_mittel}
+
+Mittelfristig bieten sich vier Ansatzpunkte für eine Vertiefung des Systems. Erstens könnte die axe-core-Prüfung pro erfasstem \ac{DOM}-Zustand kontinuierlich ausgeführt werden, anstatt nur nach definierten Playwright-Interaktionsschritten. Damit ließen sich Barrieren erfassen, die durch nicht vordefinierte Zustandsübergänge entstehen -- ein Ansatz, der jedoch die Laufzeit erheblich erhöht und eine Priorisierung der zu prüfenden Zustände erfordert.
+
+Zweitens könnten leistungsfähigere Modelle -- etwa \texttt{qwen3:72b} oder \texttt{deepseek-r1:70b} -- evaluiert werden, sofern Hardware mit ausreichend Arbeitsspeicher und GPU-Kapazität verfügbar ist. Die Ergebnisse dieser Arbeit legen nahe, dass die Modellgröße einen starken positiven Effekt auf Recall, Priorisierungsqualität und Fix-Detailtiefe hat; ein 70B-Modell könnte insbesondere die instabile V11-Erkennung stabilisieren.
+
+Drittens könnte ein eingeschränkter Einsatz cloudbasierter Modelle (z.\,B. datenschutzkonforme On-Premises-Deployments oder Modelle auf behördeneigener Serverinfrastruktur) geprüft werden. Für Fälle, in denen keine personenbezogenen Daten im Code enthalten sind und eine geeignete datenschutzrechtliche Prüfung vorliegt, könnten cloud-basierte Modelle erhebliche Laufzeitvorteile gegenüber lokalen CPU-Instanzen bieten, ohne \ac{NFA}-01 vollständig zu verletzen.
+
+Viertens wäre der strukturierte \acs{JSON}-Report des \ac{ACE}-Systems als Eingabekontext für nachgelagerte \ac{LLM}-Agenten nutzbar, die Fixes automatisiert in den Quellcode einarbeiten -- ein Einsatzszenario, das durch das maschinenlesbare Output-Format (\ac{FA}-05) bereits direkt vorbereitet ist.
+
+\subsection{Langfristige Forschungsperspektiven}
+\label{sec:ausblick_lang}
+
+Langfristig bietet sich die Möglichkeit, das System durch domänenspezifisches Fine-Tuning weiterzuentwickeln. Ein auf \ac{BITV}-konformen React-Codebeispielen feinabgestimmtes Modell könnte systematische Fehlklassifikationen wie die inverse Priorisierung von \texttt{qwen2.5-coder:7b} strukturell beseitigen, anstatt sie durch größere Modelle zu kompensieren. Fine-Tuning würde zudem ermöglichen, institutionsspezifische Konventionen der \ac{BITBW} -- etwa bevorzugte Komponentenbibliotheken oder interne Naming-Konventionen -- in die Empfehlungen einfließen zu lassen, ohne das Prompt-Design entsprechend ausweiten zu müssen.
+
+Darüber hinaus wäre eine Integration des \ac{ACE}-Reports als Schritt in bestehende \ac{CI}/\ac{CD}-Pipelines eine konsequente Weiterentwicklung: Barrierefreiheitsprüfungen würden damit automatisch bei jedem Merge-Request ausgeführt, anstatt als nachgelagerter Audit-Prozess zu verbleiben. In Verbindung mit automatisierten Fix-Vorschlägen und einem kuratierten Review durch Entwicklerinnen und Entwickler entstünde ein Continuous-Accessibility-Loop, der den manuellen Auditaufwand der \ac{BITBW} langfristig substanziell reduzieren könnte.
