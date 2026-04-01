@@ -1,0 +1,60 @@
+{
+  "version": "1.1",
+  "timestamp": "2026-04-01T09:02:49.603Z",
+  "targetUrl": "http://localhost:5173",
+  "model": "qwen3:32b",
+  "stats": {
+    "findings": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 6,
+      "llm": 19
+    },
+    "includedInPrompt": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 6,
+      "llm": 19
+    },
+    "estimatedInputTokens": 4292,
+    "actualPromptTokens": 5194,
+    "actualOutputTokens": 3072,
+    "durationMs": 325871,
+    "tokensBudgetTruncated": false
+  },
+  "metrics": {
+    "phaseTimings": {
+      "axeMs": 3697,
+      "playwrightMs": 2852,
+      "codeEnrichMs": 1,
+      "codePatternMs": 1,
+      "llmDetectMs": 338329,
+      "llmDetectChunks": 5,
+      "promptBuildMs": 2,
+      "llmMs": 325871,
+      "outputMs": 0,
+      "totalMs": 670754
+    },
+    "tokens": {
+      "estimated": 4292,
+      "actualPrompt": 5194,
+      "actualOutput": 3072
+    },
+    "enrichment": {
+      "enrichedCount": 4,
+      "totalEnrichable": 5,
+      "quote": 0.8
+    },
+    "deduplication": {
+      "beforeDedup": 6,
+      "afterDedup": 6,
+      "removed": 0
+    }
+  },
+  "parsed": {
+    "success": true,
+    "mustHaveCount": 11,
+    "niceToHaveCount": 8
+  },
+  "rawLlmResponse": "## Must-have\n\n*WCAG 2.x Level A und AA, Severity \"critical\" oder \"serious\" — gesetzlich relevant*\n\n### [axe-004] Logo-Bild ohne alt-Attribut\n- **WCAG:** 1.1.1 (Level A)\n- **Schweregrad:** critical\n- **Element/Datei:** App.tsx:37\n- **Problem:** Das `<img>`-Element für das Logo hat kein `alt`-Attribut. Screenreader können das Bild nicht beschreiben.\n- **Fix:**\n```tsx\n<img \n  src=\"https://placehold.co/120x40/0057B8/white\" \n  className=\"logo\" \n  alt=\"Logo der Anwendung\" \n/>\n```\n\n---\n\n### [axe-001] aria-hidden auf fokussierbarem <a>\n- **WCAG:** 4.1.2 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** components/LoginForm.tsx:71\n- **Problem:** Das `<a>`-Element hat `aria-hidden=\"true\"` und ist trotzdem fokussierbar (`tabIndex={0}`). Das ist ein Verstoß gegen WCAG 4.1.2.\n- **Fix:**\n```tsx\n{/* Entweder fokussierbar und sichtbar für Screenreader, oder beides nicht */}\n<a href=\"#reset\" tabIndex={0}>\n  Passwort vergessen?\n</a>\n```\n\n---\n\n### [axe-002] Kontrast der aktiven Navigationstaste unzureichend\n- **WCAG:** 1.4.3 (Level AA)\n- **Schweregrad:** serious\n- **Element/Datei:** App.tsx:43\n- **Problem:** Der aktivierte Navigationstaste hat ein zu geringes Kontrastverhältnis. WCAG 1.4.3 AA verlangt mindestens 4.5:1.\n- **Fix:**\n```tsx\n{/* Farbe anpassen, z. B. dunklerer Text oder hellerer Hintergrund */}\n<button \n  className={`nav-btn ${page === \"login\" ? \"active\" : \"\"}`} \n  onClick={() => setPage(\"login\")}\n  style={{ color: \"#1a1a2e\", backgroundColor: \"#f0f0f0\" }}\n>\n  Login\n</button>\n```\n\n---\n\n### [axe-003] Kontrast des Submit-Buttons unzureichend\n- **WCAG:** 1.4.3 (Level AA)\n- **Schweregrad:** serious\n- **Element/Datei:** components/LoginForm.tsx:53\n- **Problem:** Der Submit-Button hat ein Kontrastverhältnis von ~2.5:1, was unter dem Mindestwert von 4.5:1 liegt.\n- **Fix:**\n```tsx\n{/* Farbe anpassen, z. B. dunklerer Text oder hellerer Hintergrund */}\n<button \n  onClick={handleSubmit} \n  className=\"btn-submit-lowcontrast\" \n  style={{ color: \"#1a1a2e\", backgroundColor: \"#ffffff\" }}\n>\n  Anmelden\n</button>\n```\n\n---\n\n### [llm-002] Skip-Link fehlt\n- **WCAG:** 2.4.1 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** App.tsx:33\n- **Problem:** Es fehlt ein Skip-Link (`<a href=\"#main-content\">Zum Inhalt springen</a>`), der Screenreader-Nutzern hilft, direkt zum Hauptinhalt zu gelangen.\n- **Fix:**\n```tsx\n{/* Skip-Link einfügen */}\n<a href=\"#main-content\" className=\"skip-link\">Zum Inhalt springen</a>\n```\n\n---\n\n### [llm-008] Passwort-Input ohne <label>\n- **WCAG:** 1.3.1 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** components/LoginForm.tsx:41\n- **Problem:** Der Passwort-Input hat kein `<label>`-Element, nur ein visuelles `placeholder`. Das ist nicht ausreichend für Screenreader.\n- **Fix:**\n```tsx\n{/* Label mit htmlFor hinzufügen */}\n<label htmlFor=\"password\">Passwort</label>\n<input\n  id=\"password\"\n  type=\"password\"\n  value={password}\n  onChange={(e) => setPassword(e.target.value)}\n/>\n```\n\n---\n\n### [llm-009] Icon-Button ohne aria-label\n- **WCAG:** 4.1.2 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** components/LoginForm.tsx:58\n- **Problem:** Der Icon-Button hat weder einen sichtbaren Text noch eine `aria-label`. Screenreader können die Funktion nicht erkennen.\n- **Fix:**\n```tsx\n{/* Aria-Label hinzufügen */}\n<button \n  className=\"btn-icon\" \n  onClick={() => setShowInfo(!showInfo)} \n  aria-label=\"Informationen anzeigen\"\n>\n  {/* Icon */}\n</button>\n```\n\n---\n\n### [llm-014] Fokus-Indikator für Submit-Button entfernt\n- **WCAG:** 2.4.7 (Level AA)\n- **Schweregrad:** serious\n- **Element/Datei:** styles.css:154\n- **Problem:** Der Fokus-Indikator für den Submit-Button wurde mit `outline: none` vollständig entfernt. Das ist ein Verstoß gegen WCAG 2.4.7.\n- **Fix:**\n```css\n/* Fokus-Indikator wieder einfügen */\n.btn-submit-lowcontrast:focus {\n  outline: 2px solid #0057B8;\n  outline-offset: 2px;\n}\n```\n\n---\n\n### [llm-016] Interaktives Element ohne Fokus-Fähigkeit\n- **WCAG:** 2.1.1 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** styles.css:202\n- **Problem:** `.topic-tile` ist ein interaktives Element ohne `tabIndex`, wodurch es nicht per Tastatur bedient werden kann.\n- **Fix:**\n```tsx\n{/* tabIndex hinzufügen */}\n<div \n  className=\"topic-tile\" \n  tabIndex={0} \n  onClick={() => handleTopicSelect(topic)} \n  role=\"button\" \n  aria-label={`Thema: ${topic}`}\n>\n  {/* Inhalt */}\n</div>\n```\n\n---\n\n### [llm-017] Falsch simulierter Button ohne Fokus-Fähigkeit\n- **WCAG:** 2.1.1 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** styles.css:225\n- **Problem:** `.btn-fake` ist ein `<div>`, das wie ein Button aussieht, aber nicht fokussierbar ist und keine semantische Rolle hat.\n- **Fix:**\n```tsx\n{/* Semantisches <button> verwenden */}\n<button \n  className=\"btn-fake\" \n  onClick={handleClick} \n  aria-label=\"Funktion ausführen\"\n>\n  {/* Inhalt */}\n</button>\n```\n\n---\n\n### [llm-019] Visuelle Reihenfolge weicht von DOM-Reihenfolge ab\n- **WCAG:** 1.3.2 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** styles.css:45\n- **Problem:** Die visuelle Reihenfolge der Navigation (`flex-direction: row-reverse`) weicht von der DOM-Reihenfolge ab. Das kann Screenreader-Nutzer verwirren.\n- **Fix:**\n```tsx\n{/* DOM-Reihenfolge an visuelle Reihenfolge anpassen */}\n<ul className=\"nav-list\">\n  <li><button>Seite 2</button></li>\n  <li><button>Seite 1</button></li>\n</ul>\n```\n\n---\n\n## Nice-to-have\n\n*Severity \"moderate\" oder \"minor\", Level AAA — empfohlen aber nicht gesetzespflichtig*\n\n### [llm-007] Senden-Button zu klein\n- **WCAG:** 2.5.8 (Level AAA)\n- **Schweregrad:** moderate\n- **Element/Datei:** components/ContactForm.tsx:73\n- **Problem:** Der Button ist nur 18x18px groß, was unter der empfohlenen Mindestgröße von 24x24px liegt.\n- **Fix:**\n```tsx\n{/* Button-Größe anpassen */}\n<button \n  className=\"btn-tiny\" \n  style={{ width: \"24px\", height: \"24px\" }}\n>\n  {/* Inhalt */}\n</button>\n```\n\n---\n\n### [llm-011] Fokus-Outline via inline-style entfernt\n- **WCAG:** 2.4.7 (Level AA)\n- **Schweregrad:** moderate\n- **Element/Datei:** components/LoginForm.tsx:70\n- **Problem:** Der Fokus-Outline wurde mit `style={{ outline: 'none' }}` entfernt. Das ist ein Verstoß gegen WCAG 2.4.7.\n- **Fix:**\n```tsx\n{/* Fokus-Outline wieder einfügen */}\n<a href=\"#reset\" tabIndex={0} style={{ outline: \"2px solid #0057B8\", outlineOffset: \"2px\" }}>\n  Passwort vergessen?\n</a>\n```\n\n---\n\n### [llm-018] Zielgröße unterschreitet WCAG-Mindestgröße\n- **WCAG:** 2.5.8 (Level AA)\n- **Schweregrad:** moderate\n- **Element/Datei:** styles.css:238\n- **Problem:** `.btn-tiny` hat eine Größe von 18x18px, was unter der Mindestgröße von 24x24px liegt.\n- **Fix:**\n```css\n/* Button-Größe anpassen */\n.btn-tiny {\n  width: 24px;\n  height: 24px;\n}\n```\n\n---\n\n### [llm-003] DOM-Reihenfolge weicht von visuell ab\n- **WCAG:** 1.3.2 (Level A)\n- **Schweregrad:** moderate\n- **Element/Datei:** App.tsx:41\n- **Problem:** Die visuelle Reihenfolge der Navigation (`flex-direction: row-reverse`) weicht von der DOM-Reihenfolge ab. Das kann Screenreader-Nutzer verwirren.\n- **Fix:**\n```tsx\n{/* DOM-Reihenfolge an visuelle Reihenfolge anpassen */}\n<ul className=\"nav-list\">\n  <li><button>Seite 2</button></li>\n  <li><button>Seite 1</button></li>\n</ul>\n```\n\n---\n\n### [llm-004] onClick-Handler auf <div> ohne onKeyDown\n- **WCAG:** 2.1.1 (Level A)\n- **Schweregrad:** moderate\n- **Element/Datei:** components/ContactForm.tsx:42\n- **Problem:** Ein `<div>` mit `onClick`-Handler hat keinen `onKeyDown`-Handler. Das kann Tastatur-Nutzer ausschließen.\n- **Fix:**\n```tsx\n{/* onKeyDown hinzufügen */}\n<div \n  onClick={() => handleAction()} \n  onKeyDown={(e) => e.key === 'Enter' && handleAction()} \n  tabIndex={0} \n  role=\"button\" \n  aria-label=\"Aktion ausführen\"\n>\n  {/* Inhalt */}\n</div>\n```\n\n---\n\n### [llm-005] role=\"button\" auf <div> ohne tabIndex\n- **WCAG:** 4.1.2 (Level A)\n- **Schweregrad:** moderate\n- **Element/Datei:** components/ContactForm.tsx:82\n- **Problem:** Ein `<div>` mit `role=\"button\"` ist nicht fokussierbar, da `tabIndex` fehlt.\n- **Fix:**\n```tsx\n{/* tabIndex hinzufügen */}\n<div \n  role=\"button\" \n  tabIndex={0} \n  onClick={() => handleReset()} \n  onKeyDown={(e) => e.key === 'Enter' && handleReset()} \n  aria-label=\"Zurücksetzen\"\n>\n  {/* Inhalt */}\n</div>\n```\n\n---\n\n### [llm-006] Modaler Dialog ohne Fokus-Trap\n- **WCAG:** 2.1.2 (Level A)\n- **Schweregrad:** moderate\n- **Element/Datei:** components/ContactForm.tsx:102\n- **Problem:** Der modale Dialog hat keinen Fokus-Trap. Der Fokus kann in den Hintergrund wechseln.\n- **Fix:**\n```tsx\n{/* Fokus-Trap implementieren */}\nconst dialogRef = useRef<HTMLDivElement>(null);\nuseEffect(() => {\n  if (modalOpen && dialogRef.current) {\n    dialogRef.current.focus();\n  }\n}, [modalOpen]);\n\n<div \n  ref={dialogRef} \n  tabIndex={0} \n  role=\"dialog\" \n  aria-modal=\"true\" \n  aria-labelledby=\"modal-title\"\n>\n  {/* Inhalt */}\n</div>\n```\n\n---\n\n### [llm-015] Icon-Button ohne beschreibenden Text oder ARIA-Label\n- **WCAG:** 1.1.1, 4.1.2 (Level A)\n- **Schweregrad:** moderate\n- **Element/Datei:** styles.css:160\n- **Problem:** `.btn-icon` ist ein Icon-Button ohne sichtbaren beschreibenden Text oder ARIA-Label.\n- **Fix:**\n```tsx\n{/* Aria-Label hinzuf"
+}

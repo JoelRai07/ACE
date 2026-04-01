@@ -40,7 +40,7 @@ const ALL_SUITES: Record<string, SuiteConfig> = {
     url: "http://localhost:5173",
     srcDir: "./test/src",
     violations: 12,
-    numPredict: 3072,
+    numPredict: 6144,
   },
   "test-50": {
     name: "test-50",
@@ -60,8 +60,8 @@ const ALL_SUITES: Record<string, SuiteConfig> = {
 
 const DEFAULT_RUNS = 10;
 const BENCHMARK_DIR = "./results/benchmark";
-const DEFAULT_LLM_DETECT_NUM_PREDICT = "1536";
-const DEFAULT_LLM_DETECT_CHUNK_CHARS = "3000";
+const DEFAULT_LLM_DETECT_NUM_PREDICT = "2048";
+const DEFAULT_LLM_DETECT_CHUNK_CHARS = "4000";
 const DEFAULT_LLM_DETECT_MAX_FILES = "25";
 
 // ── CLI-Parser ───────────────────────────────────────────────────────────
