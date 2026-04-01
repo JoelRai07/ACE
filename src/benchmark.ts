@@ -47,14 +47,14 @@ const ALL_SUITES: Record<string, SuiteConfig> = {
     url: "http://localhost:5174",
     srcDir: "./test-50/src",
     violations: 50,
-    numPredict: 6144,
+    numPredict: 8192,
   },
   "test-100": {
     name: "test-100",
     url: "http://localhost:5175",
     srcDir: "./test-100/src",
     violations: 100,
-    numPredict: 8192,
+    numPredict: 12288,
   },
 };
 
