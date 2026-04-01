@@ -52,10 +52,10 @@ Das Benchmark-Skript führt automatisiert mehrere Runs pro Modell und Test-Suite
 
 | Modell | Typ | test-12 | test-50 | test-100 |
 |--------|-----|---------|---------|----------|
-| qwen2.5-coder:7b | Code-spezialisiert | 10 Runs | 3 Runs | 3 Runs |
-| qwen2.5-coder:14b | Code-spezialisiert | 10 Runs | 3 Runs | 3 Runs |
-| qwen3:32b | Generalist | 10 Runs | 3 Runs | 3 Runs |
-| deepseek-r1:70b | Reasoning | 5 Runs | 3 Runs | — |
+| qwen2.5-coder:7b | Code-spezialisiert | 10 Runs | 10 Runs | 3 Runs |
+| qwen2.5-coder:14b | Code-spezialisiert | 10 Runs | 10 Runs | 3 Runs |
+| qwen3:32b | Generalist | 10 Runs | 10 Runs | 3 Runs |
+| deepseek-r1:70b | Reasoning | 3 Runs | 3 Runs | 1 Run |
 
 ### Token-Limits pro Suite
 

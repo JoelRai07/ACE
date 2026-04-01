@@ -395,6 +395,24 @@ Erwartete Ausgabe:
 
 \clearpage
 
+\anhang{Screenshots der Testanwendung (test-12-Suite)}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{graphics/test12-screen1.png}
+\caption{Screenshot 1 der test-12-Suite}
+\label{fig:test12_screen1}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{graphics/test12-screen2.png}
+\caption{Screenshot 2 der test-12-Suite}
+\label{fig:test12_screen2}
+\end{figure}
+
+\clearpage
+
 \anhang{Accessibility-Verstöße der Testanwendung und zugehörige Prüfquellen (test-12-Suite)}
 
 \begin{table}[htbp]
@@ -443,35 +461,37 @@ Erwartete Ausgabe:
 \setlength{\tabcolsep}{3.5pt}
 \renewcommand{\arraystretch}{1.2}
 \caption{Erkennungsrate der Violations im Proof of Concept}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|c|p{5cm}|c|p{2.6cm}|c|p{2.8cm}|}
 \hline
 \textbf{\#} & \textbf{Violation} & \textbf{Erkannt (\checkmark/$\times$)} & \textbf{Tatsächliche Quelle} & \textbf{False Positive} & \textbf{Anmerkung} \\
 \hline
-1 & \texttt{<img>} ohne alt-Attribut & \checkmark & axe-core & -- & Alle Modelle \\
+1 & \texttt{<img>} ohne alt-Attribut & \checkmark & axe-core & - & Alle Modelle \\
 \hline
-2 & \texttt{<button>} ohne \texttt{aria-label} & \checkmark & LLM-Detektor & -- & Nur 14b/32b; 7b miss \\
+2 & \texttt{<button>} ohne \texttt{aria-label} & \checkmark & LLM-Detektor & - & Nur 14b/32b; 7b miss \\
 \hline
-3 & Formularfeld ohne \texttt{<label>} & \checkmark & axe-core + grep & -- & Alle Modelle \\
+3 & Formularfeld ohne \texttt{<label>} & \checkmark & axe-core + grep & - & Alle Modelle \\
 \hline
-4 & Kontrastverhältnis $< 4.5:1$ & \checkmark & axe-core & -- & 2 axe-Findings (nav + submit) \\
+4 & Kontrastverhältnis $< 4.5:1$ & \checkmark & axe-core & - & 2 axe-Findings (nav + submit) \\
 \hline
-5 & Fokus-Outline entfernt (\texttt{outline: none}) & \checkmark & axe-core + Playwright & -- & Alle Modelle \\
+5 & Fokus-Outline entfernt (\texttt{outline: none}) & \checkmark & axe-core + Playwright & - & Alle Modelle \\
 \hline
-6 & onClick ohne onKeyDown & \checkmark & grep & -- & Alle Modelle \\
+6 & onClick ohne onKeyDown & \checkmark & grep & - & Alle Modelle \\
 \hline
-7 & \texttt{role="button"} auf \texttt{<div>} ohne tabIndex & \checkmark & axe-core + grep & -- & Alle Modelle \\
+7 & \texttt{role="button"} auf \texttt{<div>} ohne tabIndex & \checkmark & axe-core + grep & - & Alle Modelle \\
 \hline
-8 & Modal ohne Fokus-Trap & \checkmark & LLM-Detektor & -- & Playwright-Check greift nicht; nur mit LLM \\
+8 & Modal ohne Fokus-Trap & \checkmark & LLM-Detektor & - & Playwright-Check greift nicht; nur mit LLM \\
 \hline
-9 & Skip-Link fehlt & \checkmark & Playwright & -- & Alle Modelle \\
+9 & Skip-Link fehlt & \checkmark & Playwright & - & Alle Modelle \\
 \hline
-10 & \texttt{aria-hidden="true"} auf fokussierbarem Element & \checkmark & axe-core & -- & 7b lässt es gelegentlich weg \\
+10 & \texttt{aria-hidden="true"} auf fokussierbarem Element & \checkmark & axe-core & - & 7b lässt es gelegentlich weg \\
 \hline
-11 & DOM-Reihenfolge vs. visuelle Reihenfolge & \checkmark & LLM-Detektor & -- & Nur 32b konsistent; 14b instabil \\
+11 & DOM-Reihenfolge vs. visuelle Reihenfolge & \checkmark & LLM-Detektor & - & Nur 32b konsistent; 14b instabil \\
 \hline
-12 & Interaktives Element zu klein ($<24\times24$\,px) & \checkmark & LLM-Detektor & -- & 7b instabil; 14b/32b konsistent \\
+12 & Interaktives Element zu klein ($<24\times24$\,px) & \checkmark & LLM-Detektor & - & 7b instabil; 14b/32b konsistent \\
 \hline
 \end{tabular}
+}%
 \label{tab:erkennungsrate_poc}
 \end{table}
 
@@ -811,11 +831,11 @@ Die Tabelle zeigt, dass die Unterschiede zwischen den Detektoren selbst methodis
 \hline
 \textbf{Modell} & \textbf{LLM-Findings Ø} & \textbf{Gesamtlaufzeit Ø (s)} & \textbf{LLM-Findings/s} & \textbf{Zusatznutzen ggü. 7b} \\
 \hline
-qwen2.5-coder:7b  & 10,3 & 172,9 & 0,060 & Referenz \\
+qwen2.5-coder:7b  & 11{,}1 & 231 & 0{,}048 & Referenz \\
 \hline
-qwen2.5-coder:14b & 19,8 & 319,7 & 0,062 & +92\,\% bei 1,85x Laufzeit \\
+qwen2.5-coder:14b & 22{,}8 & 420 & 0{,}054 & +105\,\% bei +82\,\% Zeitaufwand \\
 \hline
-qwen3:32b         & 19,2 & 681,1 & 0,028 & +86\,\% bei 3,94x Laufzeit \\
+qwen3:32b         & 19{,}5 & 701 & 0{,}028 & +76\,\% bei +203\,\% Zeitaufwand \\
 \hline
 \end{tabular}
 }%
