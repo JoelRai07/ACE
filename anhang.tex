@@ -229,7 +229,7 @@ Konzeptmatrix nach Webster Watson\footnotemark: Vollständige Übersicht aller a
 \draw[->] (ollama) -- (todo);
 
 \end{tikzpicture}
-\caption[Schematische Übersicht der \ac{ACE}-Pipeline]{Schematische Übersicht der im \ac{PoC} implementierten \ac{ACE}-Pipeline von der Datenerhebung bis zur priorisierten Ausgabe. Die Code-Schiene umfasst regex-basierte Pattern (grep) sowie optional die LLM-basierte Codeanalyse.\protect\footnote{Eigene Abbildung}}
+\caption[Schematische Übersicht der ACE-Pipeline]{Schematische Übersicht der im \ac{PoC} implementierten ACE-Pipeline von der Datenerhebung bis zur priorisierten Ausgabe. Die Code-Schiene umfasst regex-basierte Pattern (grep) sowie optional die LLM-basierte Codeanalyse.\protect\footnote{Eigene Abbildung}}
 \label{fig:ace-pipeline-schema}
 \end{figure}
 
@@ -395,14 +395,14 @@ Erwartete Ausgabe:
 
 \clearpage
 
-\anhang{Accessibility-Verstöße der Testanwendung und zugehörige Prüfquellen}
+\anhang{Accessibility-Verstöße der Testanwendung und zugehörige Prüfquellen (test-12-Suite)}
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{3.5pt}
 \renewcommand{\arraystretch}{1.2}
 \caption{Accessibility-Verstöße der Testanwendung und zugehörige Prüfquellen}
-\begin{tabular}{|c|p{5.4cm}|c|p{2.8cm}|c|}
+\begin{tabular}{|c|p{5.8cm}|c|p{4.2cm}|c|}
 \hline
 \textbf{\#} & \textbf{Violation} & \textbf{Kategorie} & \textbf{Erwartende Quelle} & \textbf{WCAG} \\
 \hline
@@ -428,7 +428,7 @@ Erwartete Ausgabe:
 \hline
 11 & Reihenfolge im DOM weicht von visueller Reihenfolge ab & semantisch & axe-core & 1.3.2 \\
 \hline
-12 & Interaktives Element zu klein ($<24\times24$px) & layout & grep (CSS-Pattern) + LLM-Codeanalyse & 2.5.8 \\
+12 & Interaktives Element zu klein ($<24\times24$px) & layout & grep + LLM-Codeanalyse & 2.5.8 \\
 \hline
 \end{tabular}
 \label{tab:accessibility_verstoesse}
@@ -436,14 +436,13 @@ Erwartete Ausgabe:
 
 \clearpage
 
-\anhang{Erkennungsrate der Violations im Proof of Concept}
+\anhang{Erkennungsrate der Violations im Proof of Concept (test-12-Suite)}
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{3.5pt}
 \renewcommand{\arraystretch}{1.2}
 \caption{Erkennungsrate der Violations im Proof of Concept}
-\resizebox{\textwidth}{!}{%
 \begin{tabular}{|c|p{5cm}|c|p{2.6cm}|c|p{2.8cm}|}
 \hline
 \textbf{\#} & \textbf{Violation} & \textbf{Erkannt (\checkmark/$\times$)} & \textbf{Tatsächliche Quelle} & \textbf{False Positive} & \textbf{Anmerkung} \\
@@ -473,11 +472,12 @@ Erwartete Ausgabe:
 12 & Interaktives Element zu klein ($<24\times24$\,px) & \checkmark & LLM-Detektor & -- & 7b instabil; 14b/32b konsistent \\
 \hline
 \end{tabular}
-}%
 \label{tab:erkennungsrate_poc}
 \end{table}
 
-\anhang{Bewertungsskala für die Empfehlungsqualität der LLM-Ausgaben}
+\clearpage
+
+\anhang{Bewertungsskala für die Empfehlungsqualität der LLM-Ausgaben (test-12-Suite)}
 
 \begin{table}[htbp]
 \centering
@@ -499,7 +499,7 @@ Erwartete Ausgabe:
 \end{table}
 
 \clearpage
-\anhang{Bewertung der Empfehlungsqualität pro Violation}
+\anhang{Bewertung der Empfehlungsqualität pro Violation (test-12-Suite)}
 
 \begin{table}[htbp]
 \centering
@@ -539,7 +539,7 @@ Erwartete Ausgabe:
 \end{table}
 
 \clearpage
-\anhang{Recall-Matrix: Violation × Bedingung}\label{app:recall_matrix}
+\anhang{Recall-Matrix: Violation × Bedingung (test-12-Suite)}\label{app:recall_matrix}
 
 \begin{table}[htbp]
 \centering
@@ -583,7 +583,7 @@ Erwartete Ausgabe:
 \end{table}
 
 \clearpage
-\anhang{Rohdaten: alle 30 Benchmark-Runs}\label{app:rohdaten}
+\anhang{Rohdaten: alle 30 Benchmark-Runs (test-12-Suite)}\label{app:rohdaten}
 
 \begin{table}[htbp]
 \centering
@@ -635,13 +635,13 @@ Erwartete Ausgabe:
 \end{table}
 
 \clearpage
-\anhang{Statistische Verteilung der LLM-Findings (alle 30 Runs)}\label{app:statistik_quantile}
+\anhang{Statistische Verteilung der LLM-Findings (alle 30 Runs, test-12-Suite)}\label{app:statistik_quantile}
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\caption[Quantilanalyse der LLM-Findings (alle 30 Runs)]{Quantilanalyse der LLM-Detektor-Findings über alle 30 Benchmark-Runs (3 Modelle $\times$ 10 Runs). Die Cluster-Struktur zeigt: 7b mit breiter Streuung (4--16), 14b und 32b mit engeren Ranges (22--23 bzw. 19--20).}
+\caption[Quantilanalyse der LLM-Findings (alle 30 Runs)]{Quantilanalyse der LLM-Detektor-Findings über alle 30 Benchmark-Runs der test-12-Suite (3 Modelle $\times$ 10 Runs). Die Cluster-Struktur zeigt: 7b mit breiter Streuung (4--16), 14b und 32b mit engeren Ranges (22--23 bzw. 19--20).}
 \begin{tabular}{|l|c|p{7cm}|}
 \hline
 \textbf{Quantil} & \textbf{Wert} & \textbf{Interpretation} \\
@@ -663,7 +663,7 @@ IQR             & 11 Findings & Streuung der mittleren 50\,\% -- spiegelt Modell
 \end{table}
 
 \clearpage
-\anhang{Modell-Leistungsvergleich (Zusammenfassung)}\label{app:modell_summary}
+\anhang{Modell-Leistungsvergleich: test-12-Suite Zusammenfassung}\label{app:modell_summary}
 
 \begin{table}[htbp]
 \centering
@@ -695,39 +695,39 @@ Eignung BITV-Einsatz              & Nicht geeignet   & Empfohlen          & Empf
 \end{table}
 
 \clearpage
-\anhang{Vergleich aller vier Modellkandidaten}\label{app:modellvergleich_4}
+\anhang{Vergleich aller vier Modellkandidaten: test-12-Suite Evaluationsergebnisse}\label{app:modellvergleich_4}
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.25}
-\caption[Vergleich aller vier Modellkandidaten]{Qualitative und quantitative Gegenüberstellung der vier in Kapitel~\ref{kap:4} eingeführten Modellkandidaten. Für \texttt{deepseek-r1:70b} liegen im Rahmen dieser Arbeit keine Messwerte vor (ausstehend); die Evaluation ist als Folgeschritt geplant (vgl. Abschnitt~\ref{sec:eval_erweiterung}).}
+\caption[Vergleich aller vier Modellkandidaten]{Qualitative und quantitative Gegenüberstellung der vier in Kapitel~\ref{kap:4} eingeführten Modellkandidaten. Die ausgewiesenen Messwerte für 7b/14b/32b basieren ausschließlich auf der test-12-Suite. Für \texttt{deepseek-r1:70b} liegen im Rahmen dieser Arbeit keine Messwerte vor (ausstehend); die Evaluation ist als Folgeschritt geplant (vgl. Abschnitt~\ref{sec:eval_erweiterung}).}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|c|c|c|c|}
+\begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Metrik} & \textbf{qwen2.5-coder:7b} & \textbf{qwen2.5-coder:14b} & \textbf{qwen3:32b} & \textbf{deepseek-r1:70b} \\
+\textbf{Metrik} & \textbf{qwen2.5-coder:7b} & \textbf{qwen2.5-coder:14b} & \textbf{qwen3:32b} \\
 \hline
-Modelltyp                   & Code          & Code          & Generalist    & Reasoning \\
+Modelltyp                   & Code          & Code          & Generalist \\
 \hline
-Parameter                   & 7B            & 14B           & 32B           & 70B \\
+Parameter                   & 7B            & 14B           & 32B \\
 \hline
-Recall (test-12)            & $\sim$75\,\%  & $\sim$91{,}7\,\% & 91{,}7--100\,\% & ausstehend \\
+Recall (test-12)            & $\sim$75\,\%  & $\sim$91{,}7\,\% & 91{,}7--100\,\% \\
 \hline
-\ac{LLM}-Findings Ø         & 11{,}1 ± 3{,}28 & 22{,}8 ± 0{,}42 & 19{,}5 ± 0{,}53 & ausstehend \\
+LLM-Findings Ø         & 11{,}1 ± 3{,}28 & 22{,}8 ± 0{,}42 & 19{,}5 ± 0{,}53 \\
 \hline
-Konsistenz $\sigma$         & 3{,}28        & 0{,}42        & 0{,}53        & ausstehend \\
+Konsistenz $\sigma$         & 3{,}28        & 0{,}42        & 0{,}53 \\
 \hline
-Priorisierungsqualität      & Fehlerhaft (invers) & Verbessert & Korrekt & ausstehend \\
+Priorisierungsqualität      & Fehlerhaft (invers) & Verbessert & Korrekt \\
 \hline
-Fix-Qualität (Stufe)        & 0--1          & 1             & 1--2          & ausstehend \\
+Fix-Qualität (Stufe)        & 0--1          & 1             & 1--2 \\
 \hline
-Gesamtlaufzeit Ø            & 231\,s        & 420\,s        & 701\,s        & ausstehend \\
+Gesamtlaufzeit Ø            & 231\,s        & 420\,s        & 701\,s \\
 \hline
-Output-Tokens Ø             & 4\,433        & 5\,254        & 3\,491        & ausstehend \\
+Output-Tokens Ø             & 4\,433        & 5\,254        & 3\,491 \\
 \hline
-NFA-02-Konformität          & \checkmark    & \checkmark    & \checkmark    & ausstehend \\
+NFA-02-Konformität          & \checkmark    & \checkmark    & \checkmark \\
 \hline
-Eignung BITV-Einsatz        & Nicht geeignet & Empfohlen & Empfohlen (Forschung)  & ausstehend \\
+Eignung BITV-Einsatz        & Nicht geeignet & Empfohlen & Empfohlen (Forschung) \\
 \hline
 \end{tabular}
 }%
@@ -735,16 +735,16 @@ Eignung BITV-Einsatz        & Nicht geeignet & Empfohlen & Empfohlen (Forschung)
 \end{table}
 
 \clearpage
-\anhang{Einsatzempfehlungen nach Anwendungsszenario}\label{app:einsatzempfehlungen}
+\anhang{Einsatzempfehlungen nach Anwendungsszenario (test-12-Suite)}\label{app:einsatzempfehlungen}
 
-\textbf{Leseanleitung:} Die nachfolgende Tabelle setzt die Evaluationsergebnisse aus Kapitel~\ref{kap:7} voraus. \texttt{qwen2.5-coder:7b} erscheint in der Spalte \textit{Primär} ausschließlich in Szenarien, in denen \textbf{kein} BITV-/WCAG-konformes Ergebnis erforderlich ist (CI/CD-Rauchtest, Prototyp). Für jede rechtlich relevante Barrierefreiheitsprüfung gilt unverändert: \texttt{qwen2.5-coder:7b} ist aufgrund der nachgewiesenen inversen Priorisierung (vgl. Abschnitt~\ref{sec:prio_modellvergleich}) \textit{nicht geeignet}. Die Spalte \textit{Eignung BITV-Einsatz} in Anhang~\ref{tab:modell_summary} ist das übergeordnete Kriterium.
+\textbf{Leseanleitung:} Die nachfolgende Tabelle setzt die Evaluationsergebnisse aus Kapitel~\ref{kap:7} voraus und bezieht sich auf die test-12-Suite. \texttt{qwen2.5-coder:7b} erscheint in der Spalte \textit{Primär} ausschließlich in Szenarien, in denen \textbf{kein} BITV-/WCAG-konformes Ergebnis erforderlich ist (CI/CD-Rauchtest, Prototyp). Für jede rechtlich relevante Barrierefreiheitsprüfung gilt unverändert: \texttt{qwen2.5-coder:7b} ist aufgrund der nachgewiesenen inversen Priorisierung (vgl. Abschnitt~\ref{sec:prio_modellvergleich}) \textit{nicht geeignet}. Die Spalte \textit{Eignung BITV-Einsatz} in Anhang~\ref{tab:modell_summary} ist das übergeordnete Kriterium.
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
 \caption[Modellempfehlungen nach Anwendungsszenario]{Empfohlene Modellwahl in Abhängigkeit vom Einsatzkontext. Primär: bevorzugtes Modell; Sekundär: Alternative. Die Empfehlungen für 7b gelten ausschließlich für nicht-compliance-relevante Szenarien.}
-\begin{tabular}{|p{4.5cm}|c|c|p{5cm}|}
+\begin{tabular}{|p{5.0cm}|c|c|p{5.6cm}|}
 \hline
 \textbf{Szenario} & \textbf{Primär} & \textbf{Sekundär} & \textbf{Begründung} \\
 \hline
@@ -756,7 +756,7 @@ BITV-Compliance-Audit        & 14b & 32b & Recall~$\geq$~91{,}7\,\%, korrekte Pr
 \hline
 Abnahmeprüfung / Endaudit    & 32b & 14b & Höchster Recall (100\,\%), $\sigma = 0{,}42$, Stufe-2-Fixes \\
 \hline
-Prototyp / MVP               & 7b  & --  & Schnelle Iteration; für finale Abnahme durch 14b/32b ersetzen \\
+Prototyp / MVP               & 7b  & -  & Schnelle Iteration; für finale Abnahme durch 14b/32b ersetzen \\
 \hline
 Enterprise-Deployment        & 14b & 32b & Produktionstaugliches Qualitätsniveau \\
 \hline
@@ -765,59 +765,72 @@ Enterprise-Deployment        & 14b & 32b & Produktionstaugliches Qualitätsnivea
 \end{table}
 
 \clearpage
-\anhang{Detektor-Konsistenz über alle 30 Runs}\label{app:detektor_konsistenz}
+\anhang{Detektor-Konsistenz über alle 30 Runs (test-12-Suite)}\label{app:detektor_konsistenz}
 
 \begin{table}[htbp]
 \centering
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.2}
-\caption[Detektor-Konsistenz über alle Runs]{Konsistenzanalyse der vier Detektoren über alle 30 Benchmark-Runs (test-12).}
-\begin{tabular}{|l|c|c|c|c|}
+\scriptsize
+\caption[Detektor-Konsistenz über alle Runs]{Konsistenzanalyse der Detektoren über alle 30 Benchmark-Runs (test-12). Da axe-core, Playwright und grep vollständig deterministisch bleiben, wird die relevante Varianz auf Modellebene innerhalb des LLM-Detektors ausgewiesen.}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|p{2.4cm}|p{0.8cm}|p{1.5cm}|p{1.2cm}|p{1.2cm}|p{1.7cm}|p{3.8cm}|}
 \hline
-\textbf{Detektor} & \textbf{Gesamtfindings} & \textbf{Ø pro Run} & \textbf{Varianz über Runs} & \textbf{Interpretation} \\
+\textbf{Detektor / Modell} & \textbf{Runs} & \textbf{Gesamt- findings} & \textbf{Ø pro Run} & \textbf{Min--Max} & \textbf{$\sigma^2$ / $\sigma$} & \textbf{Interpretation} \\
 \hline
-axe-core    & 120 & 4,0  & 0,0  & vollständig deterministisch \\
+axe-core    & 30 & 120 & 4,0  & 4--4   & 0,00 / 0,00 & vollständig deterministisch \\
 \hline
-Playwright  & 60  & 2,0  & 0,0  & vollständig deterministisch \\
+Playwright  & 30 & 60  & 2,0  & 2--2   & 0,00 / 0,00 & vollständig deterministisch \\
 \hline
-grep        & 180 & 6,0  & 0,0  & vollständig deterministisch \\
+grep        & 30 & 180 & 6,0  & 6--6   & 0,00 / 0,00 & vollständig deterministisch \\
 \hline
-LLM-Detektor & 493 & 16,4 & modellabhängig & einzige relevante Varianzquelle \\
+qwen2.5-coder:7b  & 10 & 111 & 11,1 & 4--16  & 9,69 / 3,11 & höchste Streuung \\
+\hline
+qwen2.5-coder:14b & 10 & 228 & 22,8 & 22--23 & 0,16 / 0,40 & hohe Konsistenz bei höchster Trefferzahl \\
+\hline
+qwen3:32b         & 10 & 195 & 19,5 & 19--20 & 0,25 / 0,50 & stabil, aber mit höherer Laufzeit \\
+\hline
+LLM-Detektor gesamt & 30 & 534 & 17,8 & 4--23 & modell\-abhängig & -- \\
 \hline
 \end{tabular}
+}%
 \label{tab:detektor_konsistenz}
 \end{table}
 
-\clearpage
-\anhang{Effizienzmetriken und Kosten-Nutzen-Verhältnis}\label{app:effizienz_metriken}
+Die Tabelle zeigt, dass die Unterschiede zwischen den Detektoren selbst methodisch kaum relevant sind: axe-core, Playwright und grep liefern über alle 30 Runs exakt konstante Ergebnisse. Die tatsächlich relevante Varianz entsteht ausschließlich innerhalb des \ac{LLM}-Detektors und dort vor allem durch die Modellwahl. \texttt{qwen2.5-coder:14b} weist mit $\sigma = 0{,}40$ die höchste Konsistenz bei zugleich höchster durchschnittlicher Fundzahl auf, während \texttt{qwen2.5-coder:7b} mit $\sigma = 3{,}11$ deutlich volatiler reagiert. \texttt{qwen3:32b} ist ebenfalls sehr stabil ($\sigma = 0{,}50$), erkauft diese Stabilität jedoch mit einer wesentlich höheren Laufzeit. Für die Interpretation der Gesamtpipeline ist daher nicht die Frage entscheidend, welcher Detektor variiert, sondern welches Modell im \ac{LLM}-Detektor eingesetzt wird.
+
+\anhang{Effizienzmetriken und Kosten-Nutzen-Verhältnis (test-12-Suite)}\label{app:effizienz_metriken}
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\caption[Effizienzvergleich der Modelle]{Effizienzvergleich auf Basis der 30 Benchmark-Runs. \textit{LLM-Findings/s} bezieht sich auf LLM-Detektor-Findings pro Sekunde Gesamtlaufzeit.}
+\caption[Effizienzvergleich der Modelle]{Effizienzvergleich auf Basis der 30 Benchmark-Runs der test-12-Suite. \textit{LLM-Findings/s} bezieht sich auf LLM-Detektor-Findings pro Sekunde Gesamtlaufzeit.}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|c|}
 \hline
 \textbf{Modell} & \textbf{LLM-Findings Ø} & \textbf{Gesamtlaufzeit Ø (s)} & \textbf{LLM-Findings/s} & \textbf{Zusatznutzen ggü. 7b} \\
 \hline
 qwen2.5-coder:7b  & 10,3 & 172,9 & 0,060 & Referenz \\
 \hline
-qwen2.5-coder:14b & 19,8 & 319,7 & 0,062 & +92\,\% Findings bei 1,85x Laufzeit \\
+qwen2.5-coder:14b & 19,8 & 319,7 & 0,062 & +92\,\% bei 1,85x Laufzeit \\
 \hline
-qwen3:32b         & 19,2 & 681,1 & 0,028 & +86\,\% Findings bei 3,94x Laufzeit \\
+qwen3:32b         & 19,2 & 681,1 & 0,028 & +86\,\% bei 3,94x Laufzeit \\
 \hline
 \end{tabular}
+}%
 \label{tab:effizienz_metriken}
 \end{table}
 
 \clearpage
-\anhang{Token-Nutzung pro Modell (Input und Output)}\label{app:token_economy}
+
+\anhang{Token-Nutzung pro Modell: Input/Output (test-12-Suite)}\label{app:token_economy}
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\caption[Token-Nutzung pro Modell]{Durchschnittliche Token-Nutzung je Run und Modell. Input-Tokens umfassen System-Prompt, serialisierte Findings und Konfigurationsparameter; Output-Tokens entsprechen der generierten Priorisierungsliste. Alle 7b- und 14b-Runs erreichten das Output-Limit von 3\,072 (Antwortabbruch); 32b-Runs lagen im Mittel bei 2\,979.}
+\caption[Token-Nutzung pro Modell]{Durchschnittliche Token-Nutzung je Run und Modell auf Basis der test-12-Suite. Input-Tokens umfassen System-Prompt, serialisierte Findings und Konfigurationsparameter; Output-Tokens entsprechen der generierten Priorisierungsliste. Alle 7b- und 14b-Runs erreichten das Output-Limit von 3\,072 (Antwortabbruch); 32b-Runs lagen im Mittel bei 2\,979.}
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Modell} & \textbf{Input-Tokens Ø} & \textbf{Output-Tokens Ø} & \textbf{Truncation} \\
@@ -834,14 +847,14 @@ qwen3:32b         & 4\,386 & 2\,979 &  6/10 Runs (60\,\%) \\
 \label{tab:token_economy}
 \end{table}
 
-\clearpage
-\anhang{Über-Detektion relativ zur Ground Truth}\label{app:overdetection}
+\anhang{Über-Detektion relativ zur Ground Truth (test-12-Suite)}\label{app:overdetection}
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\caption[Über-Detektion relativ zu 12 Ground-Truth-Violations]{Vergleich der durchschnittlichen Gesamtfindings pro Run mit der Ground Truth (12 Violations). Hohe Werte deuten auf zusätzliche Hinweise und/oder semantische Redundanzen hin.}
+\caption[Über-Detektion relativ zu 12 Ground-Truth-Violations]{Vergleich der durchschnittlichen Gesamtfindings pro Run mit der Ground Truth (12 Violations) auf Basis der test-12-Suite. Hohe Werte deuten auf zusätzliche Hinweise und/oder semantische Redundanzen hin.}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|p{5.3cm}|}
 \hline
 \textbf{Modell} & \textbf{Gesamtfindings Ø} & \textbf{Ground Truth} & \textbf{Quote} & \textbf{Interpretation} \\
@@ -853,44 +866,47 @@ qwen2.5-coder:14b & 31,8 & 12 & 265\,\% & deutlicher Überschuss; hoher Recall, 
 qwen3:32b         & 31,2 & 12 & 260\,\% & ähnlicher Überschuss wie 14b, aber mit höherer Konsistenz \\
 \hline
 \end{tabular}
+}%
 \label{tab:overdetection}
 \end{table}
 
 \clearpage
-\anhang{CSV-Export der Benchmark-Rohdaten}\label{app:csv_export}
+\anhang{CSV-Export der Benchmark-Rohdaten (test-12-Suite)}\label{app:csv_export}
 
-Die Benchmark-Rohdaten wurden zusätzlich als CSV-Datei exportiert (\texttt{analysis/benchmark\_analysis\_raw.csv}). Tabelle~\ref{tab:csv_schema} dokumentiert das Spaltenschema, Tabelle~\ref{tab:csv_beispiel} zeigt exemplarische Zeilen (je ein Run pro Modell).
+Die Benchmark-Rohdaten wurden zusätzlich als CSV-Datei exportiert (\texttt{results\-/bench\-mark\-/summary.csv}). Tabelle~\ref{tab:csv_schema} dokumentiert das reale Spaltenschema, Tabelle~\ref{tab:csv_beispiel} zeigt exemplarische Zeilen (je ein Run pro Modell).
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\caption[CSV-Spaltenschema]{Spaltenschema des CSV-Exports \texttt{benchmark\_analysis\_raw.csv}.}
+\caption[CSV-Spaltenschema]{Spaltenschema des CSV-Exports \texttt{results/benchmark/summary.csv}.}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|p{8.7cm}|}
 \hline
 \textbf{Spalte} & \textbf{Bedeutung} \\
 \hline
-Model & Verwendetes Modell (z.\,B. qwen2.5-coder:14b) \\
+model & Verwendetes Modell (z.\,B. qwen2.5-coder:14b) \\
 \hline
-Suite & Testsuite (hier: test-12) \\
+suite & Testsuite (hier: test-12) \\
 \hline
-Run & Laufnummer innerhalb einer Modellserie \\
+run & Laufnummer innerhalb einer Modellserie \\
 \hline
-LLM Findings / Axe Findings / Playwright Findings / Grep Findings & Anzahl erkannter Findings pro Detektor \\
+success / parseSuccess & Pipeline-Erfolg und Parsing-Erfolg der Ausgabe \\
 \hline
-LLM Detect (ms) & Laufzeit der LLM-Detektionsphase in Millisekunden \\
+mustHaveCount / niceToHaveCount & Anzahl Must-have- bzw. Nice-to-have-Findings im finalen Report \\
 \hline
-LLM Detect Chunks & Anzahl verarbeiteter Code-Chunks \\
+durationMs & Gesamtlaufzeit der Pipeline in Millisekunden \\
 \hline
-Total Duration (ms) & Gesamtlaufzeit der Pipeline in Millisekunden \\
+promptTokens / outputTokens & Tatsächlich verwendete Prompt- und Output-Tokens \\
 \hline
-Parse Success & Parsing-Status der finalen LLM-Ausgabe \\
+numPredict & Verwendetes Output-Token-Limit der Priorisierungsphase \\
 \hline
-Output Tokens & Tatsächlich generierte Output-Tokens \\
+Axe / Playwright / Grep / LLM & Anzahl erkannter Findings je Detektor \\
 \hline
-Est Input Tokens / Actual Prompt Tokens & Geschätzte bzw. tatsächlich ausgewertete Prompt-Tokens \\
+error & Fehlermeldung (leer bei erfolgreichem Run) \\
 \hline
 \end{tabular}
+}%
 \label{tab:csv_schema}
 \end{table}
 
@@ -898,17 +914,17 @@ Est Input Tokens / Actual Prompt Tokens & Geschätzte bzw. tatsächlich ausgewer
 \centering
 \setlength{\tabcolsep}{3.5pt}
 \renewcommand{\arraystretch}{1.15}
-\caption[Beispielzeilen aus dem CSV-Export]{Repräsentative Beispielzeilen aus \texttt{benchmark\_analysis\_raw.csv} (jeweils Run~01 pro Modell).}
+\caption[Beispielzeilen aus dem CSV-Export]{Repräsentative Beispielzeilen aus \texttt{results/benchmark/summary.csv} (test-12-Suite; jeweils Run~01 pro Modell).}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
-\textbf{Model} & \textbf{Run} & \textbf{LLM} & \textbf{Axe} & \textbf{PW} & \textbf{Grep} & \textbf{LLM Detect (ms)} & \textbf{Total (ms)} & \textbf{Parse} & \textbf{Output Tokens} \\
+\textbf{model} & \textbf{run} & \textbf{must} & \textbf{nice} & \textbf{LLM} & \textbf{Axe} & \textbf{PW} & \textbf{Grep} & \textbf{durationMs} & \textbf{prompt} & \textbf{output} & \textbf{parse} \\
 \hline
-qwen2.5-coder:7b  & 01 & 10 & 4 & 2 & 6 & 73841  & 132999 & true & 3072 \\
+qwen2.5-coder:7b  & 1 & 14 & 33 & 11 & 4 & 2 & 6 & 111817 & 4405 & 6144 & true \\
 \hline
-qwen2.5-coder:14b & 01 & 14 & 4 & 2 & 6 & 171653 & 320427 & true & 3072 \\
+qwen2.5-coder:14b & 1 & 6 & 16 & 23 & 4 & 2 & 6 & 148920 & 5635 & 3090 & true \\
 \hline
-qwen3:32b         & 01 & 20 & 4 & 2 & 6 & 370243 & 720835 & true & 3072 \\
+qwen3:32b         & 1 & 12 & 8 & 19 & 4 & 2 & 6 & 289630 & 5200 & 2846 & true \\
 \hline
 \end{tabular}
 }%
