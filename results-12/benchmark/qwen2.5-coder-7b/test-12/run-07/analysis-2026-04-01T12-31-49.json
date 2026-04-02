@@ -1,0 +1,60 @@
+{
+  "version": "1.1",
+  "timestamp": "2026-04-01T12:31:49.930Z",
+  "targetUrl": "http://localhost:5173",
+  "model": "qwen2.5-coder:7b",
+  "stats": {
+    "findings": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 6,
+      "llm": 14
+    },
+    "includedInPrompt": {
+      "axe": 4,
+      "playwright": 2,
+      "grep": 6,
+      "llm": 14
+    },
+    "estimatedInputTokens": 3901,
+    "actualPromptTokens": 4659,
+    "actualOutputTokens": 2744,
+    "durationMs": 64693,
+    "tokensBudgetTruncated": false
+  },
+  "metrics": {
+    "phaseTimings": {
+      "axeMs": 3364,
+      "playwrightMs": 2930,
+      "codeEnrichMs": 1,
+      "codePatternMs": 1,
+      "llmDetectMs": 139593,
+      "llmDetectChunks": 4,
+      "promptBuildMs": 3,
+      "llmMs": 64693,
+      "outputMs": 0,
+      "totalMs": 210585
+    },
+    "tokens": {
+      "estimated": 3901,
+      "actualPrompt": 4659,
+      "actualOutput": 2744
+    },
+    "enrichment": {
+      "enrichedCount": 4,
+      "totalEnrichable": 5,
+      "quote": 0.8
+    },
+    "deduplication": {
+      "beforeDedup": 6,
+      "afterDedup": 6,
+      "removed": 0
+    }
+  },
+  "parsed": {
+    "success": true,
+    "mustHaveCount": 6,
+    "niceToHaveCount": 12
+  },
+  "rawLlmResponse": "## Must-have\n\n### [axe-004] Logo-Bild ohne alt-Attribut\n- **WCAG:** 1.1.1 (Level A)\n- **Schweregrad:** critical\n- **Element/Datei:** App.tsx:36\n- **Problem:** Das Logo-Bild hat kein `alt`-Attribut, was für Screenreader unzulänglich ist.\n- **Fix:**\n```tsx\n// App.tsx — alt-Attribut hinzufügen\n<img src=\"https://placehold.co/120x40/0057B8/white\" className=\"logo\" alt=\"Beispiel Logo\" />\n```\n\n### [llm-003] Kontrast < 4.5:1 bei Logo-Bild\n- **WCAG:** 1.4.3 (Level AA)\n- **Schweregrad:** serious\n- **Element/Datei:** App.tsx:36\n- **Problem:** Das Logo hat ein Kontrastverhältnis von < 4.5:1, gefordert sind mindestens 4.5:1 (WCAG 1.4.3 AA).\n- **Fix:**\n```tsx\n// App.tsx — Farbe des Logos anpassen\n<img src=\"https://placehold.co/120x40/0057B8/white\" className=\"logo\" alt=\"Beispiel Logo\" style={{ filter: \"invert(1)\" }} />\n```\n\n### [llm-006] <button> ohne Label\n- **WCAG:** 4.1.2 (Level A)\n- **Schweregrad:** critical\n- **Element/Datei:** App.tsx:43\n- **Problem:** Der Button hat kein Label, was für Screenreader unzulänglich ist.\n- **Fix:**\n```tsx\n// App.tsx — Text hinzufügen\n<button className={`nav-btn ${page === \"login\" ? \"active\" : \"\"}`} onClick={() => setPage(\"login\")}>\n  Login\n</button>\n```\n\n### [llm-012] role=\"button\" auf <div> ohne tabIndex\n- **WCAG:** 4.1.2 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** components/ContactForm.tsx:81\n- **Problem:** Der Button hat `role=\"button\"` aber kein `tabIndex`, was für Tastaturnavigierbarkeit unzulänglich ist.\n- **Fix:**\n```tsx\n// ContactForm.tsx — tabIndex hinzufügen\n<div role=\"button\" tabIndex={0} onClick={() => { ... }} className=\"btn-fake\">...</div>\n```\n\n### [llm-013] Modaler Dialog ohne Fokus-Trap\n- **WCAG:** 2.5.8 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** components/ContactForm.tsx:96\n- **Problem:** Der Modale Dialog hat keinen Fokus-Trap, was für Tastaturnavigierbarkeit unzulänglich ist.\n- **Fix:**\n```tsx\n// ContactForm.tsx — Fokus-Trap hinzufügen\n<div className=\"modal-overlay\" role=\"dialog\" aria-modal=\"true\" tabIndex={0} onClick={(e) => e.stopPropagation()}>\n  <div className=\"modal-box\">\n    {/* ... */}\n  </div>\n</div>\n```\n\n### [llm-014] Senden-Button zu klein\n- **WCAG:** 2.5.8 (Level A)\n- **Schweregrad:** serious\n- **Element/Datei:** components/ContactForm.tsx:73\n- **Problem:** Der Button ist zu klein, gefordert sind mindestens 24x24px (WCAG 2.5.8 A).\n- **Fix:**\n```tsx\n// ContactForm.tsx — Buttongröße anpassen\n<button onClick={() => setModalOpen(true)} className=\"btn-tiny\" style={{ width: \"100px\", height: \"36px\" }}>Senden</button>\n```\n\n## Nice-to-have\n\n### [llm-004] Interaktives Element < 24x24px\n- **WCAG:** 2.5.8 (Level AA)\n- **Schweregrad:** moderate\n- **Element/Datei:** App.tsx:43\n- **Problem:** Der Button ist kleiner als 24x24px, gefordert sind mindestens 24x24px (WCAG 2.5.8 AA).\n- **Fix:**\n```tsx\n// App.tsx — Buttongröße anpassen\n<button className={`nav-btn ${page === \"login\" ? \"active\" : \"\"}`} onClick={() => setPage(\"login\")} style={{ width: \"100px\", height: \"36px\" }}>\n  Login\n</button>\n```\n\n### [llm-005] outline: none (Fokus entfernt)\n- **WCAG:** 2.4.7 (Level AA)\n- **Schweregrad:** moderate\n- **Element/Datei:** App.tsx:43\n- **Problem:** Der Button hat `outline: none`, was den Fokus nicht sichtbar macht.\n- **Fix:**\n```tsx\n// App.tsx — outline entfernen\n<button className={`nav-btn ${page === \"login\" ? \"active\" : \"\"}`} onClick={() => setPage(\"login\")}>\n  Login\n</button>\n```\n\n### [llm-011] onClick-Handler auf <div> ohne onKeyDown\n- **WCAG:** 2.1.1 (Level A)\n- **Schweregrad:** moderate\n- **Element/Datei:** components/ContactForm.tsx:40\n- **Problem:** Der Tile hat einen `onClick`-Handler aber keinen `onKeyDown`, was für Tastaturnavigierbarkeit unzulänglich ist.\n- **Fix:**\n```tsx\n// ContactForm.tsx — onKeyDown hinzufügen\n<div className=\"topic-tile\" onClick={() => setTopic(t)} onKeyDown={(e) => e.key === \"Enter\" && setTopic(t)} tabIndex={0}>...</div>\n```\n\n### [llm-010] Kontrast < 4.5:1 bei Footer\n- **WCAG:** 1.4.3 (Level AA)\n- **Schweregrad:** minor\n- **Element/Datei:** App.tsx:62\n- **Problem:** Der Footer hat ein Kontrastverhältnis von < 4.5:1, gefordert sind mindestens 4.5:1 (WCAG 1.4.3 AA).\n- **Fix:**\n```tsx\n// App.tsx — Farbe des Footers anpassen\n<footer className=\"app-footer\" style={{ color: \"#ffffff\", backgroundColor: \"#0057B8\" }}>\n  <p>ACE Synthetische Testkomponente – Nur für Evaluationszwecke</p>\n</footer>\n```\n\n### [llm-014] Senden-Button zu klein\n- **WCAG:** 2.5.8 (Level AA)\n- **Schweregrad:** minor\n- **Element/Datei:** components/ContactForm.tsx:73\n- **Problem:** Der Button ist zu klein, gefordert sind mindestens 24x24px (WCAG 2.5.8 AA).\n- **Fix:**\n```tsx\n// ContactForm.tsx — Buttongröße anpassen\n<button onClick={() => setModalOpen(true)} className=\"btn-tiny\" style={{ width: \"100px\", height: \"36px\" }}>Senden</button>\n```\n\n### [llm-008] outline: none (Fokus entfernt)\n- **WCAG:** 2.4.7 (Level AA)\n- **Schweregrad:** minor\n- **Element/Datei:** App.tsx:46\n- **Problem:** Der Button hat `outline: none`, was den Fokus nicht sichtbar macht.\n- **Fix:**\n```tsx\n// App.tsx — outline entfernen\n<button className={`nav-btn ${page === \"contact\" ? \"active\" : \"\"}`} onClick={() => setPage(\"contact\")}>\n  Kontakt\n</button>\n```\n\n### [llm-012] role=\"button\" auf <div> ohne tabIndex\n- **WCAG:** 4.1.2 (Level A)\n- **Schweregrad:** minor\n- **Element/Datei:** components/ContactForm.tsx:81\n- **Problem:** Der Button hat `role=\"button\"` aber kein `tabIndex`, was für Tastaturnavigierbarkeit unzulänglich ist.\n- **Fix:**\n```tsx\n// ContactForm.tsx — tabIndex hinzufügen\n<div role=\"button\" tabIndex={0} onClick={() => { ... }} className=\"btn-fake\">...</div>\n```\n\n### [llm-013] Modaler Dialog ohne Fokus-Trap\n- **WCAG:** 2.5.8 (Level A)\n- **Schweregrad:** minor\n- **Element/Datei:** components/ContactForm.tsx:96\n- **Problem:** Der Modale Dialog hat keinen Fokus-Trap, was für Tastaturnavigierbarkeit unzulänglich ist.\n- **Fix:**\n```tsx\n// ContactForm.tsx — Fokus-Trap hinzufügen\n<div className=\"modal-overlay\" role=\"dialog\" aria-modal=\"true\" tabIndex={0} onClick={(e) => e.stopPropagation()}>\n  <div className=\"modal-box\">\n    {/* ... */}\n  </div>\n</div>\n```\n\n### [llm-014] Senden-Button zu klein\n- **WCAG:** 2.5.8 (Level A)\n- **Schweregrad:** minor\n- **Element/Datei:** components/ContactForm.tsx:73\n- **Problem:** Der Button ist zu klein, gefordert sind mindestens 24x24px (WCAG 2.5.8 A).\n- **Fix:**\n```tsx\n// ContactForm.tsx — Buttongröße anpassen\n<button onClick={() => setModalOpen(true)} className=\"btn-tiny\" style={{ width: \"100px\", height: \"36px\" }}>Senden</button>\n```\n\n### [llm-005] outline: none (Fokus entfernt)\n- **WCAG:** 2.4.7 (Level AA)\n- **Schweregrad:** minor\n- **Element/Datei:** App.tsx:43\n- **Problem:** Der Button hat `outline: none`, was den Fokus nicht sichtbar macht.\n- **Fix:**\n```tsx\n// App.tsx — outline entfernen\n<button className={`nav-btn ${page === \"login\" ? \"active\" : \"\"}`} onClick={() => setPage(\"login\")}>\n  Login\n</button>\n```\n\n### [llm-011] onClick-Handler auf <div> ohne onKeyDown\n- **WCAG:** 2.1.1 (Level A)\n- **Schweregrad:** minor\n- **Element/Datei:** components/ContactForm.tsx:40\n- **Problem:** Der Tile hat einen `onClick`-Handler aber keinen `onKeyDown`, was für Tastaturnavigierbarkeit unzulänglich ist.\n- **Fix:**\n```tsx\n// ContactForm.tsx — onKeyDown hinzufügen\n<div className=\"topic-tile\" onClick={() => setTopic(t)} onKeyDown={(e) => e.key === \"Enter\" && setTopic(t)} tabIndex={0}>...</div>\n```\n\n### [llm-010] Kontrast < 4.5:1 bei Footer\n- **WCAG:** 1.4.3 (Level AA)\n- **Schweregrad:** minor\n- **Element/Datei:** App.tsx:62\n- **Problem:** Der Footer hat ein Kontrastverhältnis von < 4.5:1, gefordert sind mindestens 4.5:1 (WCAG 1.4.3 AA).\n- **Fix:**\n```tsx\n// App.tsx — Farbe des Footers anpassen\n<footer className=\"app-footer\" style={{ color: \"#ffffff\", backgroundColor: \"#0057B8\" }}>\n  <p>ACE Synthetische Testkomponente – Nur für Evaluationszwecke</p>\n</footer>\n```"
+}
