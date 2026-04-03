@@ -433,32 +433,39 @@ Gib nur JSON zurück: {"findings": [...]}
 \setlength{\fboxrule}{0.4pt}
 
 \begin{tikzpicture}
-  % Gesamtrahmen
-  \draw[thick] (0,0) rectangle (12,7);
-  \node[anchor=north west, font=\bfseries] at (0.2,6.75) {Kontextfenster: 32.768 Tokens};
+  % Gesamtrahmen (größer für bessere Lesbarkeit)
+  \draw[thick] (0,0) rectangle (14,8.2);
+  \node[anchor=north west, font=\bfseries] at (0.25,7.95) {Kontextfenster: 32.768 Tokens (\texttt{TOTAL\_CONTEXT\_WINDOW})};
 
-  % System-Prompt (oben, klein)
-  \fill[gray!25] (0.3,5.35) rectangle (11.7,6.05);
-  \draw (0.3,5.35) rectangle (11.7,6.05);
-  \node[anchor=west, font=\small] at (0.5,5.7) {\textbf{System-Prompt} (\texttildelow{}400 Tokens) -- Role-Play + Few-Shot + Regeln};
-  \node[anchor=east, font=\scriptsize\itshape] at (11.5,5.7) {fest};
+  % System-Reserve (oben)
+  \fill[gray!25] (0.35,6.45) rectangle (13.65,7.25);
+  \draw (0.35,6.45) rectangle (13.65,7.25);
+  \node[anchor=west, font=\small] at (0.55,6.86) {\textbf{System-Reserve} (400 Tokens, \texttt{RESERVED\_FOR\_SYSTEM})};
+  \node[anchor=west, font=\scriptsize] at (0.55,6.58) {Role-Play + Few-Shot + Regeln; feste Vorreservierung};
 
-  % Findings (Mitte, groß)
-  \fill[blue!12] (0.3,1.95) rectangle (11.7,5.15);
-  \draw (0.3,1.95) rectangle (11.7,5.15);
-  \node[anchor=center, font=\small] at (6,4.05) {\textbf{User-Prompt: Serialisierte Findings} (\texttildelow{}24.000 Tokens)};
-  \node[anchor=center, font=\scriptsize] at (6,3.45) {axe-core-Findings + Playwright-Findings + grep-Findings + LLM-Code-Findings};
-  \node[anchor=center, font=\scriptsize\itshape] at (6,2.85) {variabel -- wird bei Platzmangel nach Schweregrad priorisiert};
-  \node[anchor=center, font=\scriptsize] at (6,2.3) {critical $\rightarrow$ serious $\rightarrow$ moderate $\rightarrow$ minor};
+  % Findings-Bereich (Mitte)
+  \fill[blue!12] (0.35,2.1) rectangle (13.65,6.2);
+  \draw (0.35,2.1) rectangle (13.65,6.2);
+  \node[anchor=center, font=\normalsize] at (7,5.2) {\textbf{User-Prompt: serialisierte Findings}};
+  \node[anchor=center, font=\small] at (7,4.75) {axe-core + Playwright + grep + LLM-Codeanalyse};
+  \node[anchor=center, font=\small] at (7,4.3) {Budget vor Feinschätzung: max. 24.176 Tokens (\texttt{AVAILABLE\_INPUT\_TOKENS})};
+  \node[anchor=center, font=\small] at (7,3.85) {tatsächlich verfügbar: 24.176 $-$ geschätzte System-Prompt-Tokens};
+  \node[anchor=center, font=\small\itshape] at (7,3.35) {variabel; bei Platzmangel werden moderate/minor Findings verworfen};
+  \node[anchor=center, font=\small] at (7,2.85) {Priorisierung: critical $\rightarrow$ serious $\rightarrow$ moderate $\rightarrow$ minor};
 
   % Output-Reserve (unten)
-  \fill[orange!15] (0.3,0.3) rectangle (11.7,1.75);
-  \draw (0.3,0.3) rectangle (11.7,1.75);
-  \node[anchor=center, font=\small] at (6,1.15) {\textbf{Output-Reserve} (\texttildelow{}8.192 Tokens)};
-  \node[anchor=center, font=\scriptsize\itshape] at (6,0.65) {Platz f\"ur die LLM-Antwort (To-Do-Liste) -- muss frei bleiben};
+  \fill[orange!15] (0.35,0.45) rectangle (13.65,1.8);
+  \draw (0.35,0.45) rectangle (13.65,1.8);
+  \node[anchor=center, font=\small] at (7,1.35) {\textbf{Output-Reserve} (8.192 Tokens, \texttt{RESERVED\_FOR\_OUTPUT})};
+  \node[anchor=center, font=\scriptsize] at (7,0.85) {fester Platz für die LLM-Antwort (Must-have/Nice-to-have-Liste)};
+
+  % Status-Labels separat rechts (keine Überdeckung)
+  \node[draw, rounded corners=1pt, fill=gray!10, font=\scriptsize\itshape, anchor=west] at (10.6,7.45) {fest reserviert};
+  \node[draw, rounded corners=1pt, fill=blue!6, font=\scriptsize\itshape, anchor=west] at (10.6,6.28) {variabel};
+  \node[draw, rounded corners=1pt, fill=orange!10, font=\scriptsize\itshape, anchor=west] at (10.6,1.95) {fest reserviert};
 \end{tikzpicture}
 
-\caption[Aufteilung des Token-Budgets]{Aufteilung des Kontextfensters (32.768 Tokens) in drei Bereiche: System-Prompt (fest), serialisierte Findings (variabel, nach Schweregrad priorisiert) und Output-Reserve (fest). Vgl. Abschnitt~\ref{sec:kontextualisierung}.\protect\footnote{Eigene Abbildung}}
+\caption[Aufteilung des Token-Budgets]{Aufteilung des Kontextfensters (32.768 Tokens) gemäß Implementierung in \texttt{src/prompt.ts}: feste Reserven für System (400) und Output (8.192), variabler Bereich für serialisierte Findings mit Schweregrad-basierter Kürzung bei Budgetüberschreitung. Vgl. Abschnitt~\ref{sec:kontextualisierung}.\protect\footnote{Eigene Abbildung}}
 \label{fig:tokenbudget}
 \end{figure}
 
@@ -509,7 +516,7 @@ Ground-Truth-Violations & 12 & 50 & 100 \\
 \hline
 Runs je Modell (aktuell) & 10 & 10 & 0 (geplant: 3) \\
 \hline
-Output-Limit \texttt{num\_predict} & 3\,072 & 8\,192 & 12\,288 (geplant) \\
+Output-Limit \texttt{num\_predict} & 6\,144 & 8\,192 & 12\,288 (geplant) \\
 \hline
 Beste LLM-Konsistenz $\sigma$ & 0{,}42 (14b) & 1{,}25 (32b) & k.\,A. \\
 \hline
@@ -611,6 +618,10 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 \hline
 11 & CSV-Auszug \\
 \hline
+12 & Statistische Verteilung \\
+\hline
+13 & Screenshots der Testsuite \\
+\hline
 \end{tabular}
 \label{tab:template_test12}
 \end{table}
@@ -674,7 +685,7 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 \hline
 2 & \texttt{<button>} ohne \texttt{aria-label} & \checkmark & LLM-Detektor & - & Nur 14b/32b; 7b miss \\
 \hline
-3 & Formularfeld ohne \texttt{<label>} & \checkmark & axe-core + grep & - & Alle Modelle \\
+3 & Formularfeld ohne \texttt{<label>} & \checkmark & axe-core + grep & - & 7b instabil; 14b/32b konsistent \\
 \hline
 4 & Kontrastverhältnis $< 4.5:1$ & \checkmark & axe-core & - & 2 axe-Findings (nav + submit) \\
 \hline
@@ -688,11 +699,11 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 \hline
 9 & Skip-Link fehlt & \checkmark & Playwright & - & Alle Modelle \\
 \hline
-10 & \texttt{aria-hidden="true"} auf fokussierbarem Element & \checkmark & axe-core & - & 7b lässt es gelegentlich weg \\
+10 & \texttt{aria-hidden="true"} auf fokussierbarem Element & \checkmark & axe-core & - & Alle Modelle \\
 \hline
-11 & DOM-Reihenfolge vs. visuelle Reihenfolge & \checkmark & LLM-Detektor & - & Nur 32b konsistent; 14b instabil \\
+11 & DOM-Reihenfolge vs. visuelle Reihenfolge & \checkmark & LLM-Detektor & - & 14b/32b konsistent; 7b miss \\
 \hline
-12 & Interaktives Element zu klein ($<24\times24$\,px) & \checkmark & LLM-Detektor & - & 7b instabil; 14b/32b konsistent \\
+12 & Interaktives Element zu klein ($<24\times24$\,px) & \checkmark & LLM-Detektor & - & Alle Modelle \\
 \hline
 \end{tabular}
 }%
@@ -717,7 +728,7 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 \hline
 2  & \texttt{<button>} ohne \texttt{aria-label} (Icon-Button)    & $\times$   & $\times$   & \checkmark & \checkmark & \checkmark \\
 \hline
-3  & Formularfeld ohne \texttt{<label>}                          & \checkmark & \checkmark & \checkmark & \checkmark & \\
+3  & Formularfeld ohne \texttt{<label>}                          & \checkmark & $\sim$     & \checkmark & \checkmark & \\
 \hline
 4  & Kontrastverhältnis $<4.5:1$                                 & \checkmark & \checkmark & \checkmark & \checkmark & \\
 \hline
@@ -731,13 +742,13 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 \hline
 9  & Skip-Link fehlt                                             & \checkmark & \checkmark & \checkmark & \checkmark & \\
 \hline
-10 & \texttt{aria-hidden="true"} auf fokussierbarem Element      & \checkmark & $\sim$     & \checkmark & \checkmark & \\
+10 & \texttt{aria-hidden="true"} auf fokussierbarem Element      & \checkmark & \checkmark & \checkmark & \checkmark & \\
 \hline
-11 & DOM-Reihenfolge weicht von visueller Reihenfolge ab         & $\times$   & $\times$   & $\sim$     & \checkmark & \checkmark \\
+11 & DOM-Reihenfolge weicht von visueller Reihenfolge ab         & $\times$   & $\times$   & \checkmark & \checkmark & \checkmark \\
 \hline
-12 & Interaktives Element zu klein ($<24\times24$\,px)           & $\times$   & $\sim$     & \checkmark & \checkmark & \checkmark \\
+12 & Interaktives Element zu klein ($<24\times24$\,px)           & $\times$   & \checkmark & \checkmark & \checkmark & \checkmark \\
 \hline
-\multicolumn{2}{|c|}{\textbf{Recall}} & \textbf{8\,/\,12} & \textbf{9\,/\,12} & \textbf{11\,/\,12} & \textbf{11--12\,/\,12} & 4~Violations \\
+\multicolumn{2}{|c|}{\textbf{Recall}} & \textbf{8\,/\,12} & \textbf{9\,/\,12} & \textbf{12\,/\,12} & \textbf{12\,/\,12} & 4~Violations \\
 \hline
 \end{tabular}
 }%
@@ -811,7 +822,7 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 \hline
 \textbf{Metrik} & \textbf{qwen2.5-coder:7b} & \textbf{qwen2.5-coder:14b} & \textbf{qwen3:32b} \\
 \hline
-Recall (Ø über Runs)              & $\sim$75\,\%     & $\sim$91{,}7\,\%  & 91{,}7--100\,\% \\
+Recall (Ø über Runs)              & $\sim$75\,\%     & 100\,\%            & 100\,\% \\
 LLM-Detektor-Findings (Ø ± $\sigma$) & 11{,}1 $\pm$ 3{,}28 & 22{,}8 $\pm$ 0{,}42 & 19{,}5 $\pm$ 0{,}53 \\
 LLM-Detektor-Findings (Min--Max)  & 4--16            & 22--23             & 19--20 \\
 Konsistenz $\sigma$               & 3{,}28           & 0{,}42             & 0{,}53 \\
@@ -839,18 +850,18 @@ Eignung BITV-Einsatz              & Nicht geeignet   & Empfohlen          & Empf
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\caption[Token-Nutzung pro Modell (test-12)]{Durchschnittliche Token-Nutzung je Run und Modell auf Basis der test-12-Suite. Input-Tokens umfassen System-Prompt, serialisierte Findings und Konfigurationsparameter; Output-Tokens entsprechen der generierten Priorisierungsliste. Alle 7b- und 14b-Runs erreichten das Output-Limit von 3\,072 (Antwortabbruch); 32b-Runs lagen im Mittel bei 2\,979.}
+\caption[Token-Nutzung pro Modell (test-12)]{Durchschnittliche Token-Nutzung je Run und Modell auf Basis der test-12-Suite (\texttt{num\_predict}~=~6\,144). Input-Tokens umfassen System-Prompt, serialisierte Findings und Konfigurationsparameter; Output-Tokens entsprechen der generierten Priorisierungsliste. 5\,/\,10 Runs (7b) bzw.\ 4\,/\,10 Runs (14b) erreichten das Output-Limit (Antwortabbruch); 32b-Runs blieben mit Ø\,3\,491 deutlich darunter (1\,/\,10 Abbrüche).}
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Modell} & \textbf{Input-Tokens Ø} & \textbf{Output-Tokens Ø} & \textbf{Truncation} \\
 \hline
-qwen2.5-coder:7b  & 3\,669 & 3\,072 & 10/10 Runs (100\,\%) \\
+qwen2.5-coder:7b  & 4\,451 & 4\,433 &  5/10 Runs (50\,\%) \\
 \hline
-qwen2.5-coder:14b & 3\,947 & 3\,072 & 10/10 Runs (100\,\%) \\
+qwen2.5-coder:14b & 5\,547 & 5\,254 &  4/10 Runs (40\,\%) \\
 \hline
-qwen3:32b         & 4\,386 & 2\,979 &  6/10 Runs (60\,\%) \\
+qwen3:32b         & 5\,214 & 3\,491 &  1/10 Runs (10\,\%) \\
 \hline
-\multicolumn{4}{|l|}{\textit{Gesamt (30 Runs): Input $\approx$120\,400 / Output 91\,226 / Prompt $\approx$125\,800 Tokens}} \\
+\multicolumn{4}{|l|}{\textit{Gesamt (30 Runs): Input $\approx$152\,100 / Output 131\,784 Tokens}} \\
 \hline
 \end{tabular}
 \label{tab:token_economy}
@@ -1047,24 +1058,6 @@ qwen3:32b         & 1 & 12 & 8 & 19 & 4 & 2 & 6 & 289630 & 5200 & 2846 & true \\
 
 \clearpage
 
-\anhang{Screenshots der Testanwendung (test-12-Suite)}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.95\textwidth]{graphics/test12-screen1.png}
-\caption{Screenshot 1 der test-12-Suite}
-\label{fig:test12_screen1}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.95\textwidth]{graphics/test12-screen2.png}
-\caption{Screenshot 2 der test-12-Suite}
-\label{fig:test12_screen2}
-\end{figure}
-
-\clearpage
-
 \anhang{Statistische Verteilung der LLM-Findings (alle 30 Runs, test-12-Suite)}\label{app:statistik_quantile}
 
 \begin{table}[htbp]
@@ -1086,11 +1079,29 @@ Q3 (75\,\%)     & 22 Findings & 75\,\% der Runs liefern $\leq$ 22 Findings (14b-
 \hline
 Max (100\,\%)   & 23 Findings & absolutes Maximum (14b, oberer Bereich) \\
 \hline
-IQR             & 11 Findings & Streuung der mittleren 50\,\% -- spiegelt Modell-Heterogenität wider \\
+\ac{IQR}             & 11 Findings & Streuung der mittleren 50\,\% -- spiegelt Modell-Heterogenität wider \\
 \hline
 \end{tabular}
 \label{tab:statistik_quantile}
 \end{table}
+
+\clearpage
+
+\anhang{Screenshots der Testanwendung (test-12-Suite)}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{graphics/test12-screen1.png}
+\caption{Screenshot 1 der test-12-Suite}
+\label{fig:test12_screen1}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{graphics/test12-screen2.png}
+\caption{Screenshot 2 der test-12-Suite}
+\label{fig:test12_screen2}
+\end{figure}
 
 \clearpage
 % ══════════════════════════════════════════════════════════════════════════════
@@ -1132,6 +1143,10 @@ IQR             & 11 Findings & Streuung der mittleren 50\,\% -- spiegelt Modell
 10 & Empfehlungsqualität \\
 \hline
 11 & CSV-Auszug \\
+\hline
+12 & Statistische Verteilung \\
+\hline
+13 & Screenshots der Testsuite \\
 \hline
 \end{tabular}
 \label{tab:template_test50}
@@ -1314,11 +1329,11 @@ V50 & \texttt{outline: none} im Modal-Button & \checkmark & Playwright & - & 32b
 \hline
 \endlastfoot
 V1  & Skip-Link fehlt                                      & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
-V2  & \texttt{<html>} ohne \texttt{lang}                  & \checkmark & $\times$   & \checkmark & \checkmark & \\ \hline
+V2  & \texttt{<html>} ohne \texttt{lang}                  & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
 V3  & Logo \texttt{<img>} ohne \texttt{alt}               & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V4  & Deko-Bild ohne \texttt{alt=""}                      & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V5  & Hamburger-Button ohne Namen                         & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
-V6  & \texttt{<a>} ohne \texttt{href}                     & \checkmark & $\times$   & \checkmark & \checkmark & \\ \hline
+V6  & \texttt{<a>} ohne \texttt{href}                     & \checkmark & $\sim$     & $\times$   & \checkmark & \\ \hline
 V7  & Badge-Kontrast zu niedrig                           & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V8  & CSS \texttt{order} $\neq$ DOM-Reihenfolge           & $\times$   & $\sim$     & $\times$   & \checkmark & \checkmark \\ \hline
 V9  & \texttt{<nav>} ohne \texttt{aria-label}             & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
@@ -1328,16 +1343,16 @@ V12 & \texttt{role="button"} o.\,\texttt{tabIndex} (Sb.) & \checkmark & \checkma
 V13 & \texttt{onClick} auf \texttt{<li>} o.\,\texttt{onKeyDown} (3) & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V14 & Button $<$\,24\,px (Sidebar)                        & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V15 & \texttt{aria-hidden} auf fokussierbarem Element     & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
-V16 & Überschriften-Hierarchie übersprungen               & \checkmark & $\times$   & \checkmark & \checkmark & \\ \hline
-V17 & KPI-Icon \texttt{<img>} ohne \texttt{alt} (1)       & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
+V16 & Überschriften-Hierarchie übersprungen               & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
+V17 & KPI-Icon \texttt{<img>} ohne \texttt{alt} (1)       & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V18 & KPI-Wert Kontrast zu niedrig                        & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
-V19 & KPI-Icon \texttt{<img>} ohne \texttt{alt} (2)       & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
-V20 & \texttt{onClick} auf \texttt{<div>} o.\,\texttt{onKeyDown} & \checkmark & \checkmark & \checkmark & $\sim$ & \\ \hline
-V21 & \texttt{role="button"} auf \texttt{<div>} o.\,\texttt{tabIndex} & \checkmark & \checkmark & \checkmark & $\sim$ & \\ \hline
+V19 & KPI-Icon \texttt{<img>} ohne \texttt{alt} (2)       & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
+V20 & \texttt{onClick} auf \texttt{<div>} o.\,\texttt{onKeyDown} & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
+V21 & \texttt{role="button"} auf \texttt{<div>} o.\,\texttt{tabIndex} & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V22 & Chart-Bild ohne \texttt{alt}                        & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
-V23 & Tabelle o.\,\texttt{<caption>} (Dashboard)          & \checkmark & $\times$   & \checkmark & \checkmark & \\ \hline
+V23 & Tabelle o.\,\texttt{<caption>} (Dashboard)          & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
 V24 & \texttt{<th>} ohne \texttt{scope}                   & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
-V25 & Status nur durch Farbe (Dashboard)                  & $\times$   & $\sim$     & \checkmark & \checkmark & \checkmark \\ \hline
+V25 & Status nur durch Farbe (Dashboard)                  & $\times$   & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
 V26 & Avatar \texttt{<img>} ohne \texttt{alt}             & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V27 & Input ohne \texttt{<label>} (Anzeigename)           & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V28 & Input ohne \texttt{<label>} (E-Mail)                & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
@@ -1347,23 +1362,23 @@ V31 & Fehlermeldung nicht progr.\,verknüpft               & $\times$   & \check
 V32 & Button-Kontrast zu niedrig                          & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V33 & \texttt{outline: none} auf Button                   & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V34 & Statusmeldung ohne \texttt{aria-live}               & $\times$   & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
-V35 & Duplikat-ID \texttt{help-text}                      & \checkmark & \checkmark & \checkmark & $\sim$     & \\ \hline
-V36 & \texttt{onClick} auf \texttt{<span>} o.\,\texttt{onKeyDown} & \checkmark & $\sim$ & $\sim$ & \checkmark & \\ \hline
-V37 & Suchfeld ohne sichtbares Label                      & \checkmark & $\times$   & $\sim$     & \checkmark & \\ \hline
-V38 & Tabelle o.\,\texttt{<caption>} (DataTable)          & \checkmark & $\times$   & \checkmark & \checkmark & \\ \hline
+V35 & Duplikat-ID \texttt{help-text}                      & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
+V36 & \texttt{onClick} auf \texttt{<span>} o.\,\texttt{onKeyDown} & \checkmark & $\sim$ & \checkmark & \checkmark & \\ \hline
+V37 & Suchfeld ohne sichtbares Label                      & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
+V38 & Tabelle o.\,\texttt{<caption>} (DataTable)          & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
 V39 & Checkbox ohne Label (Header)                        & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
 V40 & Checkbox ohne Label (Zeilen)                        & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
 V41 & Status nur durch Farbe (DataTable)                  & $\times$   & $\sim$     & \checkmark & \checkmark & \checkmark \\ \hline
-V42 & Icon-Button ohne zugängl. Namen                     & \checkmark & $\sim$     & \checkmark & $\sim$     & \\ \hline
+V42 & Icon-Button ohne zugängl. Namen                     & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
 V43 & Paginierung \texttt{<div>} ohne Keyboard            & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V44 & \texttt{<li>} mit \texttt{onClick} o.\,\texttt{onKeyDown} & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
 V45 & Ungelesen nur durch Farbe                           & $\times$   & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
-V46 & Zeitangabe Kontrast zu niedrig                      & \checkmark & $\times$   & $\sim$     & \checkmark & \\ \hline
-V47 & Button $<$\,24\,px (Notif.)                         & \checkmark & \checkmark & $\sim$     & \checkmark & \\ \hline
-V48 & Modaler Dialog ohne Fokus-Trap                      & \checkmark & $\times$   & \checkmark & $\sim$     & \\ \hline
-V49 & Dialog ohne \texttt{aria-labelledby}                & \checkmark & \checkmark & $\sim$     & $\sim$     & \\ \hline
-V50 & \texttt{outline: none} im Modal-Button              & \checkmark & $\times$   & $\sim$     & \checkmark & \\ \hline
-\multicolumn{2}{|c|}{\textbf{Recall}} & \textbf{43\,/\,50} & \textbf{30\,/\,50} & \textbf{43\,/\,50} & \textbf{44\,/\,50} & 7~Violations \\
+V46 & Zeitangabe Kontrast zu niedrig                      & \checkmark & $\sim$     & \checkmark & \checkmark & \\ \hline
+V47 & Button $<$\,24\,px (Notif.)                         & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
+V48 & Modaler Dialog ohne Fokus-Trap                      & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
+V49 & Dialog ohne \texttt{aria-labelledby}                & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
+V50 & \texttt{outline: none} im Modal-Button              & \checkmark & \checkmark & \checkmark & \checkmark & \\ \hline
+\multicolumn{2}{|c|}{\textbf{Recall}} & \textbf{43\,/\,50} & \textbf{36\,/\,50} & \textbf{48\,/\,50} & \textbf{50\,/\,50} & 7~Violations \\
 \hline
 \end{longtable}
 \normalsize
@@ -1740,7 +1755,7 @@ Q3 (75\,\%)     & 60 Findings  & 75\,\% der Runs liefern $\leq$ 60 Findings (32b
 \hline
 Max (100\,\%)   & 63 Findings  & absolutes Maximum (32b) \\
 \hline
-IQR             & 13 Findings  & Streuung der mittleren 50\,\% -- geringer als test-12 (\ac{IQR}~=~11 bei niedrigerem Skalenniveau) \\
+\ac{IQR}             & 13 Findings  & Streuung der mittleren 50\,\% -- geringer als test-12 (\ac{IQR}~=~11 bei niedrigerem Skalenniveau) \\
 \hline
 \end{tabular}
 \label{tab:statistik_quantile_50}
@@ -1748,8 +1763,80 @@ IQR             & 13 Findings  & Streuung der mittleren 50\,\% -- geringer als t
 
 \clearpage
 
+\anhang{Screenshots der Testanwendung (test-50-Suite)}\label{app:screenshots_test50}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{graphics/test-50-Bild1.png}
+\caption{Screenshot 1 der test-50-Suite}
+\label{fig:test50_screen1}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{graphics/test-50-Bild2.png}
+\caption{Screenshot 2 der test-50-Suite}
+\label{fig:test50_screen2}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{graphics/test-50-Bild3.png}
+\caption{Screenshot 3 der test-50-Suite}
+\label{fig:test50_screen3}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{graphics/test-50-Bild4.png}
+\caption{Screenshot 4 der test-50-Suite}
+\label{fig:test50_screen4}
+\end{figure}
+
+\clearpage
+
 \anhang{test-100-Suite (kompletter Block)}\label{app:block_test100}
 
-\textbf{Status:} Für die test-100-Suite sind in dieser Arbeit noch keine abgeschlossenen Benchmark-Messreihen enthalten. Der Block bleibt bewusst leer und wird nach Vorliegen der Daten in derselben Template-Reihenfolge ergänzt.
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.15}
+\caption[Template-Reihenfolge test-100]{Navigationsübersicht in der standardisierten Reihenfolge für die test-100-Suite.}
+\begin{tabular}{|c|p{11.4cm}|}
+\hline
+\textbf{Nr.} & \textbf{Baustein} \\
+\hline
+1 & Violations-Katalog \\
+\hline
+2 & Erkennungsrate \\
+\hline
+3 & Recall-Matrix \\
+\hline
+4 & Rohdaten \\
+\hline
+5 & Modellvergleich \\
+\hline
+6 & Token-Nutzung \\
+\hline
+7 & Effizienz \\
+\hline
+8 & Overdetection \\
+\hline
+9 & Konsistenz \\
+\hline
+10 & Empfehlungsqualität \\
+\hline
+11 & CSV-Auszug \\
+\hline
+12 & Statistische Verteilung \\
+\hline
+13 & Screenshots der Testsuite \\
+\hline
+\end{tabular}
+\label{tab:template_test100}
+\end{table}
 
+\clearpage
 

@@ -2,11 +2,6 @@
 
 ## Phase 1 — Runs durchführen (nächste 3 Tage)
 
-### test-50 (10 Runs × 3 Modelle = 30 Runs)
-- [ ] qwen2.5-coder:7b — 10 Runs (num_predict = 8.192)
-- [ ] qwen2.5-coder:14b — 10 Runs (num_predict = 8.192)
-- [ ] qwen3:32b — 10 Runs (num_predict = 8.192)
-
 ### test-100 (3 Runs × 3 Modelle = 9 Runs)
 - [ ] qwen2.5-coder:7b — 3 Runs (num_predict = 12.288)
 - [ ] qwen2.5-coder:14b — 3 Runs (num_predict = 12.288)
