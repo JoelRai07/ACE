@@ -43,7 +43,7 @@ Hardware & \ac{CPU}-basiert, lokale Ollama-Instanz \\
 \label{tab:versuchsdesign_uebersicht}
 \end{table}
 
-Tabelle~\ref{tab:benchmark_runs} zeigt die geplante Verteilung der Runs auf alle vier Modellkandidaten und drei Testsuiten. Im Rahmen dieser Arbeit wurden die test-12-Läufe (30~Runs), die test-50-Läufe (30~Runs) sowie die test-100-Läufe (30~Runs, alle drei Modelle) durchgeführt; die \ac{BWEC}-Evaluation verbleibt als Folgeschritt (vgl. Abschnitt~\ref{sec:eval_bwec}). \texttt{deepseek-r1:70b} konnte aufgrund unzureichender \ac{RAM}-Kapazität nicht evaluiert werden; die konsolidierte Modellbewertung der drei evaluierten Modelle findet sich in Tabelle~\ref{tab:modell_summary}.
+Tabelle~\ref{tab:benchmark_runs} zeigt die geplante Verteilung der Runs auf alle vier Modellkandidaten und drei Testsuiten. Im Rahmen dieser Arbeit wurden die test-12-Läufe (30~Runs), die test-50-Läufe (30~Runs) sowie die test-100-Läufe (30~Runs, alle drei Modelle) durchgeführt; die \ac{BWEC}-Evaluation verbleibt als Folgeschritt (vgl. Abschnitt~\ref{sec:eval_bwec}). \texttt{deepseek-r1:70b} konnte aufgrund unzureichender \ac{RAM}-Kapazität nicht evaluiert werden; die konsolidierte Modellbewertung der drei evaluierten Modelle findet sich in Tabelle~\ref{tab:modell_summary_12}.
 
 \begin{table}[htbp]
 \centering
@@ -262,7 +262,7 @@ Zur Einordnung der Laufzeitkosten enthält Tabelle~\ref{tab:effizienzvergleich} 
 
 Die Standardabweichung der \ac{LLM}-Detektor-Findings unterscheidet sich zwischen den Modellen erheblich: \texttt{qwen3:32b} erreicht $\sigma = 0{,}53$ (Range: 19--20~Findings), \texttt{qwen2.5-coder:14b} erreicht $\sigma = 0{,}42$ (Range: 22--23~Findings) und zeigt damit eine beeindruckende Konsistenz. \texttt{qwen2.5-coder:7b} zeigt mit $\sigma = 3{,}28$ höhere Varianz und produziert ein breiteres Spektrum (Range: 4--16~Findings).
 
-Die festen Detektoren (axe, Playwright, grep) bleiben über alle 30~Runs vollständig deterministisch (je 4, 2 und 6 Findings), sodass die Varianz ausschließlich aus der \ac{LLM}-Stufe stammt (vgl. Tabelle~\ref{tab:modell_summary}). Die Quantilanalyse über alle 30~Runs (Tabelle~\ref{tab:statistik_quantile}) zeigt die Clusterung: Der Median liegt bei 19--20~Findings (32b-Cluster) mit Q3 bei 22~Findings (14b-Bereich) und Q1 bei 11~Findings (7b-Bereich). Das \ac{IQR} von 11 belegt die unterschiedlichen Verteilungen zwischen den Modellen.
+Die festen Detektoren (axe, Playwright, grep) bleiben über alle 30~Runs vollständig deterministisch (je 4, 2 und 6 Findings), sodass die Varianz ausschließlich aus der \ac{LLM}-Stufe stammt (vgl. Tabelle~\ref{tab:modell_summary_12}). Die Quantilanalyse über alle 30~Runs (Tabelle~\ref{tab:statistik_quantile}) zeigt die Clusterung: Der Median liegt bei 19--20~Findings (32b-Cluster) mit Q3 bei 22~Findings (14b-Bereich) und Q1 bei 11~Findings (7b-Bereich). Das \ac{IQR} von 11 belegt die unterschiedlichen Verteilungen zwischen den Modellen.
 
 In allen 30~Runs wurde der \ac{LLM}-Output erfolgreich geparst (\texttt{parsed.success: true}, 100\,\%). Das Prompt-Design mit Role-Play- und Few-Shot-Prompting zeigt damit eine hohe Formatstabilität über alle drei Modelle und unterstützt \ac{NFA}-04 (Reproduzierbarkeit).
 

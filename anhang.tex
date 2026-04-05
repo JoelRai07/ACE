@@ -15,11 +15,11 @@
 \hline
 Generell & Konzeptmatrix, Pipeline-Schema, Prompt-Dokumentation, Token-Budget, konsolidierte Empfehlung, Suite-Vergleich, allgemeiner FA/NFA-Erfüllungsgrad \\
 \hline
-test-12-Block & Violations-Katalog, Erkennungsrate, Recall-Matrix, Rohdaten, Modellvergleich, Token-Nutzung, Effizienz, Overdetection, Konsistenz, Empfehlungsqualität, CSV-Auszug \\
+\hyperref[app:block_test12]{test-12-Block} & Violations-Katalog, Erkennungsrate, Recall-Matrix, Rohdaten, Modellvergleich, Token-Nutzung, Effizienz, Über-Detektion, Konsistenz, Empfehlungsqualität, CSV-Auszug, Statistische Verteilung, Screenshots der Testsuite \\
 \hline
-test-50-Block & Violations-Katalog, Erkennungsrate, Recall-Matrix, Rohdaten, Modellvergleich, Token-Nutzung, Effizienz, Overdetection, Konsistenz, Empfehlungsqualität, CSV-Auszug \\
+\hyperref[app:block_test50]{test-50-Block} & Violations-Katalog, Erkennungsrate, Recall-Matrix, Rohdaten, Modellvergleich, Token-Nutzung, Effizienz, Über-Detektion, Konsistenz, Empfehlungsqualität, CSV-Auszug, Statistische Verteilung, Screenshots der Testsuite \\
 \hline
-test-100-Block & Violations-Katalog, Erkennungsrate, Recall-Matrix, Rohdaten, Modellvergleich (7b/14b/32b), Token-Nutzung, Effizienz, Overdetection, Konsistenz, Empfehlungsqualität, CSV-Auszug, Statistische Verteilung \\
+\hyperref[app:block_test100]{test-100-Block} & Violations-Katalog, Erkennungsrate, Recall-Matrix, Rohdaten, Modellvergleich, Token-Nutzung, Effizienz, Über-Detektion, Konsistenz, Empfehlungsqualität, CSV-Auszug, Statistische Verteilung, Screenshots der Testsuite (noch nicht ergänzt) \\
 \hline
 \end{tabular}
 \label{tab:anhang_overview}
@@ -163,7 +163,7 @@ Draffan et al.\ (2020) & Web2Access+AI
 \hline
 
 \textbf{Martinez Campo (2026)} &
-\textbf{ACE (\ac{PoC})}
+\textbf{\ac{ACE} (\ac{PoC})}
 & \yes & \yes & \yes
 & \yes & \yes & \yes
 & \yes & \yes & \yes
@@ -183,7 +183,7 @@ Konzeptmatrix nach Webster Watson\footnotemark: Vollständige Übersicht aller a
 
 \clearpage
 
-\anhang{Schematische Übersicht der ACE-Pipeline}\label{app:ace-pipeline-schema}
+\anhang{Schematische Übersicht der \ac{ACE}-Pipeline}\label{app:ace-pipeline-schema}
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[
@@ -253,7 +253,7 @@ Konzeptmatrix nach Webster Watson\footnotemark: Vollständige Übersicht aller a
 \draw[->] (ollama) -- (todo);
 
 \end{tikzpicture}
-\caption[Schematische Übersicht der ACE-Pipeline]{Schematische Übersicht der im \ac{PoC} implementierten ACE-Pipeline von der Datenerhebung bis zur priorisierten Ausgabe. Die Code-Schiene umfasst regex-basierte Pattern (grep) und die LLM-basierte Codeanalyse.\protect\footnote{Eigene Abbildung}}
+\caption[Schematische Übersicht der \ac{ACE}-Pipeline]{Schematische Übersicht der im \ac{PoC} implementierten \ac{ACE}-Pipeline von der Datenerhebung bis zur priorisierten Ausgabe. Die Code-Schiene umfasst regex-basierte Pattern (grep) und die LLM-basierte Codeanalyse.\protect\footnote{Eigene Abbildung}}
 \label{fig:ace-pipeline-schema}
 \end{figure}
 
@@ -269,11 +269,11 @@ Konzeptmatrix nach Webster Watson\footnotemark: Vollständige Übersicht aller a
 
 \clearpage
 
-\anhang{System-Prompt des ACE-Assistenzsystems}\label{app:systemprompt}
+\anhang{System-Prompt des \ac{ACE}-Assistenzsystems}\label{app:systemprompt}
 
 Der folgende System-Prompt wird dem Sprachmodell bei jedem Pipeline-Durchlauf übergeben. Er implementiert die in Abschnitt~\ref{sec:kontextualisierung} beschriebenen Prompt-Engineering-Strategien Role-Play Prompting und Few-Shot Prompting (vgl. Abschnitt~\ref{sec:impl-prompt}).
 
-\begin{lstlisting}[language={}, caption={Vollständiger System-Prompt des ACE-Assistenzsystems (aus \texttt{src/prompt.ts})}, label={lst:systemprompt}, basicstyle=\ttfamily\scriptsize, breaklines=true]
+\begin{lstlisting}[language={}, caption={Vollständiger System-Prompt des \ac{ACE}-Assistenzsystems (aus \texttt{src/prompt.ts})}, label={lst:systemprompt}, basicstyle=\ttfamily\scriptsize, breaklines=true]
 Du bist ein erfahrener Barrierefreiheitsexperte für React/TypeScript-Webanwendungen.
 Deine Aufgabe ist es, Findings aus vier Analysequellen (axe-core, Playwright, grep
 und LLM-Codeanalyse) zu einer priorisierten, entwicklernahen To-Do-Liste zusammenzufassen.
@@ -473,13 +473,13 @@ Gib nur JSON zurück: {"findings": [...]}
 \clearpage
 \anhang{Empfehlung nach Anwendungsszenario (konsolidiert)}\label{app:einsatzempfehlungen}
 
-\textbf{Leseanleitung:} Die nachfolgende Tabelle konsolidiert die Evaluationsergebnisse aus test-12 und test-50 (Kapitel~\ref{kap:7}). \texttt{qwen2.5-coder:7b} erscheint in der Spalte \textit{Primär} ausschließlich in Szenarien, in denen \textbf{kein} BITV-/WCAG-konformes Ergebnis erforderlich ist (CI/CD-Rauchtest, Prototyp). Für jede rechtlich relevante Barrierefreiheitsprüfung gilt unverändert: \texttt{qwen2.5-coder:7b} ist aufgrund der nachgewiesenen inversen bzw. instabilen Priorisierung (vgl. Abschnitt~\ref{sec:prio_modellvergleich}) \textit{nicht geeignet}. Die Spalte \textit{Eignung BITV-Einsatz} in Tabelle~\ref{tab:modell_summary} und Tabelle~\ref{tab:modell_summary_50} ist das übergeordnete Kriterium.
+\textbf{Leseanleitung:} Die nachfolgende Tabelle konsolidiert die Evaluationsergebnisse aus test-12, test-50 und test-100 (Kapitel~\ref{kap:7}). \texttt{qwen2.5-coder:7b} erscheint in der Spalte \textit{Primär} ausschließlich in Szenarien, in denen \textbf{kein} \ac{BITV}-/\ac{WCAG}-konformes Ergebnis erforderlich ist (CI/CD-Rauchtest, Prototyp). Für jede rechtlich relevante Barrierefreiheitsprüfung gilt unverändert: \texttt{qwen2.5-coder:7b} ist aufgrund der nachgewiesenen inversen bzw. instabilen Priorisierung (vgl. Abschnitt~\ref{sec:prio_modellvergleich}) \textit{nicht geeignet}. Die Spalte \textit{Eignung BITV-Einsatz} in Tabelle~\ref{tab:modell_summary_12}, Tabelle~\ref{tab:modell_summary_50} und Tabelle~\ref{tab:modell_summary_100} ist das übergeordnete Kriterium.
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
-\caption[Modellempfehlungen nach Anwendungsszenario]{Konsolidierte Modellwahl in Abhängigkeit vom Einsatzkontext auf Basis von test-12 und test-50. Primär: bevorzugtes Modell; Sekundär: Alternative. Die Empfehlungen für 7b gelten ausschließlich für nicht-compliance-relevante Szenarien.}
+\caption[Modellempfehlungen nach Anwendungsszenario]{Konsolidierte Modellwahl in Abhängigkeit vom Einsatzkontext auf Basis von test-12, test-50 und test-100. Primär: bevorzugtes Modell; Sekundär: Alternative. Die Empfehlungen für 7b gelten ausschließlich für nicht-compliance-relevante Szenarien.}
 \begin{tabular}{|p{5.0cm}|c|c|p{5.6cm}|}
 \hline
 \textbf{Szenario} & \textbf{Primär} & \textbf{Sekundär} & \textbf{Begründung} \\
@@ -533,7 +533,7 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 \centering
 \setlength{\tabcolsep}{3.5pt}
 \renewcommand{\arraystretch}{1.2}
-\caption[Bewertungsskala der Empfehlungsqualität]{Bewertungsskala für die Empfehlungsqualität der LLM-Ausgaben (test-12 und test-50).}
+\caption[Bewertungsskala der Empfehlungsqualität]{Bewertungsskala für die Empfehlungsqualität der LLM-Ausgaben über alle drei Testsuites (test-12, test-50 und test-100).}
 \begin{tabular}{|c|p{2.8cm}|p{7.2cm}|}
 \hline
 \textbf{Stufe} & \textbf{Bezeichnung} & \textbf{Kriterium} \\
@@ -596,31 +596,31 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 \hline
 \textbf{Nr.} & \textbf{Baustein} \\
 \hline
-1 & Violations-Katalog \\
+1 & \hyperref[app:accessibility_verstoesse_12]{Violations-Katalog} \\
 \hline
-2 & Erkennungsrate \\
+2 & \hyperref[app:erkennungsrate_poc_12]{Erkennungsrate} \\
 \hline
-3 & Recall-Matrix \\
+3 & \hyperref[app:recall_matrix_12]{Recall-Matrix} \\
 \hline
-4 & Rohdaten \\
+4 & \hyperref[app:rohdaten_12]{Rohdaten} \\
 \hline
-5 & Modellvergleich \\
+5 & \hyperref[app:modell_summary_12]{Modellvergleich} \\
 \hline
-6 & Token-Nutzung \\
+6 & \hyperref[app:token_economy_12]{Token-Nutzung} \\
 \hline
-7 & Effizienz \\
+7 & \hyperref[app:effizienz_metriken_12]{Effizienz} \\
 \hline
-8 & Overdetection \\
+8 & \hyperref[app:overdetection_12]{Über-Detektion} \\
 \hline
-9 & Konsistenz \\
+9 & \hyperref[app:detektor_konsistenz_12]{Konsistenz} \\
 \hline
-10 & Empfehlungsqualität \\
+10 & \hyperref[app:empfehlungsqualitaet_12]{Empfehlungsqualität} \\
 \hline
-11 & CSV-Auszug \\
+11 & \hyperref[app:csv_export_12]{CSV-Auszug} \\
 \hline
-12 & Statistische Verteilung \\
+12 & \hyperref[app:statistik_quantile_12]{Statistische Verteilung} \\
 \hline
-13 & Screenshots der Testsuite \\
+13 & \hyperref[app:screenshots_test12]{Screenshots der Testsuite} \\
 \hline
 \end{tabular}
 \label{tab:template_test12}
@@ -628,7 +628,7 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 
 \clearpage
 
-\anhang{Accessibility-Verstöße der Testanwendung und zugehörige Prüfquellen (test-12-Suite)}
+\anhang{Accessibility-Verstöße der Testanwendung und zugehörige Prüfquellen (test-12-Suite)}\label{app:accessibility_verstoesse_12}
 
 \begin{table}[htbp]
 \centering
@@ -669,7 +669,7 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 
 \clearpage
 
-\anhang{Erkennungsrate der Violations im Proof of Concept (test-12-Suite)}
+\anhang{Erkennungsrate der Violations im Proof of Concept (test-12-Suite)}\label{app:erkennungsrate_poc_12}
 
 \begin{table}[htbp]
 \centering
@@ -712,7 +712,7 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 
 \clearpage
 
-\anhang{Recall-Matrix: Violation × Bedingung (test-12-Suite)}\label{app:recall_matrix}
+\anhang{Recall-Matrix: Violation × Bedingung (test-12-Suite)}\label{app:recall_matrix_12}
 
 \begin{table}[htbp]
 \centering
@@ -757,7 +757,7 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 
 \clearpage
 
-\anhang{Rohdaten: alle 30 Benchmark-Runs (test-12-Suite)}\label{app:rohdaten}
+\anhang{Rohdaten: alle 30 Benchmark-Runs (test-12-Suite)}\label{app:rohdaten_12}
 
 \begin{table}[htbp]
 \centering
@@ -810,41 +810,50 @@ NFA-02-Konformität (empfohlenes Modell) & 14b: \checkmark & 14b: \checkmark & k
 
 \clearpage
 
-\anhang{Modell-Leistungsvergleich: test-12-Suite Zusammenfassung}\label{app:modell_summary}
+\anhang{Modell-Leistungsvergleich: test-12-Suite Zusammenfassung}\label{app:modell_summary_12}
 
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.25}
-\caption[Modell-Leistungsvergleich (test-12-Suite)]{Zusammenfassung aller Leistungsmetriken für die drei evaluierten Modelle (test-12-Suite, je $n=10$ Runs). $\sigma$~=~Standardabweichung der LLM-Detektor-Findings über 10~Runs.}
+\caption[Modell-Leistungsvergleich (test-12-Suite)]{Zusammenfassung der Leistungsmetriken für die drei evaluierten Modelle auf der test-12-Suite (je $n=10$ Runs, \texttt{num\_predict}~=~6\,144). $\sigma$~=~Stichproben-Standardabweichung der LLM-Detektor-Findings über 10~Runs. Der Recall basiert auf der Recall-Matrix mit Konsistenzschwelle $>\,5/10$~Runs je Modell.}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Metrik} & \textbf{qwen2.5-coder:7b} & \textbf{qwen2.5-coder:14b} & \textbf{qwen3:32b} \\
 \hline
-Recall (Ø über Runs)              & $\sim$75\,\%     & 100\,\%            & 100\,\% \\
+Recall (konsistent)               & 9\,/\,12 (75\,\%) & 12\,/\,12 (100\,\%) & 12\,/\,12 (100\,\%) \\
 LLM-Detektor-Findings (Ø ± $\sigma$) & 11{,}1 $\pm$ 3{,}28 & 22{,}8 $\pm$ 0{,}42 & 19{,}5 $\pm$ 0{,}53 \\
 LLM-Detektor-Findings (Min--Max)  & 4--16            & 22--23             & 19--20 \\
 Konsistenz $\sigma$               & 3{,}28           & 0{,}42             & 0{,}53 \\
-Priorisierungsqualität            & Fehlerhaft       & Verbessert         & Korrekt \\
-Fix-Qualität (Stufe)              & 0--1             & 1                  & 1--2 \\
-Gesamtlaufzeit (Ø)                & 231\,s           & 420\,s             & 701\,s \\
-LLM-Detektor-Laufzeit (Ø)        & 139\,s           & 231\,s             & 374\,s \\
-LLM-Priorisierung (Ø)            & 92\,s            & 189\,s             & 327\,s \\
+Priorisierungsqualität            & Fehlerhaft       & Undifferenziert    & Korrekt \\
 Output-Tokens Ø                   & 4{,}433          & 5{,}254            & 3{,}491 \\
-Output-Limit ausgeschöpft         & Selten           & Selten             & Selten \\
+Output-Limit ausgeschöpft         & 5\,/\,10 (50\,\%) & 4\,/\,10 (40\,\%) & 1\,/\,10 (10\,\%) \\
 Parsing-Erfolg                    & 100\,\%          & 100\,\%            & 100\,\% \\
-NFA-02-Konformität                & \checkmark       & \checkmark         & $(\sim)$ \\
-Eignung BITV-Einsatz              & Nicht geeignet   & Empfohlen          & Empfohlen (Forschung) \\
+NFA-02-Konformität                & Erfüllt          & Erfüllt            & Bedingt \\
+Eignung BITV-Einsatz              & Nicht geeignet   & Empfohlen          & Eingeschränkt \\
+\hline
+\multicolumn{4}{|l|}{\textit{Suite-spezifische Zusatzmetriken}} \\
+\hline
+Fix-Qualität (Stufe)              & 0--1             & 0--2                  & 1--2 \\
+Tool-Findings (axe/PW/grep)       & 4\,/\,2\,/\,6    & 4\,/\,2\,/\,6      & 4\,/\,2\,/\,6 \\
+Must-have Ø (Bericht)             & 9{,}1            & 27{,}0             & 14{,}6 \\
+Nice-to-have Ø (Bericht)          & 23{,}1           & 8{,}9              & 8{,}5 \\
+Gesamt-Report-Items Ø             & 32{,}2           & 35{,}9             & 23{,}1 \\
+LLM-Detektor-Laufzeit (Ø)         & 139\,s           & 231\,s             & 374\,s \\
+Priorisierungslaufzeit (Ø)        & 92\,s            & 189\,s             & 327\,s \\
+Priorisierungslaufzeit (Min--Max) & 51--139\,s       & 127--291\,s        & 290--609\,s \\
+Gesamtlaufzeit (Ø)                & 231\,s           & 420\,s             & 701\,s \\
+Gesamtlaufzeit (Min--Max)         & 191--284\,s      & 300--480\,s        & 617--937\,s \\
 \hline
 \end{tabular}
 }%
-\label{tab:modell_summary}
+\label{tab:modell_summary_12}
 \end{table}
 
 \clearpage
 
-\anhang{Token-Nutzung pro Modell: Input/Output (test-12-Suite)}\label{app:token_economy}
+\anhang{Token-Nutzung pro Modell: Input/Output (test-12-Suite)}\label{app:token_economy_12}
 
 \begin{table}[htbp]
 \centering
@@ -867,7 +876,7 @@ qwen3:32b         & 5\,214 & 3\,491 &  1/10 Runs (10\,\%) \\
 \label{tab:token_economy}
 \end{table}
 
-\anhang{Effizienzmetriken und Kosten-Nutzen-Verhältnis (test-12-Suite)}\label{app:effizienz_metriken}
+\anhang{Effizienzmetriken und Kosten-Nutzen-Verhältnis (test-12-Suite)}\label{app:effizienz_metriken_12}
 
 \begin{table}[htbp]
 \centering
@@ -892,7 +901,7 @@ qwen3:32b         & 19{,}5 & 701 & 0{,}028 & +76\,\% bei +203\,\% Zeitaufwand \\
 
 \clearpage
 
-\anhang{Über-Detektion relativ zur Ground Truth (test-12-Suite)}\label{app:overdetection}
+\anhang{Über-Detektion relativ zur Ground Truth (test-12-Suite)}\label{app:overdetection_12}
 
 \begin{table}[htbp]
 \centering
@@ -915,9 +924,9 @@ qwen3:32b         & 19{,}5 & 12 & 162{,}5\,\% & moderater Überschuss; konsisten
 \label{tab:overdetection}
 \end{table}
 
-\clearpage
 
-\anhang{Detektor-Konsistenz über alle 30 Runs (test-12-Suite)}\label{app:detektor_konsistenz}
+
+\anhang{Detektor-Konsistenz über alle 30 Runs (test-12-Suite)}\label{app:detektor_konsistenz_12}
 
 \begin{table}[htbp]
 \centering
@@ -953,9 +962,9 @@ Die Tabelle zeigt, dass die Unterschiede zwischen den Detektoren selbst methodis
 
 \clearpage
 
-\anhang{Bewertung der Empfehlungsqualität pro Violation (test-12-Suite)}
+\anhang{Bewertung der Empfehlungsqualität pro Violation (test-12-Suite)}\label{app:empfehlungsqualitaet_12}
 
-Die Bewertung basiert auf Run~01 von \texttt{qwen3:32b} (Tabelle~\ref{app:rohdaten}) und verwendet dieselbe dreistufige Skala wie Tabelle~\ref{tab:bewertungsskala_empfehlungen}. Stufe~2 liegt vor, wenn Dateiname, Zeilennummer und ein konkreter Code-Vorschlag vorhanden sind; Stufe~1, wenn der richtige Fix-Typ erkannt, aber kein konkreter Codekontext geliefert wird.
+Die Bewertung basiert auf Run~01 von \texttt{qwen3:32b} (Tabelle~\ref{tab:rohdaten_runs}) und verwendet dieselbe dreistufige Skala wie Tabelle~\ref{tab:bewertungsskala_empfehlungen}. Stufe~2 liegt vor, wenn Dateiname, Zeilennummer und ein konkreter Code-Vorschlag vorhanden sind; Stufe~1, wenn der richtige Fix-Typ erkannt, aber kein konkreter Codekontext geliefert wird.
 
 \begin{table}[htbp]
 \centering
@@ -996,7 +1005,7 @@ Die Bewertung basiert auf Run~01 von \texttt{qwen3:32b} (Tabelle~\ref{app:rohdat
 
 \clearpage
 
-\anhang{CSV-Export der Benchmark-Rohdaten (test-12-Suite)}\label{app:csv_export}
+\anhang{CSV-Auszug: Benchmark-Rohdaten (test-12-Suite)}\label{app:csv_export_12}
 
 Die Benchmark-Rohdaten wurden zusätzlich als CSV-Datei exportiert (\texttt{results\-/bench\-mark\-/summary.csv}). Tabelle~\ref{tab:csv_schema} dokumentiert das reale Spaltenschema, Tabelle~\ref{tab:csv_beispiel} zeigt exemplarische Zeilen (je ein Run pro Modell).
 
@@ -1058,7 +1067,7 @@ qwen3:32b         & 1 & 12 & 8 & 19 & 4 & 2 & 6 & 289630 & 5200 & 2846 & true \\
 
 \clearpage
 
-\anhang{Statistische Verteilung der LLM-Findings (alle 30 Runs, test-12-Suite)}\label{app:statistik_quantile}
+\anhang{Statistische Verteilung der LLM-Findings (alle 30 Runs, test-12-Suite)}\label{app:statistik_quantile_12}
 
 \begin{table}[htbp]
 \centering
@@ -1091,7 +1100,7 @@ $\sigma$             &  5{,}35     & Standardabweichung über alle 30 Runs \\
 
 \clearpage
 
-\anhang{Screenshots der Testanwendung (test-12-Suite)}
+\anhang{Screenshots der Testanwendung (test-12-Suite)}\label{app:screenshots_test12}
 
 \begin{figure}[htbp]
 \centering
@@ -1126,31 +1135,31 @@ $\sigma$             &  5{,}35     & Standardabweichung über alle 30 Runs \\
 \hline
 \textbf{Nr.} & \textbf{Baustein} \\
 \hline
-1 & Violations-Katalog \\
+1 & \hyperref[app:accessibility_verstoesse_50]{Violations-Katalog} \\
 \hline
-2 & Erkennungsrate \\
+2 & \hyperref[app:erkennungsrate_poc_50]{Erkennungsrate} \\
 \hline
-3 & Recall-Matrix \\
+3 & \hyperref[app:recall_matrix_50]{Recall-Matrix} \\
 \hline
-4 & Rohdaten \\
+4 & \hyperref[app:rohdaten_50]{Rohdaten} \\
 \hline
-5 & Modellvergleich \\
+5 & \hyperref[app:modell_summary_50]{Modellvergleich} \\
 \hline
-6 & Token-Nutzung \\
+6 & \hyperref[app:token_economy_50]{Token-Nutzung} \\
 \hline
-7 & Effizienz \\
+7 & \hyperref[app:effizienz_metriken_50]{Effizienz} \\
 \hline
-8 & Overdetection \\
+8 & \hyperref[app:overdetection_50]{Über-Detektion} \\
 \hline
-9 & Konsistenz \\
+9 & \hyperref[app:detektor_konsistenz_50]{Konsistenz} \\
 \hline
-10 & Empfehlungsqualität \\
+10 & \hyperref[app:empfehlungsqualitaet_50]{Empfehlungsqualität} \\
 \hline
-11 & CSV-Auszug \\
+11 & \hyperref[app:csv_export_50]{CSV-Auszug} \\
 \hline
-12 & Statistische Verteilung \\
+12 & \hyperref[app:statistik_quantile_50]{Statistische Verteilung} \\
 \hline
-13 & Screenshots der Testsuite \\
+13 & \hyperref[app:screenshots_test50]{Screenshots der Testsuite} \\
 \hline
 \end{tabular}
 \label{tab:template_test50}
@@ -1450,27 +1459,35 @@ V50 & \texttt{outline: none} im Modal-Button              & \checkmark & \checkm
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.25}
-\caption[Modell-Leistungsvergleich (test-50-Suite)]{Zusammenfassung der Leistungsmetriken für die drei evaluierten Modelle auf der test-50-Suite (je $n=10$ Runs, \texttt{num\_predict}~=~8\,192). $\sigma$~=~Stichproben-Standardabweichung der LLM-Detektor-Findings über 10~Runs.}
+\caption[Modell-Leistungsvergleich (test-50-Suite)]{Zusammenfassung der Leistungsmetriken für die drei evaluierten Modelle auf der test-50-Suite (je $n=10$ Runs, \texttt{num\_predict}~=~8\,192). $\sigma$~=~Stichproben-Standardabweichung der LLM-Detektor-Findings über 10~Runs. Der Recall basiert auf der Recall-Matrix mit Konsistenzschwelle $>\,5/10$~Runs je Modell.}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Metrik} & \textbf{qwen2.5-coder:7b} & \textbf{qwen2.5-coder:14b} & \textbf{qwen3:32b} \\
 \hline
-LLM-Detektor-Findings (Ø)         & 46{,}6           & 51{,}3              & 60{,}7 \\
+Recall (konsistent)               & 36\,/\,50 (72\,\%) & 48\,/\,50 (96\,\%) & 50\,/\,50 (100\,\%) \\
+LLM-Detektor-Findings (Ø ± $\sigma$) & 46{,}6 $\pm$ 3{,}20 & 51{,}3 $\pm$ 2{,}21 & 60{,}7 $\pm$ 1{,}25 \\
 LLM-Detektor-Findings (Min--Max)  & 40--53           & 45--52              & 59--63 \\
 Konsistenz $\sigma$               & 3{,}20           & 2{,}21              & 1{,}25 \\
+Priorisierungsqualität            & Instabil         & Bimodal             & Plausibel \\
+Output-Tokens Ø                   & 6\,753           & 7\,764              & 8\,091 \\
+Output-Limit ausgeschöpft         & 6\,/\,10 (60\,\%) & 7\,/\,10 (70\,\%)  & 9\,/\,10 (90\,\%) \\
+Parsing-Erfolg                    & 100\,\%          & 100\,\%             & 100\,\% \\
+NFA-02-Konformität                & Erfüllt          & Erfüllt            & Nicht erfüllt \\
+Eignung BITV-Einsatz              & Nicht geeignet   & Empfohlen           & Eingeschränkt \\
+\hline
+\multicolumn{4}{|l|}{\textit{Suite-spezifische Zusatzmetriken}} \\
+\hline
+Fix-Qualität (Stufe)              & 0--1             & 0--2                  & 1--2 \\
 Tool-Findings (axe/PW/grep)       & 14\,/\,2\,/\,21  & 14\,/\,2\,/\,21     & 14\,/\,2\,/\,21 \\
 Must-have Ø (Bericht)             & 21{,}5           & 22{,}1              & 47{,}6 \\
 Nice-to-have Ø (Bericht)          & 35{,}6           & 35{,}7              & 27{,}3 \\
 Gesamt-Report-Items Ø             & 57{,}1           & 57{,}8              & 74{,}9 \\
-Priorisierungsqualität            & Instabil         & Bimodal             & Plausibel \\
-Priorisierungslaufzeit Ø          & 198\,s           & 444\,s              & 1\,000\,s \\
-Priorisierungslaufzeit Min--Max   & 75--241\,s       & 352--480\,s         & 885--1\,084\,s \\
-NFA-02-Konformität                & \checkmark       & \checkmark          & \texttimes \\
-Eignung BITV-Einsatz              & Nicht geeignet   & Empfohlen           & Eingeschränkt \\
-Output-Tokens Ø                   & 6\,753           & 7\,764              & 8\,091 \\
-Output-Limit ausgeschöpft         & 6\,/\,10 (60\,\%) & 7\,/\,10 (70\,\%)  & 9\,/\,10 (90\,\%) \\
-Parsing-Erfolg                    & 100\,\%          & 100\,\%             & 100\,\% \\
+LLM-Detektor-Laufzeit (Ø)         & 215\,s           & 382\,s              & 897\,s \\
+Priorisierungslaufzeit (Ø)        & 198\,s           & 444\,s              & 1\,000\,s \\
+Priorisierungslaufzeit (Min--Max) & 75--241\,s       & 352--480\,s         & 885--1\,084\,s \\
+Gesamtlaufzeit (Ø)                & 413\,s           & 826\,s              & 1\,897\,s \\
+Gesamtlaufzeit (Min--Max)         & 291--465\,s      & 733--871\,s         & 1\,752--2\,011\,s \\
 \hline
 \end{tabular}
 }%
@@ -1586,7 +1603,7 @@ LLM-Detektor gesamt & 30 & 1586 & 52{,}9 & 40--63 & modell\-abhängig & -- \\
 
 \anhang{Bewertung der Empfehlungsqualität pro Violation (test-50-Suite)}\label{app:empfehlungsqualitaet_50}
 
-Die Bewertung basiert auf Run~01 von \texttt{qwen3:32b} (Tabelle~\ref{app:rohdaten_50}) und verwendet dieselbe dreistufige Skala wie Tabelle~\ref{tab:bewertungsskala_empfehlungen}. Stufe~2 liegt vor, wenn Dateiname, Zeilennummer und ein konkreter Code-Vorschlag vorhanden sind; Stufe~1, wenn der richtige Fix-Typ erkannt, aber kein konkreter Codekontext geliefert wird.
+Die Bewertung basiert auf Run~01 von \texttt{qwen3:32b} (Tabelle~\ref{tab:rohdaten_runs_50}) und verwendet dieselbe dreistufige Skala wie Tabelle~\ref{tab:bewertungsskala_empfehlungen}. Stufe~2 liegt vor, wenn Dateiname, Zeilennummer und ein konkreter Code-Vorschlag vorhanden sind; Stufe~1, wenn der richtige Fix-Typ erkannt, aber kein konkreter Codekontext geliefert wird.
 
 \setlength{\tabcolsep}{2.5pt}
 \renewcommand{\arraystretch}{1.08}
@@ -1713,7 +1730,7 @@ V50 & \texttt{outline: none} Modal-Button          & 2 & Notifications.tsx:54, \
 
 
 
-\anhang{CSV-Beispieldaten der Benchmark-Rohdaten (test-50-Suite)}\label{app:csv_export_50}
+\anhang{CSV-Auszug: Benchmark-Rohdaten (test-50-Suite)}\label{app:csv_export_50}
 
 \begin{table}[htbp]
 \centering
@@ -1816,31 +1833,31 @@ $\sigma$             &  6{,}38      & Standardabweichung über alle 30 Runs \\
 \hline
 \textbf{Nr.} & \textbf{Baustein} \\
 \hline
-1 & Violations-Katalog \\
+1 & \hyperref[app:accessibility_verstoesse_100]{Violations-Katalog} \\
 \hline
-2 & Erkennungsrate \\
+2 & \hyperref[app:erkennungsrate_poc_100]{Erkennungsrate} \\
 \hline
-3 & Recall-Matrix \\
+3 & \hyperref[app:recall_matrix_100]{Recall-Matrix} \\
 \hline
-4 & Rohdaten \\
+4 & \hyperref[app:rohdaten_100]{Rohdaten} \\
 \hline
-5 & Modellvergleich \\
+5 & \hyperref[app:modell_summary_100]{Modellvergleich} \\
 \hline
-6 & Token-Nutzung \\
+6 & \hyperref[app:token_economy_100]{Token-Nutzung} \\
 \hline
-7 & Effizienz \\
+7 & \hyperref[app:effizienz_metriken_100]{Effizienz} \\
 \hline
-8 & Overdetection \\
+8 & \hyperref[app:overdetection_100]{Über-Detektion} \\
 \hline
-9 & Konsistenz \\
+9 & \hyperref[app:detektor_konsistenz_100]{Konsistenz} \\
 \hline
-10 & Empfehlungsqualität \\
+10 & \hyperref[app:empfehlungsqualitaet_100]{Empfehlungsqualität} \\
 \hline
-11 & CSV-Auszug \\
+11 & \hyperref[app:csv_beispiel_100]{CSV-Auszug} \\
 \hline
-12 & Statistische Verteilung \\
+12 & \hyperref[app:statistik_quantile_100]{Statistische Verteilung} \\
 \hline
-13 & Screenshots der Testsuite \\
+13 & Screenshots der Testsuite (noch nicht ergänzt) \\
 \hline
 \end{tabular}
 \label{tab:template_test100}
@@ -1849,7 +1866,7 @@ $\sigma$             &  6{,}38      & Standardabweichung über alle 30 Runs \\
 \clearpage
 
 % ══════════════════════════════════════════════════════════════════════════════
-% test-100-Suite -- Anhang-Abschnitte (qwen2.5-coder:7b, 10 Runs)
+% test-100-Suite -- Anhang-Abschnitte (alle 30 Runs)
 % ══════════════════════════════════════════════════════════════════════════════
  
 \clearpage
@@ -2247,7 +2264,7 @@ V100 & \texttt{aria-hidden} auf fokuss.\ El. (HC)              & $\times$   & $\
 
 \clearpage
 
-\anhang{Rohdaten: alle 10 Benchmark-Runs (test-100-Suite, qwen2.5-coder:7b)}\label{app:rohdaten_100}
+\anhang{Rohdaten: alle 30 Benchmark-Runs (test-100-Suite)}\label{app:rohdaten_100}
 
 \begin{table}[htbp]
 \centering
@@ -2306,27 +2323,35 @@ V100 & \texttt{aria-hidden} auf fokuss.\ El. (HC)              & $\times$   & $\
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.25}
-\caption[Modell-Leistungsvergleich (test-100-Suite)]{Zusammenfassung der Leistungsmetriken für alle drei evaluierten Modelle auf der test-100-Suite (je $n=10$ Runs, \texttt{num\_predict}~=~12\,288). $\sigma$~=~Stichproben-Standardabweichung der LLM-Detektor-Findings über 10~Runs. Recall für 14b und 32b: systematische Violation-für-Violation-Auswertung ausstehend.}
+\caption[Modell-Leistungsvergleich (test-100-Suite)]{Zusammenfassung der Leistungsmetriken für die drei evaluierten Modelle auf der test-100-Suite (je $n=10$ Runs, \texttt{num\_predict}~=~12\,288). $\sigma$~=~Stichproben-Standardabweichung der LLM-Detektor-Findings über 10~Runs. Der Recall basiert auf der Recall-Matrix mit Konsistenzschwelle $>\,5/10$~Runs je Modell.}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Metrik} & \textbf{qwen2.5-coder:7b} & \textbf{qwen2.5-coder:14b} & \textbf{qwen3:32b} \\
 \hline
-Recall (Ø über Runs)                           & $\approx$70\,\% (vorläufig) & ausstehend          & ausstehend \\
-LLM-Detektor-Findings (Ø $\pm$ $\sigma$)       & 104{,}0 $\pm$ 5{,}75 & 94{,}3 $\pm$ 3{,}23 & 99{,}1 $\pm$ 5{,}63 \\
+Recall (konsistent)                            & 40\,/\,100 (40\,\%) & 53\,/\,100 (53\,\%) & 63\,/\,100 (63\,\%) \\
+LLM-Detektor-Findings (Ø ± $\sigma$)          & 104{,}0 $\pm$ 5{,}75 & 94{,}3 $\pm$ 3{,}23 & 99{,}1 $\pm$ 5{,}63 \\
 LLM-Detektor-Findings (Min--Max)               & 96--110          & 91--100             & 93--106 \\
 Konsistenz $\sigma$                            & 5{,}75           & 3{,}23              & 5{,}63 \\
 Priorisierungsqualität                         & Fehlerhaft       & Bimodal / instabil  & Bimodal / instabil \\
-Fix-Qualität (Stufe)                           & 0--1             & ausstehend          & ausstehend \\
-Priorisierungslaufzeit (Ø)                     & 365\,s           & 821\,s              & 1\,033\,s \\
-LLM-Detektor-Laufzeit (Ø)                     & 394\,s           & 723\,s              & 1\,576\,s \\
-Gesamtlaufzeit (Ø)                             & 765\,s           & 1\,550\,s           & 2\,616\,s \\
-Gesamtlaufzeit (Min--Max)                      & 648--839\,s      & 1\,418--1\,688\,s   & 2\,172--3\,314\,s \\
 Output-Tokens Ø                                & 11\,421          & 12\,288             & 7\,360 \\
 Output-Limit ausgeschöpft                      & 8\,/\,10 (80\,\%) & 10\,/\,10 (100\,\%) & 1\,/\,10 (10\,\%) \\
 Parsing-Erfolg                                 & 100\,\%          & 100\,\%             & 100\,\% \\
-NFA-02-Konformität                             & \texttimes       & \texttimes          & \texttimes \\
+NFA-02-Konformität                             & Nicht erfüllt    & Nicht erfüllt      & Nicht erfüllt \\
 Eignung BITV-Einsatz                           & Nicht geeignet   & Nicht geeignet      & Nicht geeignet \\
+\hline
+\multicolumn{4}{|l|}{\textit{Suite-spezifische Zusatzmetriken}} \\
+\hline
+Fix-Qualität (Stufe)                           & 0--1             & 0--2                & 0--2 (73\,\% Stufe~2) \\
+Tool-Findings (axe/PW/grep)                    & 11\,/\,2\,/\,24  & 11\,/\,2\,/\,24    & 11\,/\,2\,/\,24 \\
+Must-have Ø (Bericht)                          & 46{,}1           & 58{,}9             & 39{,}2 \\
+Nice-to-have Ø (Bericht)                       & 45{,}4           & 27{,}9             & 18{,}9 \\
+Gesamt-Report-Items Ø                          & 91{,}5           & 86{,}8             & 58{,}1 \\
+LLM-Detektor-Laufzeit (Ø)                      & 394\,s           & 723\,s              & 1\,576\,s \\
+Priorisierungslaufzeit (Ø)                     & 365\,s           & 821\,s              & 1\,033\,s \\
+Priorisierungslaufzeit (Min--Max)              & 258--424\,s      & 759--867\,s        & 634--1\,708\,s \\
+Gesamtlaufzeit (Ø)                             & 765\,s           & 1\,550\,s           & 2\,616\,s \\
+Gesamtlaufzeit (Min--Max)                      & 648--839\,s      & 1\,418--1\,688\,s   & 2\,172--3\,314\,s \\
 \hline
 \end{tabular}
 }%
@@ -2567,7 +2592,7 @@ V100 & \texttt{aria-hidden} auf fokuss.\ El. (HC)   & 2 & HelpCenter.tsx, \textt
 \hline
 \end{longtable}
 
-\clearpage
+
 
 \anhang{CSV-Auszug: Benchmark-Rohdaten (test-100-Suite)}\label{app:csv_beispiel_100}
 
@@ -2594,7 +2619,7 @@ qwen3:32b         & 1 & 59 & 13 &  94 & 11 & 2 & 24 & 1\,219\,721 & 16\,672 &  8
 \label{tab:csv_beispiel_100}
 \end{table}
 
-\clearpage
+
 
 \anhang{Statistische Verteilung der LLM-Findings (alle 10 Runs je Modell, test-100-Suite)}\label{app:statistik_quantile_100}
 
@@ -2619,6 +2644,8 @@ Max (100\,\%)    & 110 & 100 & 106 \\
 \hline
 \ac{IQR}         &  11 &   2 &  10 \\
 \hline
+$\sigma^2$ (Varianz) & 33{,}11 & 10{,}46 & 31{,}66 \\
+\hline
 $\sigma$         & 5{,}75 & 3{,}23 & 5{,}63 \\
 \hline
 \end{tabular}
@@ -2626,13 +2653,3 @@ $\sigma$         & 5{,}75 & 3{,}23 & 5{,}63 \\
 \end{table}
  
 \clearpage
- 
-\anhang{Methodische Hinweise zur test-100-Auswertung}\label{app:ausstehend_100}
-
-Alle Anhang-Bausteine der test-100-Suite wurden vollständig ergänzt: Erkennungsrate (Tab.~\ref{tab:erkennungsrate_poc_100}), Recall-Matrix (Tab.~\ref{tab:recall_matrix_100}), Empfehlungsqualität (Tab.~\ref{tab:empfehlungsqualitaet_100}) und CSV-Auszug (Tab.~\ref{tab:csv_beispiel_100}). Die folgenden Hinweise dokumentieren modellspezifische Einschränkungen bei der Datenerhebung.
-
-\noindent\textit{Methodischer Hinweis (7b)}: Run~4 (7\,902 Tokens) und Run~8 (8\,007 Tokens) sind nicht trunkiert und bildeten die primäre Grundlage für die Recall-Schätzung ($\approx$40\,/\,100, davon 34 Baseline und ca.\ 6 LLM-exklusiv). In den restlichen acht trunzierten Runs ist der Nice-to-have-Abschnitt abgeschnitten; die hohe Anzahl an LLM-Findings (Ø~104) ist daher überwiegend auf Overdetection zurückzuführen.
-
-\noindent\textit{Methodischer Hinweis (14b)}: Alle 10~Runs erreichten das Output-Limit (12\,288~Tokens). Die Recall-Schätzung ($\approx$53\,/\,100) basiert auf der Analyse der priorisierten Must-have-Abschnitte, die trotz Trunkierung vollständig vorliegen. Eine vollständige Auswertung des Nice-to-have-Teils erfordert eine Erhöhung von \texttt{num\_predict}.
-
-\noindent\textit{Methodischer Hinweis (32b)}: Nur Run~3 (12\,288~Tokens) ist trunkiert; die übrigen neun Runs schlossen vollständig ab (Ø~6\,578~Tokens). Die Recall-Schätzung für 32b ($\approx$63\,/\,100) ist damit die zuverlässigste der drei Modelle. Die 10~instabilen Violations (V75, V80, V82, V86, V87, V90, V91, V98, V99, V100) wurden nur in einzelnen Runs erkannt und gelten daher als nicht konsistent detektiert.
