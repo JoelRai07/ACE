@@ -29,6 +29,60 @@ Wichtige Umgebungsvariablen:
 - `OLLAMA_NUM_PREDICT` (Priorisierungs-Output)
 - `LLM_DETECT_NUM_PREDICT`, `LLM_DETECT_CHUNK_CHARS`, `LLM_DETECT_MAX_FILES` (Detektor-Tuning)
 
+## Konfigurationsprofile (.env) fuer BA und Praxis
+
+### Warum diese Trennung?
+
+- Die ausgewerteten Benchmark-Ergebnisse basieren auf `LLM_DETECT_CHUNK_CHARS=4000`.
+- Vergleichbarkeit und Reproduzierbarkeit sind fuer die BA wichtiger als spaetere Default-Anpassungen.
+- Eine Umstellung auf 4500 waere ein anderes Experiment.
+- Fuer produktive/praktische Runs (z. B. groessere eigene Anwendung) sollte eine separate Praxis-Konfiguration genutzt und klar als "nicht Teil des Benchmarks" gekennzeichnet werden.
+
+### Benchmark-Profil (BA, reproduzierbar)
+
+Hinweis: Dieses Profil entspricht den evaluierten Benchmark-Runs.
+
+```env
+# Stage 2 (Priorisierung)
+# Pro Suite setzen:
+# test-12: 6144
+# test-50: 8192
+# test-100: 12288
+OLLAMA_NUM_PREDICT=12288
+
+# Stage 1 (LLM-Detektor)
+LLM_DETECT_NUM_PREDICT=2048
+LLM_DETECT_CHUNK_CHARS=4000
+LLM_DETECT_MAX_FILES=25
+```
+
+### Praxis-Profil A (balanciert, Start fuer grosse Codebasen)
+
+Empfohlen fuer erste Runs auf grossen Projekten (z. B. ~40k LOC).
+
+```env
+OLLAMA_NUM_PREDICT=8192
+LLM_DETECT_NUM_PREDICT=1024
+LLM_DETECT_CHUNK_CHARS=5000
+LLM_DETECT_MAX_FILES=300
+```
+
+### Praxis-Profil B (Qualitaet/Recall priorisiert)
+
+Wenn in Profil A zu viele False Negatives auftreten.
+
+```env
+OLLAMA_NUM_PREDICT=12288
+LLM_DETECT_NUM_PREDICT=2048
+LLM_DETECT_CHUNK_CHARS=4000
+LLM_DETECT_MAX_FILES=400
+```
+
+### Wichtigster Hebel bei grossen Repositories
+
+In der Praxis ist haeufig nicht die Chunk-Groesse der limitierende Faktor, sondern `LLM_DETECT_MAX_FILES`.
+Ist dieser Wert zu klein, wird ein relevanter Teil des Codes gar nicht vom Detektor verarbeitet.
+
 Standardmäßig erwartet ACE einen Dev-Server unter `http://localhost:3000` und
 Ollama auf `http://localhost:11434`.
 
@@ -86,3 +140,4 @@ pnpm benchmark --suite test-50 --models r1 --runs 3
 - Ollama laeuft (`ollama serve`)
 - Die jeweilige Test-App laeuft (`cd test && pnpm dev` / `cd test-50 && pnpm dev` / `cd test-100 && pnpm dev`)
 - Energiesparmodus deaktiviert
+

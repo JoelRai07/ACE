@@ -2,11 +2,6 @@
 
 ## Phase 1 — Runs durchführen (nächste 3 Tage)
 
-### test-100 (3 Runs × 3 Modelle = 9 Runs)
-- [ ] qwen2.5-coder:7b — 3 Runs (num_predict = 12.288)
-- [ ] qwen2.5-coder:14b — 3 Runs (num_predict = 12.288)
-- [ ] qwen3:32b — 3 Runs (num_predict = 12.288)
-
 ### BWEC (reale Anwendung)
 - [ ] Pipeline auf BWEC-Client ausführen
 - [ ] Manuelle Stichprobenverifikation (~10 Findings prüfen: stimmt das?)
@@ -20,7 +15,7 @@
 
 ## Phase 2 — Evaluation dokumentieren
 
-### test-50 & test-100 (Kap. 7, Sec. 7.7.1 — Platzhalter befüllen)
+### test-50 & test-100
 Benötigte Kennzahlen je Suite:
 - Recall pro Verstoßkategorie (Tabelle analog zu `tab:recall_kategorie`)
 - Wurde `tokensBudgetTruncated: true` ausgelöst?
@@ -75,3 +70,35 @@ Benötigte Kennzahlen je Suite:
 - [x] Max-Dateien Inkonsistenz (60 Default vs. 25 Benchmarks) in Kap. 6 erklärt
 - [x] num_predict Inkonsistenz (6144 vs. 3072) in Kap. 6 erklärt
 - [x] PipelineMetrics → Evaluationskennzahlen Verbindung in Kap. 6 ergänzt
+
+
+
+
+Test-100 Screenshots ergänzen
+2 bis 4 Screenshots der wichtigsten Problemstellen
+Kurze Bildunterschrift: welche Violation sichtbar ist und warum relevant
+Reproduzierbarkeitsblatt
+Hardware (CPU, RAM, GPU falls genutzt)
+OS + Version
+Modellnamen/Versionen
+Zentrale Parameter: Temperature, num_predict, Chunk-Größe, Runs pro Modell
+Toolchain-Versionen (Ollama, Node, relevante Libraries)
+Console-Output-Auszüge
+Je Suite: ein „normaler“ guter Run
+Zusätzlich insgesamt 1 Grenzfall (z. B. Truncation)
+Nur 8-15 relevante Zeilen je Auszug, mit 1 Satz Interpretation darunter
+Threats to Validity
+Interne Validität: Prompt-/Modellabhängigkeit
+Externe Validität: Übertragbarkeit auf andere Codebasen
+Konstruktvalidität: Metriken repräsentieren nicht alle Qualitätsdimensionen
+Fazit mit kurzer Einordnung der Auswirkungen
+Run-Protokoll-Tabelle
+Spalten: Suite, Modell, Run, LLM-Detektor-Zeit, Priorisierungszeit, Gesamtzeit, Parse-Erfolg, Truncation
+Ziel: Ausreißer und Stabilität schnell nachvollziehbar machen
+Mini-Deduplizierungsnachweis (einfacher Vorschlag)
+Weil echte Deduplizierung intern im LLM passiert, nutze eine Proxy-Sicht:
+Tabelle mit drei Stufen je Modell/Suite:
+Roh-Findings gesamt (Axe + PW + Grep + LLM-Detektor)
+Finale Report-Items (Must + Nice)
+Kompressionsfaktor = finale Items / Roh-Findings
+Vorteil: zeigt indirekt, dass Konsolidierung stattfindet, ohne interne LLM-Merge-Logs zu brauchen
